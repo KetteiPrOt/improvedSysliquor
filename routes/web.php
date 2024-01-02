@@ -13,13 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/', 'welcome');
+Route::get('/', fn () => redirect()->route('login') );
 
-Route::view('dashboard', 'dashboard')
+Route::view('panel', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::view('profile', 'profile')
+Route::view('perfil', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
