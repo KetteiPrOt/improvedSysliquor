@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', fn () => redirect()->route('login') );
+Route::get('/', fn() => redirect()->route('login') );
 
 Route::view('panel', 'dashboard')
     ->middleware(['auth', 'verified'])
