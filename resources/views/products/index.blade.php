@@ -31,7 +31,7 @@
                         
                         <div class="order-1 flex flex-col items-center sm:order-2">
                             <!-- New product button -->
-                            <x-secondary-link-button href="#" class="order-1 mb-3 sm:mb-0 sm:order-3">
+                            <x-secondary-link-button href="{{route('products.create')}}" class="order-1 mb-3 sm:mb-0 sm:order-3">
                                 Agregar Producto
                             </x-secondary-link-button>
                         </div>
@@ -51,37 +51,45 @@
                         </thead>
                         <tbody class="bg-white dark:bg-slate-800">
                             <!-- Product rows -->
-                            @php
-                                // Obtain the number of the first product in this page
-                                $product_count = $products->perPage() * $products->currentPage() - ($products->perPage() - 1);
-                            @endphp
-                            @foreach($products as $product)
-                                <tr>
-                                    <td class="border-b border-slate-100 dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400"
-                                    >{{$product_count}}</td>
-                                    <td class="border-b border-slate-100 dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400"
-                                    ><a href="#">
-                                        {{$product->productTag()}}
-                                    </a></td>
-                                    <td class="border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
-                                        @if($product->started_inventory)
-                                            <span class="text-green-400">SI</span>
-                                        @else
-                                            <span class="text-red-400">No</span>
-                                        @endif
-                                    </td>
-                                </tr>
+                            @if($products)
                                 @php
-                                    $product_count++;
+                                    // Obtain the number of the first product in this page
+                                    $product_count = $products->perPage() *
+                                                        $products->currentPage() -
+                                                        ($products->perPage() - 1);
                                 @endphp
-                            @endforeach
+                                @foreach($products as $product)
+                                    <tr>
+                                        <td class="border-b border-slate-100 dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400"
+                                        >{{$product_count}}</td>
+                                        <td class="border-b border-slate-100 dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400"
+                                        ><a href="#">
+                                            {{$product->productTag()}}
+                                        </a></td>
+                                        <td class="border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
+                                            @if($product->started_inventory)
+                                                <span class="text-green-400">SI</span>
+                                            @else
+                                                <span class="text-red-400">No</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @php
+                                        $product_count++;
+                                    @endphp
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                     <!-- Products Pagination Links -->
-                    {{ $products->onEachSide(1)->links() }}
-
-                    @if($products->count() == 0)
-                        <p>No hay productos...</p>
+                    @if($products)
+                        @if($products->count() == 0)
+                            <p>No se encontraron productos...</p>
+                        @else
+                            {{ $products->onEachSide(1)->links() }}
+                        @endif
+                    @else
+                        <p>Busca un producto...</p>
                     @endif
 
                 </div>

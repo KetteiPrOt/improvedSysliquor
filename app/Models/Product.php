@@ -25,4 +25,27 @@ class Product extends Model
     public function salePrices(){
         return $this->hasMany(SalePrice::class);
     }
+
+    public function productTag(): string
+    {
+        $tag = $this->type->name . ' ' . 
+                $this->name . ' ' . 
+                $this->presentation->content . 'ml';
+        return $tag;
+    }
+
+    public static function searchByTag($search){
+        $products = Product::join('types', 'products.type_id', '=', 'types.id')
+                            ->join('presentations', 'products.presentation_id', '=', 'presentations.id')
+                            ->select('products.*')
+                            ->whereRaw("
+                                CONCAT_WS(' ',
+                                    `types`.`name`,
+                                    `products`.`name`,
+                                    CONCAT(`presentations`.`content`, 'ml')
+                                ) LIKE ?
+                            ", ["%$search%"])
+                            ->paginate(25);
+        return $products;
+    }
 }
