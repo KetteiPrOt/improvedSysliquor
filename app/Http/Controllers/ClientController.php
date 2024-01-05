@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Http\Requests\StoreClientRequest;
 use App\Models\Person;
+use App\Http\Requests\UpdateClientRequest;
 
 class ClientController extends Controller
 {
@@ -46,5 +47,35 @@ class ClientController extends Controller
             'person_id' => $person_id
         ]);
         return redirect()->route('clients.create', ['success' => true]);
+    }
+
+    public function show(Client $client){
+        return view('entities.clients.show', [
+            'client' => $client,
+            'finalConsumer' => Client::finalConsumer()
+        ]);
+    }
+
+    public function edit(Client $client){
+        return view('entities.clients.edit', ['client' => $client]);
+    }
+
+    public function update(UpdateClientRequest $request, Client $client){
+        $validated = $request->validated();
+        if($client->id != Client::finalConsumer()->id){
+            $client->update([
+                'identification_card' => $validated['identification_card'] ?? null,
+                'ruc' => $validated['ruc'] ?? null,
+                'social_reason' => $validated['social_reason'] ?? null
+            ]);
+            $person = $client->person;
+            $person->update([
+                'name' => $validated['name'],
+                'phone_number' => $validated['phone_number'] ?? null,
+                'email' => $validated['email'] ?? null,
+                'address' => $validated['address'] ?? null
+            ]);
+        }
+        return redirect()->route('clients.show', $client->id);
     }
 }
