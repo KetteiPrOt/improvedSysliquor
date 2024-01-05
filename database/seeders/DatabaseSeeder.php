@@ -4,18 +4,13 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-// Register default user
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Auth\Events\Registered;
-// Rgister Initial Data
 use App\Models\UnitsNumber;
 use App\Models\Type;
 use App\Models\Presentation;
 use App\Models\Person;
 use App\Models\Client;
 use App\Models\Provider;
+use App\Models\Warehouse;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,8 +19,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->registerDefaultUser();
-
         // Register units numbers
         $units_numbers = [1, 6, 12];
         foreach($units_numbers as $units_number){
@@ -65,25 +58,17 @@ class DatabaseSeeder extends Seeder
                 'person_id' => $person->id
             ]);
         }
-    }
 
-    /**
-     * Register default user
-     */
-    public function registerDefaultUser(): void
-    {
-        $data = [
-            'name' => 'Administrador',
-            'email' => 'sd.kettei@gmail.com',
-            'password' => '12345678',
-        ];
+        // Register warehouses
+        $warehouses = [Warehouse::$depositName, Warehouse::$liquorStoreName];
+        foreach($warehouses as $warehouse){
+            Warehouse::create(['name' => $warehouse]);
+        }
 
-        $data['password'] = Hash::make($data['password']);
+        // Register Roles and Permissions
+        $this->call([RolesSeeder::class]);
 
-        $user = User::create($data);
-
-        event(new Registered($user));
-
-        Auth::login($user);
+        // Register Sellers
+        $this->call([SellersSeeder::class]);
     }
 }

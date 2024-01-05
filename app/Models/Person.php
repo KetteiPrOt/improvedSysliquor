@@ -20,4 +20,8 @@ class Person extends Model
     public function provider(){
         return $this->hasOne(Provider::class);
     }
+
+    public function seller(){
+        return $this->hasOne(Seller::class);
+    }
 }

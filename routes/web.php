@@ -27,7 +27,7 @@ Route::view('perfil', 'profile')
     ->name('profile');
 
 /* --- CRUD Products --- */
-Route::middleware(['auth'])->controller(ProductController::class)->group(function () {
+Route::middleware(['auth', 'permission:products'])->controller(ProductController::class)->group(function () {
     Route::get('/productos', 'index')->name('products.index');
     Route::get('/productos/crear', 'create')->name('products.create');
     Route::post('/productos', 'store')->name('products.store');
@@ -38,7 +38,7 @@ Route::middleware(['auth'])->controller(ProductController::class)->group(functio
 });
 
 /* --- CRUD Clients --- */
-Route::middleware(['auth'])->controller(ClientController::class)->group(function () {
+Route::middleware(['auth', 'permission:clients'])->controller(ClientController::class)->group(function () {
     Route::get('/clientes', 'index')->name('clients.index');
     Route::get('/clientes/crear', 'create')->name('clients.create');
     Route::post('/clientes', 'store')->name('clients.store');
@@ -48,7 +48,7 @@ Route::middleware(['auth'])->controller(ClientController::class)->group(function
 });
 
 /* --- CRUD Providers --- */
-Route::middleware(['auth'])->controller(ProviderController::class)->group(function () {
+Route::middleware(['auth', 'permission:providers'])->controller(ProviderController::class)->group(function () {
     Route::get('/proveedores', 'index')->name('providers.index');
     // Route::get('/clientes/crear', 'create')->name('clients.create');
     // Route::post('/clientes', 'store')->name('clients.store');

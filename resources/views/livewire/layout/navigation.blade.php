@@ -30,41 +30,147 @@ new class extends Component
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
 
-                    <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')">
-                        {{ __('Productos') }}
-                    </x-nav-link>
+                    @can('products')
+                        <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')">
+                            {{ __('Productos') }}
+                        </x-nav-link>
+                    @endcan
 
-                    <div class="hidden sm:flex sm:items-center sm:ml-6">
-                        <x-dropdown align="right" width="48">
-                            <x-slot name="trigger">
-                                <button class="inline-flex items-center border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                    <div>Administrar Actores</div>
-        
-                                    <div class="ml-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
-        
-                            <x-slot name="content">
-                                <x-dropdown-link :href="_(route('providers.index'))">
-                                    {{ __('Proveedores') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('clients.index')">
-                                    {{ __('Clientes') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="_('#')">
-                                    {{ __('Vendedores') }}
-                                </x-dropdown-link>
-                            </x-slot>
-                        </x-dropdown>
-                    </div>
+                    @can('kardex')
+                        <x-nav-link :href="__('#')" {{-- :active="request()->routeIs('#')" --}}>
+                            {{ __('Kardex') }}
+                        </x-nav-link>
+                    @endcan
+
+                    <!-- Registrer Movements -->
+                    @php
+                        $canRegisterIncome = auth()->user()->can('register income');
+                        $canRegisterExpense = auth()->user()->can('register expense');
+                    @endphp
+                    @if($canRegisterIncome && $canRegisterExpense)
+                        <div class="hidden sm:flex sm:items-center sm:ml-6">
+                            <x-dropdown align="right" width="48">
+                                <x-slot name="trigger">
+                                    <button class="inline-flex items-center border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                        <div>Registrar Movimientos</div>
+            
+                                        <div class="ml-1">
+                                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </x-slot>
+            
+                                <x-slot name="content">
+                                    <x-dropdown-link :href="__('#')">
+                                        {{ __('Compra') }}
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="__('#')">
+                                        {{ __('Venta') }}
+                                    </x-dropdown-link>
+                                </x-slot>
+                            </x-dropdown>
+                        </div>
+                    @endif
+                    @if($canRegisterIncome && !$canRegisterExpense)
+                        <x-nav-link :href="__('#')" {{-- :active="request()->routeIs('#')" --}}>
+                            {{ __('Compra') }}
+                        </x-nav-link>
+                    @endif
+                    @if($canRegisterExpense && !$canRegisterIncome)
+                        <x-nav-link :href="__('#')" {{-- :active="request()->routeIs('#')" --}}>
+                            {{ __('Venta') }}
+                        </x-nav-link>
+                    @endif
+
+                    <!-- Admin Actors -->
+                    @if(
+                        auth()->user()->can('providers') ||
+                        auth()->user()->can('clients') ||
+                        auth()->user()->can('sellers')
+                    )
+                        <div class="hidden sm:flex sm:items-center sm:ml-6">
+                            <x-dropdown align="right" width="48">
+                                <x-slot name="trigger">
+                                    <button class="inline-flex items-center border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                        <div>Administrar Actores</div>
+            
+                                        <div class="ml-1">
+                                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </x-slot>
+            
+                                <x-slot name="content">
+                                    @can('providers')
+                                        <x-dropdown-link :href="route('providers.index')">
+                                            {{ __('Proveedores') }}
+                                        </x-dropdown-link>
+                                    @endcan
+                                    @can('clients')
+                                        <x-dropdown-link :href="route('clients.index')">
+                                            {{ __('Clientes') }}
+                                        </x-dropdown-link>
+                                    @endcan
+                                    @can('sellers')
+                                        <x-dropdown-link :href="__('#')">
+                                            {{ __('Vendedores') }}
+                                        </x-dropdown-link>
+                                    @endcan
+                                </x-slot>
+                            </x-dropdown>
+                        </div>
+                    @endif
+
+                    <!-- See Reports -->
+                    @if(
+                        // auth()->user()->can('...') ||
+                        // auth()->user()->can('...') ||
+                        // auth()->user()->can('...')
+                        auth()->user()->can('query reports')
+                    )
+                        <div class="hidden sm:flex sm:items-center sm:ml-6">
+                            <x-dropdown align="right" width="48">
+                                <x-slot name="trigger">
+                                    <button class="inline-flex items-center border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                        <div>Ver Reportes</div>
+            
+                                        <div class="ml-1">
+                                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </x-slot>
+            
+                                <x-slot name="content">
+                                    <x-dropdown-link :href="__('#')">
+                                        {{ __('Cuentas por cobrar') }}
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="__('#')">
+                                        {{ __('Cuentas por pagar') }}
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="__('#')">
+                                        {{ __('Cierre de caja') }}
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="__('#')">
+                                        {{ __('Reporte de Stock') }}
+                                    </x-dropdown-link>
+                                </x-slot>
+                            </x-dropdown>
+                        </div>
+                    @endif
+
+                    <!-- Admin Permissions -->
+                    @can('permissions')
+                        <x-nav-link :href="__('#')" {{-- :active="request()->routeIs('#')" --}}>
+                            {{ __('Permisos') }}
+                        </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
@@ -113,37 +219,127 @@ new class extends Component
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')">
-                {{ __('Productos') }}
-            </x-responsive-nav-link>
+            @can('products')
+                <x-responsive-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')">
+                    {{ __('Productos') }}
+                </x-responsive-nav-link>
+            @endcan
 
-            <div class="flex items-center">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <x-responsive-dropdown-button {{--:active="
-                            request()->routeIs('#') || request()->routeIs('#')
-                        "--}}>
-                            Administrar Actores
-                        </x-responsive-dropdown-button>
-                    </x-slot>
+            @can('kardex')
+                <x-responsive-nav-link :href="__('#')" {{-- :active="request()->routeIs('#')" --}}>
+                    {{ __('Kardex') }}
+                </x-responsive-nav-link>
+            @endcan
+            
+            <!-- Registrer Movements -->
+            @if($canRegisterIncome && $canRegisterExpense)
+                <div class="flex items-center">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <x-responsive-dropdown-button>
+                                Registrar Movimientos
+                            </x-responsive-dropdown-button>
+                        </x-slot>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('providers.index')">
-                            {{ __('Proveedores') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('clients.index')">
-                            {{ __('Clientes') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="_('#')">
-                            {{ __('Vendedores') }}
-                        </x-dropdown-link>
-                    </x-slot>
-                </x-dropdown>
-            </div>
+                        <x-slot name="content">
+                            <x-dropdown-link :href="__('#')">
+                                {{ __('Compra') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="__('#')">
+                                {{ __('Venta') }}
+                            </x-dropdown-link>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
+            @endif
+            @if($canRegisterIncome && !$canRegisterExpense)
+                <x-responsive-nav-link :href="__('#')" {{-- :active="request()->routeIs('#')" --}}>
+                    {{ __('Compra') }}
+                </x-responsive-nav-link>
+            @endif
+            @if($canRegisterExpense && !$canRegisterIncome)
+                <x-responsive-nav-link :href="__('#')" {{-- :active="request()->routeIs('#')" --}}>
+                    {{ __('Venta') }}
+                </x-responsive-nav-link>
+            @endif
+
+            <!-- Admin Actors -->
+            @if(
+                auth()->user()->can('providers') ||
+                auth()->user()->can('clients') ||
+                auth()->user()->can('sellers')
+            )
+                <div class="flex items-center">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <x-responsive-dropdown-button {{--:active="
+                                request()->routeIs('#') || request()->routeIs('#')
+                            "--}}>
+                                Administrar Actores
+                            </x-responsive-dropdown-button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            @can('providers')
+                                <x-dropdown-link :href="route('providers.index')">
+                                    {{ __('Proveedores') }}
+                                </x-dropdown-link>
+                            @endcan
+                            @can('clients')
+                                <x-dropdown-link :href="route('clients.index')">
+                                    {{ __('Clientes') }}
+                                </x-dropdown-link>
+                            @endcan
+                            @can('sellers')
+                                <x-dropdown-link :href="__('#')">
+                                    {{ __('Vendedores') }}
+                                </x-dropdown-link>
+                            @endcan
+                        </x-slot>
+                    </x-dropdown>
+                </div>
+            @endif
+
+            <!-- See reports -->
+            @if(
+                // auth()->user()->can('...') ||
+                // auth()->user()->can('...') ||
+                // auth()->user()->can('...')
+                auth()->user()->can('query reports')
+            )
+                <div class="flex items-center">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <x-responsive-dropdown-button>
+                                Consultar Reportes
+                            </x-responsive-dropdown-button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            <x-dropdown-link :href="__('#')">
+                                {{ __('Cuentas por cobrar') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="__('#')">
+                                {{ __('Cuentas por pagar') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="__('#')">
+                                {{ __('Cierre de caja') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="__('#')">
+                                {{ __('Reporte de inventario') }}
+                            </x-dropdown-link>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
+            @endif
+
+            <!-- Admin Permissions -->
+            @can('permissions')
+                <x-responsive-nav-link :href="__('#')" {{-- :active="request()->routeIs('#')" --}}>
+                    {{ __('Permisos') }}
+                </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->
