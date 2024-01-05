@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
+use App\Http\Requests\StoreClientRequest;
+use App\Models\Person;
 
 class ClientController extends Controller
 {
@@ -21,5 +23,28 @@ class ClientController extends Controller
             'clients' => $clients,
             'formBag' => $formBag
         ]);
+    }
+
+    public function create(Request $request){
+        return view('entities.clients.create', [
+            'success' => $request->get('success') ?? null
+        ]);
+    }
+
+    public function store(StoreClientRequest $request){
+        $validated = $request->validated();
+        $person_id = Person::create([
+            'name' => $validated['name'],
+            'phone_number' => $validated['phone_number'] ?? null,
+            'email' => $validated['email'] ?? null,
+            'address' => $validated['address'] ?? null
+        ])->id;
+        Client::create([
+            'identification_card' => $validated['identification_card'] ?? null,
+            'ruc' => $validated['ruc'] ?? null,
+            'social_reason' => $validated['social_reason'] ?? null,
+            'person_id' => $person_id
+        ]);
+        return redirect()->route('clients.create', ['success' => true]);
     }
 }

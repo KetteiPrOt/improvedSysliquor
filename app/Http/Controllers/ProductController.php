@@ -22,14 +22,14 @@ class ProductController extends Controller
             $products = null;
             $formBag = null;
         }
-        return view('products.index', [
+        return view('entities.products.index', [
             'products' => $products,
             'formBag' => $formBag
         ]);
     }
 
     public function create(Request $request){
-        return view('products.create', [
+        return view('entities.products.create', [
             'types' => Type::orderBy('used', 'desc')->get(),
             'presentations' => Presentation::orderBy('used', 'desc')->get(),
             'success' => $request->get('success') ?? null
@@ -57,11 +57,11 @@ class ProductController extends Controller
     }
 
     public function show(Product $product){
-        return view('products.show', ['product' => $product]);
+        return view('entities.products.show', ['product' => $product]);
     }
 
     public function edit(Product $product){
-        return view('products.edit', [
+        return view('entities.products.edit', [
             'product' => $product,
             'types' => Type::orderBy('used', 'desc')->get(),
             'presentations' => Presentation::orderBy('used', 'desc')->get()
