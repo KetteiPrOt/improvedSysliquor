@@ -4,12 +4,17 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Seeders\InitialDataSeeder;
 // Register default user
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
+// Rgister Initial Data
+use App\Models\UnitsNumber;
+use App\Models\Type;
+use App\Models\Presentation;
+use App\Models\Person;
+use App\Models\Client;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,10 +23,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->registerDefaultUser();
+        $this->registerDefaultUser();
 
-        $this->call([
-            InitialDataSeeder::class
+        // Register units numbers
+        $units_numbers = [1, 6, 12];
+        foreach($units_numbers as $units_number){
+            UnitsNumber::create(['units' => $units_number]);
+        }
+
+        // Register types of products
+        $types = ['whisky', 'vino', 'ron', 'aguardiente', 'tequila'];
+        foreach($types as $type){
+            Type::create(['name' => $type]);
+        }
+
+        // Register presentation of products
+        $presentations = [200, 375, 750, 1000, 1500];
+        foreach($presentations as $presentation){
+            Presentation::create(['content' => $presentation]);
+        }
+
+        // Register final consumer client
+        $person = Person::create(['name' => Client::$finalConsumerName]);
+        Client::create([
+            'person_id' => $person->id
         ]);
     }
 

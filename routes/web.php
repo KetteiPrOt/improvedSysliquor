@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ClientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,16 @@ Route::middleware(['auth'])->controller(ProductController::class)->group(functio
     Route::get('/productos/{product}/editar', 'edit')->name('products.edit');
     Route::put('/productos/{product}', 'update')->name('products.update');
     Route::delete('/productos/{product}', 'destroy')->name('products.destroy');
+});
+
+/* --- CRUD Clients --- */
+Route::middleware(['auth'])->controller(ClientController::class)->group(function () {
+    Route::get('/clientes', 'index')->name('clients.index');
+    // Route::get('/clientes/crear', 'create')->name('clients.create');
+    // Route::post('/clientes', 'store')->name('clients.store');
+    // Route::get('/clientes/{client}', 'show')->name('clients.show');
+    // Route::get('/clientes/{client}/editar', 'edit')->name('clients.edit');
+    // Route::put('/clientes/{client}', 'update')->name('clients.update');
 });
 
 require __DIR__.'/auth.php';
