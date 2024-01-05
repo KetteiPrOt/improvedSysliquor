@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\UniqueProductTag;
 
-class StoreProductRequest extends FormRequest
+class UpdateProductRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -16,11 +15,11 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'type' => ['required', 'integer', 'exists:types,id'],
+            'name' => ['required', 'string', 'max:50'],
             'presentation' => ['required', 'integer', 'exists:presentations,id'],
-            'name' => ['required', 'string', 'max:50', new UniqueProductTag],
             'minimun_stock' => ['required', 'integer', 'min:1', 'max:9999'],
             'sale_prices' => ['required', 'array:1,6,12', 'size:3'],
-            'sale_prices.*' => ['required', 'numeric', 'decimal:0,2', 'min:0.01', 'max:999'],
+            'sale_prices.*' => ['required', 'numeric', 'decimal:0,2', 'min:0.01', 'max:999']
         ];
     }
 
@@ -43,3 +42,4 @@ class StoreProductRequest extends FormRequest
         ];
     }
 }
+

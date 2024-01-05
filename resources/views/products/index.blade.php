@@ -63,7 +63,7 @@
                                         <td class="border-b border-slate-100 dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400"
                                         >{{$product_count}}</td>
                                         <td class="border-b border-slate-100 dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400"
-                                        ><a href="#">
+                                        ><a href="{{route('products.show', $product->id)}}">
                                             {{$product->productTag()}}
                                         </a></td>
                                         <td class="border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">

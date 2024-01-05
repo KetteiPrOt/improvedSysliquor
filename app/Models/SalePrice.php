@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
+use App\Models\UnitsNumber;
 
 class SalePrice extends Model
 {
@@ -14,5 +15,9 @@ class SalePrice extends Model
 
     public function product(){
         return $this->belongsTo(Product::class);
+    }
+
+    public function unitsNumber(){
+        return $this->belongsTo(UnitsNumber::class);
     }
 }
