@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('persons', function (Blueprint $table) {
             $table->mediumIncrements('id');
-            $table->string('name', 75);
+            $table->string('name', 75)->unique();
             $table->string('phone_number', 10)->nullable();
             $table->string('email', 320)->nullable();
             $table->string('address', 200)->nullable();

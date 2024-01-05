@@ -15,6 +15,7 @@ use App\Models\Type;
 use App\Models\Presentation;
 use App\Models\Person;
 use App\Models\Client;
+use App\Models\Provider;
 
 class DatabaseSeeder extends Seeder
 {
@@ -48,6 +49,22 @@ class DatabaseSeeder extends Seeder
         Client::create([
             'person_id' => $person->id
         ]);
+
+        // Register providers
+        $providers = [
+            ['name' => 'Juan el Juri', 'ruc' => '1311111111111'],
+            ['name' => 'Casa Nova', 'ruc' => '1311111111112']            
+        ];
+        foreach($providers as $provider){
+            $person = Person::create([
+                'name' => $provider['name'],
+            ]);
+            Provider::create([
+                'ruc' => $provider['ruc'],
+                'social_reason' => $provider['name'],
+                'person_id' => $person->id
+            ]);
+        }
     }
 
     /**

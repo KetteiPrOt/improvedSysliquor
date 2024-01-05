@@ -16,4 +16,8 @@ class Person extends Model
     public function client(){
         return $this->hasOne(Client::class);
     }
+
+    public function provider(){
+        return $this->hasOne(Provider::class);
+    }
 }

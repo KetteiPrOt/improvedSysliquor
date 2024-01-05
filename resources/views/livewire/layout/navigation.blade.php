@@ -53,7 +53,7 @@ new class extends Component
                             </x-slot>
         
                             <x-slot name="content">
-                                <x-dropdown-link :href="_('#')">
+                                <x-dropdown-link :href="_(route('providers.index'))">
                                     {{ __('Proveedores') }}
                                 </x-dropdown-link>
                                 <x-dropdown-link :href="route('clients.index')">
@@ -132,7 +132,7 @@ new class extends Component
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="_('#')">
+                        <x-dropdown-link :href="route('providers.index')">
                             {{ __('Proveedores') }}
                         </x-dropdown-link>
                         <x-dropdown-link :href="route('clients.index')">
