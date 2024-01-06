@@ -20,17 +20,20 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->unique();
             $table->foreign('user_id', 'seller_user')
                   ->references('id')
-                  ->on('users');
+                  ->on('users')
+                  ->restrictOnDelete()->restrictOnUpdate();
 
             $table->unsignedMediumInteger('person_id')->unique();
-                  $table->foreign('person_id', 'person_seller')
-                        ->references('id')
-                        ->on('persons');
+            $table->foreign('person_id', 'person_seller')
+                  ->references('id')
+                  ->on('persons')
+                  ->restrictOnDelete()->restrictOnUpdate();
             
             $table->unsignedTinyInteger('warehouse_id');
-                  $table->foreign('warehouse_id', 'seller_warehouse')
-                        ->references('id')
-                        ->on('warehouses');
+            $table->foreign('warehouse_id', 'seller_warehouse')
+                  ->references('id')
+                  ->on('warehouses')
+                  ->restrictOnDelete()->restrictOnUpdate();
         });
     }
 

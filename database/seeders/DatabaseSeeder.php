@@ -11,6 +11,8 @@ use App\Models\Person;
 use App\Models\Client;
 use App\Models\Provider;
 use App\Models\Warehouse;
+use App\Models\MovementCategory;
+use App\Models\MovementType;
 
 class DatabaseSeeder extends Seeder
 {
@@ -70,5 +72,29 @@ class DatabaseSeeder extends Seeder
 
         // Register Sellers
         $this->call([SellersSeeder::class]);
+
+        // Register Movement Categories
+        $incomeCategory = MovementCategory::create([
+            'name' => MovementCategory::$incomeName
+        ]);
+        $egressCategory = MovementCategory::create([
+            'name' => MovementCategory::$expenseName
+        ]);
+
+        // Register Movement Types
+        $incomeTypes = [MovementType::$initialInventoryName, 'Compra'];
+        foreach($incomeTypes as $type){
+            MovementType::create([
+                'name' => $type,
+                'movement_category_id' => $incomeCategory->id
+            ]);
+        }
+        $egressTypes = ['Venta', 'Donación', 'Publicidad'];
+        foreach($egressTypes as $type){
+            MovementType::create([
+                'name' => $type,
+                'movement_category_id' => $egressCategory->id
+            ]);
+        }
     }
 }

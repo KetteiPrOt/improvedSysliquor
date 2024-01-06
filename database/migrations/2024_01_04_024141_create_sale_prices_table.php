@@ -19,13 +19,14 @@ return new class extends Migration
             $table->unsignedTinyInteger('units_number_id');
             $table->foreign('units_number_id', 'sale_price_units_number')
                   ->references('id')
-                  ->on('units_numbers');
+                  ->on('units_numbers')
+                  ->restrictOnDelete()->restrictOnUpdate();;
 
             $table->unsignedMediumInteger('product_id');
             $table->foreign('product_id', 'product_sale_price')
                   ->references('id')
                   ->on('products')
-                  ->onUpdate('cascade')->cascadeOnDelete();
+                  ->cascadeOnDelete()->cascadeOnUpdate();
 
             $table->timestamps();
         });

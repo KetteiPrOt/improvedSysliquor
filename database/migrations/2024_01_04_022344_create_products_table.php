@@ -15,17 +15,20 @@ return new class extends Migration
             $table->mediumIncrements('id');
             $table->string('name', 50);
             $table->smallInteger('minimun_stock');
+            $table->tinyInteger('started_inventory')->unsigned()->default(0);
 
             // Adding foreign keys
             $table->unsignedSmallInteger('type_id')->nullable();
             $table->foreign('type_id', 'product_type')
                   ->references('id')
-                  ->on('types')->nullOnDelete();
+                  ->on('types')
+                  ->nullOnDelete()->cascadeOnUpdate();
             
             $table->unsignedSmallInteger('presentation_id')->nullable();
             $table->foreign('presentation_id', 'presentation_product')
                 ->references('id')
-                ->on('presentations')->nullOnDelete();
+                ->on('presentations')
+                ->nullOnDelete()->cascadeOnUpdate();
 
             // Add unique product tag index
             $table->unique(['type_id', 'name', 'presentation_id'], 'unique_product_tag');

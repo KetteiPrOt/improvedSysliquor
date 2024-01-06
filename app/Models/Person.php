@@ -24,4 +24,8 @@ class Person extends Model
     public function seller(){
         return $this->hasOne(Seller::class);
     }
+
+    public function invoices(){
+        return $this->hasMany(Invoice::class);
+    }
 }

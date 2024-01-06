@@ -14,6 +14,7 @@ class ClientController extends Controller
         $search = $request->get('search');
         if($search){
             $clients = Client::join('persons', 'clients.person_id', '=', 'persons.id')
+                            ->select('clients.*')
                             ->whereRaw("persons.name LIKE ?", ["%$search%"])->paginate(25);
             $formBag['search'] = $search;
         } else {

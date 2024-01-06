@@ -4,9 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Type;
-use App\Models\Presentation;
-use App\Models\SalePrice;
 
 class Product extends Model
 {
@@ -24,6 +21,10 @@ class Product extends Model
 
     public function salePrices(){
         return $this->hasMany(SalePrice::class);
+    }
+
+    public function movements(){
+        return $this->hasMany(Movement::class);
     }
 
     public function productTag(): string
