@@ -1,8 +1,7 @@
-@props(['products', 'movementtypes', 'purchasetype', 'initialinventorytype'])
+@props(['products', 'movementtypes', 'saletype'])
 @php
     $movementTypes = $movementtypes;
-    $purchaseType = $purchasetype;
-    $initialInventoryType = $initialinventorytype;
+    $saleType = $saletype;
 @endphp
 
 @if(count($products) > 0)
@@ -34,19 +33,46 @@
                             >
                             {{$product->productTag()}}
                         </td>
+                        <style>
+                            .without-arrows-number-input::-webkit-outer-spin-button,
+                            .without-arrows-number-input::-webkit-inner-spin-button {
+                                /* display: none; <- Crashes Chrome on hover */
+                                -webkit-appearance: none;
+                                margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+                            }
+
+                            .without-arrows-number-input[type=number] {
+                                -moz-appearance:textfield; /* Firefox */
+                            }
+                        </style>
                         <td class="col-span-2 flex flex-col lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
                             <p class="block lg:hidden">Cantidad</p>
                             <x-number-input
-                                name="amounts[{{$key}}]" min="1" max="65000" required 
-                                value="{{old('amounts.'.$key)}}"
+                                name="amounts[{{$key}}]" min="1" max="{{
+                                    $product->movements()
+                                        ->orderBy('id', 'desc')
+                                        ->first()->balance->amount
+                                }}" required 
+                                value="{{old('amounts.'.$key, 1)}}"
+                                id="amount{{$key}}" class="without-arrows-number-input"
+                                wire:keyup="syncUnitaryPrice()"
                             />
                         </td>
                         <td class="col-span-2 flex flex-col lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
                             <p class="block lg:hidden">P. Unitario</p>
-                            <x-number-input
-                                name="unitary_prices[{{$key}}]" min="0.01" step="0.01" max="999" required 
-                                value="{{'unitary_prices.'.$key}}"
-                            />
+                            <x-select-input name="sale_prices[]" class="block" required>
+                                @foreach($product->salePrices as $salePriceKey => $salePrice)
+                                    <option
+                                        @if($salePriceKey > 0) hidden @endif
+                                        id="{{
+                                            'salePrice'
+                                            .$salePrice->unitsNumber->units
+                                            .'Units'.$key.'Product'
+                                        }}"
+                                        value="{{$salePrice->id}}"
+                                    >{{$salePrice->price}}</option>
+                                @endforeach
+                            </x-select-input>
                         </td>
                         <td class="col-span-3 flex flex-col lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
                             <p class="block lg:hidden">Tipo de Movimiento</p>
@@ -55,7 +81,7 @@
                                     @foreach($movementTypes as $movementType)
                                         <option 
                                             value="{{$movementType->id}}"
-                                            @selected(old('movement_types.'.$key, $purchaseType->id) == $movementType->id)
+                                            @selected(old('movement_types.'.$key, $saleType->id) == $movementType->id)
                                         >{{$movementType->name}}</option>
                                     @endforeach
                                 </x-select-input>

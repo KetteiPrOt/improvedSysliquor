@@ -39,7 +39,7 @@ class UniqueInvoiceNumber implements ValidationRule, DataAwareRule
         foreach($this->data['invoice_number'] as $key => $part){
             if($key == 2){
                 for($i = 1; $i < 10; $i++){
-                    if($part < (10^$i)){
+                    if($part < (10**$i)){
                         for($j = 0; $j < (9 - $i); $j++){
                             $number .= '0';
                         }

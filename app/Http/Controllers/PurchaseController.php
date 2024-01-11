@@ -47,7 +47,7 @@ class PurchaseController extends Controller
         foreach($data['invoice_number'] as $key => $part){
             if($key == 2){
                 for($i = 1; $i < 10; $i++){
-                    if($part < (10^$i)){
+                    if(intval($part) < (10**$i)){
                         for($j = 0; $j < (9 - $i); $j++){
                             $number .= '0';
                         }
@@ -77,7 +77,7 @@ class PurchaseController extends Controller
                 //     $number .= $part;
                 // }
             } else {
-                if($part < 10){
+                if(intval($part) < 10){
                     $number .= '00'.$part;
                 } else if($part < 100){
                     $number .= '0'.$part;
@@ -118,11 +118,11 @@ class PurchaseController extends Controller
 
     private function pushIncome(array $data){
         $product = Product::find($data['product_id']);
-        $lastBalace = $product->movements()->orderBy('id', 'desc')->first()->balance;
+        $lastBalance = $product->movements()->orderBy('id', 'desc')->first()->balance;
         $movement = Movement::create($data);
-        $newUnitaryPrice = $this->averageWeighted($lastBalace, $movement);
+        $newUnitaryPrice = $this->averageWeighted($lastBalance, $movement);
         Balance::create([
-            'amount' => $lastBalace->amount + $movement->amount,
+            'amount' => $lastBalance->amount + $movement->amount,
             'unitary_price' => $newUnitaryPrice,
             'movement_id' => $movement->id
         ]);    

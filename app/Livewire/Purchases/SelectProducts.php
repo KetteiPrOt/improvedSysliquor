@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Purchases;
 
 use Livewire\Component;
 use Livewire\Attributes\Locked;
@@ -11,29 +11,28 @@ use App\Models\MovementType;
 class SelectProducts extends Component
 {
     public $search = null;
-    public $success;
 
     #[Locked]
     public $selectedProductsIds = [];
 
     public function render()
     {
-
-        if($this->success){
-            // $this->reset('selectedProductsIds');
-        }
         $selectedProducts = $this->querySelectedProducts();
         if($this->search){
             $products = Product::searchByTag($this->search, 5);
         }
         $incomeCategory = MovementCategory::income();
-        $movementTypes = $incomeCategory->movementTypes;
+        $movementTypes = $incomeCategory
+                         ->movementTypes()
+                         ->where('name', '!=', MovementType::$initialInventoryName)->get();
         $purchaseType = MovementType::purchase();
-        return view('livewire.select-products', [
+        $initialInventoryType = MovementType::initialInventory();
+        return view('livewire.purchases.select-products', [
             'products' => $products ?? null,
             'selectedProducts' => $selectedProducts,
             'movementTypes' => $movementTypes,
-            'purchaseType' => $purchaseType
+            'purchaseType' => $purchaseType,
+            'initialInventoryType' => $initialInventoryType
         ]);
     }
 

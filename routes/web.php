@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\SalesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +58,11 @@ Route::middleware(['auth', 'permission:providers'])->controller(ProviderControll
 Route::middleware(['auth', 'permission:purchases'])->controller(PurchaseController::class)->group(function () {
     Route::get('/compras/crear', 'create')->name('purchases.create');
     Route::post('/compras', 'store')->name('purchases.store');
+});
+
+Route::middleware(['auth', 'permission:sales'])->controller(SalesController::class)->group(function () {
+    Route::get('/ventas/crear', 'create')->name('sales.create');
+    Route::post('/ventas', 'store')->name('sales.store');
 });
 
 require __DIR__.'/auth.php';

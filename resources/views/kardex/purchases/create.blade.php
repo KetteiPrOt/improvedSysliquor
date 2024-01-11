@@ -53,7 +53,7 @@
                         <x-input-error :messages="$errors->get('date')" />
 
                         <!-- Select Products -->
-                        <livewire:select-products :success="$success" />
+                        <livewire:purchases.select-products />
 
                         <x-input-error :messages="$errors->get('products')" />
                         @foreach($errors->get('products.*') as $error)

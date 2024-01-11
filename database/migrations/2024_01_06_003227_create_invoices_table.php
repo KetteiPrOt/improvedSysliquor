@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('number', 15)->unique();
+            $table->string('number', 15);
             $table->date('date');
 
             // Add foreign keys

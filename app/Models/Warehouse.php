@@ -16,6 +16,16 @@ class Warehouse extends Model
     public static $depositName = 'Depósito';
     public static $liquorStoreName = 'Licoreria';
 
+    public static function deposit(): Warehouse
+    {
+        return Warehouse::where('name', Warehouse::$depositName)->first();
+    }
+
+    public static function liquorStore(): Warehouse
+    {
+        return Warehouse::where('name', Warehouse::$liquorStoreName)->first();
+    }
+
     public function sellers(){
         return $this->hasMany(Seller::class);
     }

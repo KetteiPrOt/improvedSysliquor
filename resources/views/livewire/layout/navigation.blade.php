@@ -45,10 +45,10 @@ new class extends Component
 
                     <!-- Registrer Movements -->
                     @php
-                        $canRegisterIncome = auth()->user()->can('register income');
-                        $canRegisterExpense = auth()->user()->can('register expense');
+                        $canRegisterPurchases = auth()->user()->can('purchases');
+                        $canRegisterSales = auth()->user()->can('sales');
                     @endphp
-                    @if($canRegisterIncome && $canRegisterExpense)
+                    @if($canRegisterPurchases && $canRegisterSales)
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <x-dropdown align="right" width="48">
                                 <x-slot name="trigger">
@@ -65,23 +65,23 @@ new class extends Component
             
                                 <x-slot name="content">
                                     <x-dropdown-link :href="route('purchases.create')">
-                                        {{ __('Compra') }}
+                                        {{ __('Compras') }}
                                     </x-dropdown-link>
-                                    <x-dropdown-link :href="__('#')">
-                                        {{ __('Venta') }}
+                                    <x-dropdown-link :href="route('sales.create')">
+                                        {{ __('Ventas') }}
                                     </x-dropdown-link>
                                 </x-slot>
                             </x-dropdown>
                         </div>
                     @endif
-                    @if($canRegisterIncome && !$canRegisterExpense)
+                    @if($canRegisterPurchases && !$canRegisterSales)
                         <x-nav-link :href="route('purchases.create')" :active="request()->routeIs('purchases.create')">
-                            {{ __('Compra') }}
+                            {{ __('Compras') }}
                         </x-nav-link>
                     @endif
-                    @if($canRegisterExpense && !$canRegisterIncome)
-                        <x-nav-link :href="__('#')" {{-- :active="request()->routeIs('#')" --}}>
-                            {{ __('Venta') }}
+                    @if($canRegisterSales && !$canRegisterPurchases)
+                        <x-nav-link :href="route('sales.create')" :active="request()->routeIs('sales.create')">
+                            {{ __('Ventas') }}
                         </x-nav-link>
                     @endif
 
@@ -233,7 +233,7 @@ new class extends Component
             @endcan
             
             <!-- Registrer Movements -->
-            @if($canRegisterIncome && $canRegisterExpense)
+            @if($canRegisterPurchases && $canRegisterSales)
                 <div class="flex items-center">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
@@ -244,23 +244,23 @@ new class extends Component
 
                         <x-slot name="content">
                             <x-dropdown-link :href="route('purchases.create')">
-                                {{ __('Compra') }}
+                                {{ __('Compras') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="__('#')">
-                                {{ __('Venta') }}
+                            <x-dropdown-link :href="route('sales.create')">
+                                {{ __('Ventas') }}
                             </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
                 </div>
             @endif
-            @if($canRegisterIncome && !$canRegisterExpense)
+            @if($canRegisterPurchases && !$canRegisterSales)
                 <x-responsive-nav-link :href="route('purchases.create')" :active="request()->routeIs('purchases.create')">
-                    {{ __('Compra') }}
+                    {{ __('Compras') }}
                 </x-responsive-nav-link>
             @endif
-            @if($canRegisterExpense && !$canRegisterIncome)
-                <x-responsive-nav-link :href="__('#')" {{-- :active="request()->routeIs('#')" --}}>
-                    {{ __('Venta') }}
+            @if($canRegisterSales && !$canRegisterPurchases)
+                <x-responsive-nav-link :href="route('sales.create')" :active="request()->routeIs('sales.create')">
+                    {{ __('Ventas') }}
                 </x-responsive-nav-link>
             @endif
 
