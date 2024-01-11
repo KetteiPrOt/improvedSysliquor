@@ -24,8 +24,8 @@ class RolesSeeder extends Seeder
             'clients',
             'providers',
             'sellers',
-            'register income',
-            'register expense',
+            'purchases',
+            'sales',
             'kardex',
             'permissions'
         ];
@@ -35,7 +35,7 @@ class RolesSeeder extends Seeder
 
         // Assign Permissions to Roles
         $sellerPermissions = [
-            'register expense'
+            'sales'
         ];
         foreach($sellerPermissions as $sellerPermission){
             $seller->givePermissionTo($sellerPermission);

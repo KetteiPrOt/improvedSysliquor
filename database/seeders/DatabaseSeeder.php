@@ -82,14 +82,14 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Register Movement Types
-        $incomeTypes = [MovementType::$initialInventoryName, 'Compra'];
+        $incomeTypes = [MovementType::$initialInventoryName, MovementType::$purchaseName];
         foreach($incomeTypes as $type){
             MovementType::create([
                 'name' => $type,
                 'movement_category_id' => $incomeCategory->id
             ]);
         }
-        $egressTypes = ['Venta', 'Donación', 'Publicidad'];
+        $egressTypes = [MovementType::$saleName, 'Donación', 'Publicidad'];
         foreach($egressTypes as $type){
             MovementType::create([
                 'name' => $type,

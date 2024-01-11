@@ -35,7 +35,7 @@ class Product extends Model
         return $tag;
     }
 
-    public static function searchByTag($search){
+    public static function searchByTag($search, $pagination = 25){
         $products = Product::join('types', 'products.type_id', '=', 'types.id')
                             ->join('presentations', 'products.presentation_id', '=', 'presentations.id')
                             ->select('products.*')
@@ -46,7 +46,7 @@ class Product extends Model
                                     CONCAT(`presentations`.`content`, 'ml')
                                 ) LIKE ?
                             ", ["%$search%"])
-                            ->paginate(25);
+                            ->paginate($pagination);
         return $products;
     }
 }
