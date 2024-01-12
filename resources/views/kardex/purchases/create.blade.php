@@ -27,17 +27,20 @@
                         <x-input-error :messages="$errors->get('provider')" />
                         <!-- Invoice Number --> 
                         <x-input-label :value="__('Número de Factura')" />
+                        <p class="font-light text-xs text-gray-500 dark:text-gray-300">
+                            Excluye los ceros a la izquierda
+                        </p>
                         <x-number-input
                             name="invoice_number[]" min="1" max="999" required class="invoice-number-input" id="invoiceNumberFirstInput"
-                            value="{{old('invoice_number.0')}}" placeholder="000"
+                            value="{{old('invoice_number.0')}}" placeholder="999"
                         /> <p class="inline">-</p>
                         <x-number-input
                             name="invoice_number[]" min="1" max="999" required class="invoice-number-input" id="invoiceNumberSecondInput"
-                            value="{{old('invoice_number.1')}}" placeholder="000"
+                            value="{{old('invoice_number.1')}}" placeholder="999"
                         /> <p class="inline">-</p>
                         <x-number-input
                             name="invoice_number[]" min="1" max="999999999" required class="invoice-number-input w-32" id="invoiceNumberThirdInput"
-                            value="{{old('invoice_number.2')}}" placeholder="000000000"
+                            value="{{old('invoice_number.2')}}" placeholder="999999999"
                         /> 
                         <x-input-error :messages="$errors->get('invoice_number')" />
                         @foreach($errors->get('invoice_number.*') as $error)

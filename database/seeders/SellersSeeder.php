@@ -22,7 +22,7 @@ class SellersSeeder extends Seeder
         $liquorStoreName = Warehouse::$liquorStoreName;
         $sellersData = [
             ['Super Admin', 'Administrador', 'sd.kettei@gmail.com', '12345678', $depositName],
-            ['seller', 'Patricia Elizabeth Trávez Mero', 'patricia@gmail.com', '12345678', $depositName],
+            ['Super Admin', 'Patricia Elizabeth Trávez Mero', 'patricia@gmail.com', '12345678', $depositName],
             ['seller', 'Sra. Maira', 'maira@gmail.com', '12345678', $depositName]
         ];
         foreach($sellersData as $sellerData){

@@ -24,9 +24,9 @@
                         <x-card-item :tag="__('Presentación')">
                             {{$product->presentation->content}}
                         </x-card-item>
-                        <x-card-item :tag="__('Stock Mínimo:')">
+                        {{-- <x-card-item :tag="__('Stock Mínimo')">
                             {{$product->minimun_stock}}
-                        </x-card-item>
+                        </x-card-item> --}}
                         <!-- Sale Prices -->
                         <x-card-title>
                             Precios de Venta

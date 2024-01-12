@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // Register types of products
-        $types = ['whisky', 'vino', 'ron', 'aguardiente', 'tequila'];
+        $types = ['whisky', 'vino', 'ron', 'aguardiente', 'tequila', 'coktail'];
         foreach($types as $type){
             Type::create(['name' => $type]);
         }

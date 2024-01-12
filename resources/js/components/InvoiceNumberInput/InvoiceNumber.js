@@ -7,12 +7,13 @@ class InvoiceNumber {
         ];
     }
 
-    validate(input, maxsize, event){        
+    validate(input, maxsize, event){
         const allowedKeys = [
             'Backspace',
             'Tab',
             'ArrowLeft',
-            'ArrowRight'
+            'ArrowRight',
+            'Delete'
         ];
         let validKey = false;
         for(let allowedKey of allowedKeys){

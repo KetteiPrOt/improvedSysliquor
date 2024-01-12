@@ -7,7 +7,7 @@
         :saletype="$saleType"
     />
 
-    <x-text-input wire:model.live.debounce.250ms="search" placeholder="Buscar..." class="mb-3" />
+    <x-text-input id="searchProductsInput" wire:model.live.debounce.250ms="search" placeholder="Buscar..." class="mb-3" />
     @if($products)
         <x-sales.products.select.table :products="$products" />
     @endif

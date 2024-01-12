@@ -72,7 +72,7 @@ class SelectProducts extends Component
     }
 
     #[Js]
-    public function syncUnitaryPrice(){
+    public function syncInputs(){
         return <<<'JS'
             const productKey = event.target.id.charAt(6);
             const unitaryPriceOneUnit = document.getElementById(
@@ -100,6 +100,74 @@ class SelectProducts extends Component
             } else {
                 unitaryPriceTwelveUnits.hidden = false;
             }
+
+            
+            let unitaryPriceSelected;
+            const unitaryPrices = [
+                unitaryPriceOneUnit,
+                unitaryPriceSixUnits,
+                unitaryPriceTwelveUnits
+            ];
+            for(let unitaryPrice of unitaryPrices){
+                if(unitaryPrice.selected){
+                    unitaryPriceSelected = unitaryPrice;
+                    break;
+                }
+            }
+            const totalPrice = document.getElementById(`totalPrice${productKey}`);
+            if(event.target.value){
+                totalPrice.value = event.target.value * unitaryPriceSelected.textContent;
+            } else {
+                totalPrice.value = 0;
+            }
+
+
+            const totalPricesSummation = document.getElementById('totalPricesSummation'),
+                  productsCount = document.getElementById('productsCount').textContent;
+            
+            let summation = 0;
+            for(let i = 0; i < productsCount; i++){
+                summation += parseFloat(document.getElementById(`totalPrice${i}`).value);
+            }
+            totalPricesSummation.textContent = summation;
+        JS;
+    }
+
+    #[Js]
+    public function updateTotalPrice(){
+        return <<<'JS'
+            const productKey = event.target.id.charAt(13),
+                  totalPriceInput = document.getElementById(`totalPrice${productKey}`),
+                  amount = document.getElementById(`amount${productKey}`).value,
+                  unitaryPrice = event.target.selectedOptions[0].textContent;
+            if(amount){
+                totalPriceInput.value = amount * unitaryPrice;
+            } else {
+                totalPriceInput.value = 0;   
+            }
+
+            const totalPricesSummation = document.getElementById('totalPricesSummation'),
+                  productsCount = document.getElementById('productsCount').textContent;
+            
+            let summation = 0;
+            for(let i = 0; i < productsCount; i++){
+                summation += parseFloat(document.getElementById(`totalPrice${i}`).value);
+            }
+            totalPricesSummation.textContent = summation;
+        JS;
+    }
+
+    #[Js]
+    public function calculateTotalPricesSummation(){
+        return <<<'JS'
+            const totalPricesSummation = document.getElementById('totalPricesSummation'),
+                  productsCount = document.getElementById('productsCount').textContent;
+            
+            let summation = 0;
+            for(let i = 0; i < productsCount; i++){
+                summation += parseFloat(document.getElementById(`totalPrice${i}`).value);
+            }
+            totalPricesSummation.textContent = summation;
         JS;
     }
 }

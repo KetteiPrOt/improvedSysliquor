@@ -60,4 +60,11 @@ class StorePurchaseRequest extends FormRequest
             'movement_types.*' => 'Tipo de Movimiento #:position',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'invoice_number.*.integer' => 'Excluye los ceros a la izquierda del número de factura.'
+        ];
+    }
 }

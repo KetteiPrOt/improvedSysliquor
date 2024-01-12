@@ -44,18 +44,18 @@
                         <x-input-error :messages="$errors->get('presentation')" />
 
                         <!-- Minimun stock -->
-                        <x-input-label for="minimunStock" :value="__('Stock Mínimo')" class="mt-6" />
-                        <x-number-input id="minimunStock" name="minimun_stock" min="1" max="9999" required value="{{old('minimun_stock', 1)}}" />
+                        <x-input-label for="minimunStock" :value="__('Stock Mínimo')" class="hidden mt-6" />
+                        <x-number-input id="minimunStock" name="minimun_stock" min="1" class="hidden" max="9999" required value="{{old('minimun_stock', 1)}}" />
                         <x-input-error :messages="$errors->get('minimun_stock')" />
                         
                         <!-- Sale prices -->
                         <x-input-label :value="__('Precios de Venta ($)')" />
                         <x-number-input
-                            name="sale_prices[1]" min="0.01" step="0.01" max="999" required placeholder="por 1" value="{{old('sale_prices.one')}}" class="w-1/2 sm:w-1/4 block mb-1"/>
+                            name="sale_prices[1]" min="0.01" step="0.01" max="999" required placeholder="por 1 unidad" value="{{old('sale_prices.one')}}" class="w-1/2 sm:w-1/4 block mb-1"/>
                         <x-number-input
-                            name="sale_prices[6]" min="0.01" step="0.01" max="999" required placeholder="por 6" value="{{old('sale_prices.six')}}" class="w-1/2 sm:w-1/4 block mb-1"/>
+                            name="sale_prices[6]" min="0.01" step="0.01" max="999" required placeholder="por 6 unidades" value="{{old('sale_prices.six')}}" class="w-1/2 sm:w-1/4 block mb-1"/>
                         <x-number-input
-                            name="sale_prices[12]" min="0.01" step="0.01" max="999" required placeholder="por 12" value="{{old('sale_prices.twelve')}}" class="w-1/2 sm:w-1/4 block mb-1"/>
+                            name="sale_prices[12]" min="0.01" step="0.01" max="999" required placeholder="por 12 unidades" value="{{old('sale_prices.twelve')}}" class="w-1/2 sm:w-1/4 block mb-1"/>
                         <x-input-error :messages="$errors->get('sale_prices')" />
                         <x-input-error :messages="$errors->get('sale_prices.*')" />
 
