@@ -38,7 +38,7 @@ new class extends Component
                     @endcan
 
                     @can('kardex')
-                        <x-nav-link :href="__('#')" {{-- :active="request()->routeIs('#')" --}}>
+                        <x-nav-link :href="route('kardex.setQuery')" :active="request()->routeIs('kardex.setQuery')">
                             {{ __('Kardex') }}
                         </x-nav-link>
                     @endcan
@@ -227,7 +227,7 @@ new class extends Component
             @endcan
 
             @can('kardex')
-                <x-responsive-nav-link :href="__('#')" {{-- :active="request()->routeIs('#')" --}}>
+                <x-responsive-nav-link :href="route('kardex.setQuery')" :active="request()->routeIs('kardex.setQuery')">
                     {{ __('Kardex') }}
                 </x-responsive-nav-link>
             @endcan

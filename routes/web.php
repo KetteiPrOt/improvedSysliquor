@@ -6,6 +6,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\KardexController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,15 +55,21 @@ Route::middleware(['auth', 'permission:providers'])->controller(ProviderControll
     Route::get('/proveedores', 'index')->name('providers.index');
 });
 
-/* --- Information Input --- */
-Route::middleware(['auth', 'permission:purchases'])->controller(PurchaseController::class)->group(function () {
-    Route::get('/compras/crear', 'create')->name('purchases.create');
-    Route::post('/compras', 'store')->name('purchases.store');
+/* --- Kardex --- */
+Route::middleware(['auth', 'permission:kardex'])->controller(KardexController::class)->group(function () {
+    Route::get('/kardex/consulta', 'setQuery')->name('kardex.setQuery');
+    Route::get('/kardex', 'show')->name('kardex.show');
+    Route::get('/kardex/movimientos/{movement}', 'showMovement')->name('kardex.showMovement');
 });
 
 Route::middleware(['auth', 'permission:sales'])->controller(SalesController::class)->group(function () {
     Route::get('/ventas/crear', 'create')->name('sales.create');
     Route::post('/ventas', 'store')->name('sales.store');
+});
+
+Route::middleware(['auth', 'permission:purchases'])->controller(PurchaseController::class)->group(function () {
+    Route::get('/compras/crear', 'create')->name('purchases.create');
+    Route::post('/compras', 'store')->name('purchases.store');
 });
 
 require __DIR__.'/auth.php';
