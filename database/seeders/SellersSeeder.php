@@ -21,9 +21,12 @@ class SellersSeeder extends Seeder
         $depositName = Warehouse::$depositName;
         $liquorStoreName = Warehouse::$liquorStoreName;
         $sellersData = [
-            ['Super Admin', 'Administrador', 'sd.kettei@gmail.com', '12345678', $depositName],
-            ['Super Admin', 'Patricia Elizabeth Trávez Mero', 'patricia@gmail.com', '12345678', $depositName],
-            ['seller', 'Sra. Maira', 'maira@gmail.com', '12345678', $depositName]
+            ['Super Admin', 'Fernando Joel Mero Trávez', 'sd.kettei@gmail.com', 'Mtsk43*p', $depositName],
+            ['Super Admin', 'Patricia Elizabeth Trávez Mero', 'patricia@gmail.com', 'Mtsk43*p', $depositName],
+            ['Super Admin', 'Orley Fabian Mero Bailón', 'orley@gmail.com', 'Mtsk43*p', $depositName],
+            ['seller', 'Sra. Maira', 'sra.maira@gmail.com', 'Mtsk43*p', $depositName],
+            ['seller', 'Sr. Lenonardo', 'sr.leonardo@gmail.com', 'Mtsk43*p', $liquorStoreName],
+            ['seller', 'Sra. Edita', 'sr.edita@gmail.com', 'Mtsk43*p', $liquorStoreName],
         ];
         foreach($sellersData as $sellerData){
             $this->registerSeller($sellerData);
