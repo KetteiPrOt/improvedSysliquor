@@ -38,7 +38,7 @@ class UniqueProductTag implements ValidationRule, DataAwareRule
         $products = Product::all();
         foreach($products as $product){
             $sameTag = ($product->type_id == $this->data['type']) &&
-                       ($product->name == $value) &&
+                       ($product->name == strtoupper($value)) &&
                        ($product->presentation_id == $this->data['presentation']);
             if($sameTag){
                 $fail('El producto ya esta registrado');

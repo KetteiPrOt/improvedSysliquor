@@ -40,7 +40,7 @@ class ProductController extends Controller
         $validated = $request->validated();
         // Save product
         $product_id = Product::create([
-            'name' => $validated['name'],
+            'name' => strtoupper($validated['name']),
             'minimun_stock' => $validated['minimun_stock'],
             'type_id' => $validated['type'],
             'presentation_id' => $validated['presentation']

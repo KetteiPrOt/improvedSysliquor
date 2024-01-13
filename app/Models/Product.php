@@ -36,6 +36,7 @@ class Product extends Model
     }
 
     public static function searchByTag($search, $pagination = 25){
+        $search = strtoupper($search);
         $products = Product::join('types', 'products.type_id', '=', 'types.id')
                             ->join('presentations', 'products.presentation_id', '=', 'presentations.id')
                             ->select('products.*')

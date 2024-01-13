@@ -53,21 +53,10 @@ class SalesController extends Controller
         $lastBalance = Product::find($data['product_id'])
                                 ->movements()->orderBy('id', 'desc')->first()->balance;
         $movement = Movement::create($data);
-        $newUnitaryPrice = $this->averageWeighted($lastBalance, $movement);
         Balance::create([
             'amount' => $lastBalance->amount - $movement->amount,
-            'unitary_price' => $newUnitaryPrice,
+            'unitary_price' => $lastBalance->unitary_price,
             'movement_id' => $movement->id
         ]);
-    }
-
-    public function averageWeighted(Balance $balance, Movement $movement): int | float
-    {
-        $balanceTotalPrice = $balance->amount * $balance->unitary_price;
-        $movementTotalPrice = $movement->amount * $movement->unitary_price;
-        $summatoryTotalPrices = $balanceTotalPrice + $movementTotalPrice;
-        $sumatoryAmounts = $balance->amount + $movement->amount;
-        $unitaryPrice = $summatoryTotalPrices / $sumatoryAmounts;
-        return round($unitaryPrice, 2, PHP_ROUND_HALF_UP);
     }
 }
