@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\NotFinalConsumer;
 
-class StoreClientRequest extends FormRequest
+class StoreProviderRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,13 +14,12 @@ class StoreClientRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:75', 'unique:App\Models\Person,name', new NotFinalConsumer],
+            'name' => ['required', 'string', 'max:75', 'unique:App\Models\Person,name'],
             'phone_number' => ['nullable', 'string', 'size:10'],
             'email'=> ['nullable', 'string', 'max:320'],
-            'identification_card' => ['nullable', 'string', 'size:10', 'unique:App\Models\Client,identification_card'],
-            'ruc' => ['nullable', 'string', 'size:13', 'unique:App\Models\Client,ruc'],
-            'social_reason' => ['nullable', 'string', 'min:2', 'max:75'],
             'address'=> ['nullable', 'string', 'max:200'],
+            'ruc' => ['required', 'string', 'size:13', 'unique:App\Models\Provider,ruc'],
+            'social_reason' => ['required', 'string', 'min:2', 'max:75'],
         ];
     }
 
@@ -36,7 +34,6 @@ class StoreClientRequest extends FormRequest
             'name' => 'Nombre',
             'email' => 'Email',
             'phone_number' => 'Número de Teléfono',
-            'identification_card' => 'Cedula',
             'ruc' => 'RUC',
             'social_reason' => 'Razón Social',
             'address' => 'Direccón'

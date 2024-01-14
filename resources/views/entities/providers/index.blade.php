@@ -39,6 +39,15 @@
                     </form>
                     --}}
 
+                    <!-- New provider button -->
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+                        <div class="order-1 flex flex-col items-center sm:order-2">
+                            <x-secondary-link-button href="{{route('providers.create')}}" class="order-1 mb-3 sm:mb-0 sm:order-3">
+                                Agregar Proveedor
+                            </x-secondary-link-button>
+                        </div>
+                    </div>
+
                     <!-- Table -->
                     <table class="border-collapse table-auto w-full text-sm mb-6">
                         <thead>

@@ -53,6 +53,8 @@ Route::middleware(['auth', 'permission:clients'])->controller(ClientController::
 /* --- CRUD Providers --- */
 Route::middleware(['auth', 'permission:providers'])->controller(ProviderController::class)->group(function () {
     Route::get('/proveedores', 'index')->name('providers.index');
+    Route::get('/proveedores/crear', 'create')->name('providers.create');
+    Route::post('/proveedores', 'store')->name('providers.store');
 });
 
 /* --- Kardex --- */

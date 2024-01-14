@@ -47,9 +47,7 @@ class DatabaseSeeder extends Seeder
 
         // Register providers
         $providers = [
-            ['name' => 'Juan el Juri', 'ruc' => '1311111111111'],
-            ['name' => 'Casa Nova', 'ruc' => '1311111111112'],
-            ['name' => 'Desconocido', 'ruc' => '1311111111113'],          
+            ['name' => 'Desconocido', 'ruc' => '0000000000000'],          
         ];
         foreach($providers as $provider){
             $person = Person::create([

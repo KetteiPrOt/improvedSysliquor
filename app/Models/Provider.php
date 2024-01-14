@@ -12,6 +12,8 @@ class Provider extends Model
 
     public $timestamps = false;
 
+    protected $fillable = ['ruc', 'social_reason', 'person_id'];
+
     public function person(){
         return $this->belongsTo(Person::class);
     }
