@@ -26,7 +26,8 @@ class SellersSeeder extends Seeder
             ['Super Admin', 'Orley Fabian Mero Bailón', 'orley@gmail.com', 'SktUp3*a1', $depositName],
             ['seller', 'Sra. Maira', 'sra.maira@gmail.com', 'SktUp3*a1', $depositName],
             ['seller', 'Sr. Lenonardo', 'sr.leonardo@gmail.com', 'SktUp3*a1', $liquorStoreName],
-            ['seller', 'Sra. Edita', 'sr.edita@gmail.com', 'SktUp3*a1', $liquorStoreName],
+            ['seller', 'Sra. Edita', 'sra.edita@gmail.com', 'SktUp3*a1', $liquorStoreName],
+            ['seller', 'Sra. Gema', 'sra.gema@gmail.com', 'SktUp3*a1', $depositName],
         ];
         foreach($sellersData as $sellerData){
             $this->registerSeller($sellerData);
