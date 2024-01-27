@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\Movement;
 use App\Models\Balance;
+use App\Models\SalePrice;
 
 class SalesController extends Controller
 {
@@ -25,8 +26,9 @@ class SalesController extends Controller
         $invoiceId = $this->storeInvoice($validated);
         $movementsCount = count($validated['products']);
         for($i = 0; $i <  $movementsCount; $i++){
+            $salePrice = SalePrice::find($validated['sale_prices'][$i])->price;
             $data = [
-                'unitary_price' => $validated['sale_prices'][$i],
+                'unitary_price' => $salePrice,
                 'amount' => $validated['amounts'][$i],
                 'movement_type_id' => $validated['movement_types'][$i],
                 'product_id' => $validated['products'][$i],
