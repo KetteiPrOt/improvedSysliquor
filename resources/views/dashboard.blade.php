@@ -38,6 +38,7 @@
                         <p class="text-lg">Ventas</p>
                     </a>
                 @endcan
+                <p class="m-6">¡Hola Mundo!</p>
             </div>
         </div>
     </div>
