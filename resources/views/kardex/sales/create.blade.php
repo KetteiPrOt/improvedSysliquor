@@ -24,10 +24,6 @@
                             @endforeach
                         </x-select-input>
                         <x-input-error :messages="$errors->get('client')" />
-                        <!-- Date -->
-                        <x-input-label :value="__('Fecha')" />
-                        <x-date-input max="{{date('Y-m-d')}}" name="date" value="{{old('date', date('Y-m-d'))}}" required />
-                        <x-input-error :messages="$errors->get('date')" />
                         
                         <!-- Select Products -->
                         <livewire:sales.select-products :success="$success" />

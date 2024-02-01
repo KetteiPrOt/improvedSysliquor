@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\PastDate;
 use App\Rules\SameSize;
 use App\Rules\ProductSalePrice;
 use App\Rules\Products\HaveExistences;
@@ -21,7 +20,6 @@ class StoreSaleRequest extends FormRequest
     {
         return [
             'client' => ['required', 'integer', 'exists:clients,id'],
-            'date' => ['required', 'string', 'date_format:Y-m-d', new PastDate],
             'products' => ['required', 'array', 'min:1'],
             'products.*' => ['required', 'integer', 'exists:products,id'],
             'amounts' => ['required', 'array', 'min:1', new SameSize('products', 'Productos'), new HaveExistences],
@@ -42,7 +40,6 @@ class StoreSaleRequest extends FormRequest
     {
         return [
             'Client' => 'Cliente',
-            'date' => 'Fecha',
             'amounts' => 'Cantidades',
             'amounts.*' => 'Cantidad #:position',
             'products' => 'Producto',

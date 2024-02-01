@@ -44,7 +44,7 @@ class SalesController extends Controller
         $person = Client::find($data['client'])->person;
         $invoice = Invoice::create([
             'number' => '000000000000000',
-            'date' => $data['date'],
+            'date' => date('Y-m-d'),
             'user_id' => auth()->user()->id,
             'person_id' => $person->id
         ]);        
