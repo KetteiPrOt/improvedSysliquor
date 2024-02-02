@@ -8,9 +8,12 @@ use Livewire\Attributes\Js;
 use App\Models\Product;
 use App\Models\MovementCategory;
 use App\Models\MovementType;
+use Livewire\WithPagination;
 
 class SelectProducts extends Component
 {
+    use WithPagination;
+
     public $search = null;
 
     #[Locked]
