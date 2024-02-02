@@ -84,7 +84,7 @@
                     <!-- Products Pagination Links -->
                     @if($products)
                         @if($products->count() == 0)
-                            <p>No se encontraron productos...</p>
+                            <p class="text-red-400">No se encontraron productos...</p>
                         @else
                             {{ $products->onEachSide(1)->links() }}
                         @endif

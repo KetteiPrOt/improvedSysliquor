@@ -52,4 +52,4 @@
     </tbody>
 </table>
 <!-- Products Pagination Links -->
-{{ $products->onEachSide(1)->links() }}
+{{ $products->onEachSide(1)->links(data: ['scrollTo' => false]) }}

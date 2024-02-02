@@ -29,6 +29,8 @@ class KardexController extends Controller
                             ->join('invoices', 'movements.invoice_id', '=', 'invoices.id')
                             ->select('movements.*')
                             ->where('invoices.date', '<=', $validated['date_to'])
+                            ->where('invoices.date', '>=', $validated['date_from'])
+                            ->orderBy('id')
                             ->paginate(5);
         $urlParams = [
             'date_from' => $validated['date_from'],

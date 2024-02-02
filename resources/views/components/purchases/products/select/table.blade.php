@@ -39,7 +39,7 @@
         </tbody>
     </table>
     <!-- Products Pagination Links -->
-    {{ $products->onEachSide(1)->links() }}
+    {{ $products->onEachSide(1)->links(data: ['scrollTo' => false]) }}
 @else
-    <p>No se encontraron productos...</p>
+    <p class="text-red-400 mb-3">No se encontraron productos...</p>
 @endif

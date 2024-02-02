@@ -30,6 +30,9 @@ class SelectProducts extends Component
                          ->movementTypes()
                          ->where('name', '!=', MovementType::$initialInventoryName)->get();
         $saleType = MovementType::sale();
+        if(count($this->selectedProductsIds) > 0){
+            $this->dispatch('product-selected');
+        }
         return view('livewire.sales.select-products', [
             'products' => $products ?? null,
             'selectedProducts' => $selectedProducts,

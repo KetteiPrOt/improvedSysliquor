@@ -115,10 +115,34 @@
                 </td>
                 <td class="block lg:table-cell text-lg sm:text-sm text-center font-bold sm:font-medium border-b border-slate-100 dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
                     Total a pagar: $<span id="totalPricesSummation">???</span>
-                    <br>
-                    <x-sales.products.selected.reload-button />
                 </td>
             </tr>
         @endif
     </tbody>
 </table>
+
+@script
+<script>
+    $wire.on('product-selected', () => {
+        const calculateTotalPricesSummation = () => {
+            const totalPricesSummation = document.getElementById('totalPricesSummation'),
+                  productsCount = document.getElementById('productsCount').textContent;
+            
+            let summation = 0;
+            for(let i = 0; i < productsCount; i++){
+                summation += parseFloat(document.getElementById(`totalPrice${i}`).value);
+            }
+            totalPricesSummation.textContent = summation;
+        }
+
+        try{ setTimeout(calculateTotalPricesSummation, 100); }catch(e){}
+        try{ setTimeout(calculateTotalPricesSummation, 200); }catch(e){}
+        try{ setTimeout(calculateTotalPricesSummation, 300); }catch(e){}
+        try{ setTimeout(calculateTotalPricesSummation, 500); }catch(e){}
+        try{ setTimeout(calculateTotalPricesSummation, 750); }catch(e){}
+        try{ setTimeout(calculateTotalPricesSummation, 1000); }catch(e){}
+        try{ setTimeout(calculateTotalPricesSummation, 2000); }catch(e){}
+        try{ setTimeout(calculateTotalPricesSummation, 3000); }catch(e){}
+    });
+</script>
+@endscript

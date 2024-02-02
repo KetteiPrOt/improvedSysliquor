@@ -16,9 +16,21 @@
                     </p>
 
                     <p class="px-4 mb-4">
-                        <strong>Fecha Inicial:</strong> {{$date_from}}
+                        <strong>Fecha Inicial:</strong>
+                        {{
+                            date(
+                                'd/m/Y',
+                                strtotime($date_from)
+                            )
+                        }}
                         &nbsp;&nbsp;&nbsp; <br class="sm:hidden">
-                        <strong>Fecha Final:</strong> {{$date_to}}
+                        <strong>Fecha Final:</strong>
+                        {{
+                            date(
+                                'd/m/Y',
+                                strtotime($date_to)
+                            )
+                        }}
                     </p>
 
                     <!-- Normal Table -->
@@ -76,7 +88,12 @@
                                     <!-- Movement information -->
                                     <x-kardex.table.triple-cell :textleft="true">
                                         <x-slot name="first">
-                                            {{$movement->invoice->date}}
+                                            {{
+                                                date(
+                                                    'd/m/Y',
+                                                    strtotime($movement->invoice->date)
+                                                )
+                                            }}
                                         </x-slot>
                                         <x-slot name="second">
                                             {{$movement->invoice->person->name}}

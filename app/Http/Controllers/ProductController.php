@@ -19,7 +19,7 @@ class ProductController extends Controller
             $products = Product::searchByTag($search);
             $formBag['search'] = $search;
         } else {            
-            $products = null;
+            $products = Product::paginate(25);
             $formBag = null;
         }
         return view('entities.products.index', [

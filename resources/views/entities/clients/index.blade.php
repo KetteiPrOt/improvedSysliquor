@@ -75,7 +75,7 @@
                         @if($clients->count() > 0)
                             {{$clients->onEachSide(1)->links()}}
                         @else
-                            <p>No se encontraron clientes...</p>
+                            <p class="text-red-400">No se encontraron clientes...</p>
                         @endif
                     @else
                         <p>Busca un cliente...</p>

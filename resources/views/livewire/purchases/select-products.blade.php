@@ -8,7 +8,8 @@
         :initialinventorytype="$initialInventoryType"
     />
 
-    <x-text-input wire:model.live.debounce.250ms="search" placeholder="Buscar..." class="mb-3" />
+    <x-text-input wire:model.live.debounce.250ms="search" placeholder="Buscar..." class="mb-3" id="searchProductsInput" />
+
     @if($products)
         <x-purchases.products.select.table :products="$products" />
     @endif

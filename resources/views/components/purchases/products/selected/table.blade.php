@@ -78,4 +78,7 @@
             @endif
         </tbody>
     </table>
+    
+    <!-- Alternative search label -->
+    <x-input-label :value="__('Buscar productos')" for="searchProductsInput" />
 @endif
