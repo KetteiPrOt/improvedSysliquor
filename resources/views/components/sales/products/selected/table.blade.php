@@ -65,7 +65,7 @@
                                         .'Units'.$key.'Product'
                                     }}"
                                     value="{{$salePrice->id}}"
-                                >{{$salePrice->price}}</option>
+                                >${{$salePrice->price}}</option>
                             @endforeach
                         </x-select-input>
                     </td>
@@ -90,10 +90,14 @@
                     </td>
                     <td class="col-span-2 flex flex-col lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
                         <p class="block lg:hidden">Total</p>
-                        <x-number-input
-                            disabled id="{{'totalPrice'.$key}}"
-                            value="{{$product->salePrices[0]->price}}"
-                        />
+                        <div class="flex items-center">
+                            <span class="w-1/12 mr-1">$</span>
+                            <x-number-input
+                                disabled id="{{'totalPrice'.$key}}"
+                                value="{{$product->salePrices[0]->price}}"
+                                class="w-11/12"
+                            />
+                        </div>
                     </td>
                     <td class="col-span-4 flex flex-col items-center justify-center lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
                         <p class="block lg:hidden">Remover</p>
@@ -112,9 +116,15 @@
                 </td>
                 <td class="hidden lg:table-cell text-lg sm:text-sm text-center lg:text-left font-bold sm:font-medium border-b border-slate-100 dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
                     
+                </td>                
+                <td class="hidden lg:table-cell text-lg sm:text-sm text-center lg:text-left font-bold sm:font-medium border-b border-slate-100 dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
+                    
                 </td>
                 <td class="block lg:table-cell text-lg sm:text-sm text-center font-bold sm:font-medium border-b border-slate-100 dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
                     Total a pagar: $<span id="totalPricesSummation">???</span>
+                </td>
+                <td class="hidden lg:table-cell text-lg sm:text-sm text-center lg:text-left font-bold sm:font-medium border-b border-slate-100 dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
+                    
                 </td>
             </tr>
         @endif
@@ -132,7 +142,7 @@
             for(let i = 0; i < productsCount; i++){
                 summation += parseFloat(document.getElementById(`totalPrice${i}`).value);
             }
-            totalPricesSummation.textContent = summation;
+            totalPricesSummation.textContent = summation.toFixed(2);
         }
 
         try{ setTimeout(calculateTotalPricesSummation, 100); }catch(e){}

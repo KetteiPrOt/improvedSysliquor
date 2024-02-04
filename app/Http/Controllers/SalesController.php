@@ -26,9 +26,10 @@ class SalesController extends Controller
         $invoiceId = $this->storeInvoice($validated);
         $movementsCount = count($validated['products']);
         for($i = 0; $i <  $movementsCount; $i++){
-            $salePrice = SalePrice::find($validated['sale_prices'][$i])->price;
+            // This is the normal sale price
+            // $salePrice = SalePrice::find($validated['sale_prices'][$i])->price;
             $data = [
-                'unitary_price' => $salePrice,
+                // 'unitary_price' => $salePrice,
                 'amount' => $validated['amounts'][$i],
                 'movement_type_id' => $validated['movement_types'][$i],
                 'product_id' => $validated['products'][$i],
@@ -54,6 +55,7 @@ class SalesController extends Controller
     private function registerExpense(array $data){
         $lastBalance = Product::find($data['product_id'])
                                 ->movements()->orderBy('id', 'desc')->first()->balance;
+        $data['unitary_price'] = $lastBalance->unitary_price;
         $movement = Movement::create($data);
         Balance::create([
             'amount' => $lastBalance->amount - $movement->amount,

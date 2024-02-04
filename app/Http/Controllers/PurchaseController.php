@@ -125,7 +125,7 @@ class PurchaseController extends Controller
             'amount' => $lastBalance->amount + $movement->amount,
             'unitary_price' => $newUnitaryPrice,
             'movement_id' => $movement->id
-        ]);    
+        ]);
     }
 
     private function averageWeighted(Balance $balance, Movement $movement): int | float

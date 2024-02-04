@@ -122,12 +122,12 @@ class SelectProducts extends Component
             }
             const totalPrice = document.getElementById(`totalPrice${productKey}`);
             if(event.target.value){
-                totalPrice.value = event.target.value * unitaryPriceSelected.textContent;
+                let totalPriceValue = parseInt(event.target.value) 
+                                   * parseFloat(unitaryPriceSelected.textContent.slice(1));
+                totalPrice.value = totalPriceValue.toFixed(2)
             } else {
                 totalPrice.value = 0;
             }
-
-
             const totalPricesSummation = document.getElementById('totalPricesSummation'),
                   productsCount = document.getElementById('productsCount').textContent;
             
@@ -135,7 +135,7 @@ class SelectProducts extends Component
             for(let i = 0; i < productsCount; i++){
                 summation += parseFloat(document.getElementById(`totalPrice${i}`).value);
             }
-            totalPricesSummation.textContent = summation;
+            totalPricesSummation.textContent = summation.toFixed(2);
         JS;
     }
 
@@ -147,7 +147,7 @@ class SelectProducts extends Component
                   amount = document.getElementById(`amount${productKey}`).value,
                   unitaryPrice = event.target.selectedOptions[0].textContent;
             if(amount){
-                totalPriceInput.value = amount * unitaryPrice;
+                totalPriceInput.value = (amount * unitaryPrice).toFixed(2);
             } else {
                 totalPriceInput.value = 0;   
             }
@@ -159,7 +159,7 @@ class SelectProducts extends Component
             for(let i = 0; i < productsCount; i++){
                 summation += parseFloat(document.getElementById(`totalPrice${i}`).value);
             }
-            totalPricesSummation.textContent = summation;
+            totalPricesSummation.textContent = summation.toFixed(2);
         JS;
     }
 
@@ -173,7 +173,7 @@ class SelectProducts extends Component
             for(let i = 0; i < productsCount; i++){
                 summation += parseFloat(document.getElementById(`totalPrice${i}`).value);
             }
-            totalPricesSummation.textContent = summation;
+            totalPricesSummation.textContent = summation.toFixed(2);
         JS;
     }
 }

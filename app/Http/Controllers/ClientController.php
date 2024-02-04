@@ -18,7 +18,7 @@ class ClientController extends Controller
                             ->whereRaw("persons.name LIKE ?", ["%$search%"])->paginate(25);
             $formBag['search'] = $search;
         } else {
-            $clients = null;
+            $clients = Client::paginate(25);
             $formBag = null;
         }
         return view('entities.clients.index', [

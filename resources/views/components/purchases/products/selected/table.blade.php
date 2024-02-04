@@ -34,21 +34,24 @@
                             >
                             {{$product->productTag()}}
                         </td>
-                        <td class="col-span-2 flex flex-col lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
+                        <td class="col-span-2 flex flex-col lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pl-4 text-slate-500 dark:text-slate-400">
                             <p class="block lg:hidden">Cantidad</p>
                             <x-number-input
                                 name="amounts[{{$key}}]" min="1" max="65000" required 
                                 value="{{old('amounts.'.$key)}}"
                             />
                         </td>
-                        <td class="col-span-2 flex flex-col lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
+                        <td class="col-span-2 flex flex-col lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pl-4 text-slate-500 dark:text-slate-400">
                             <p class="block lg:hidden">P. Unitario</p>
-                            <x-number-input
-                                name="unitary_prices[{{$key}}]" min="0.01" step="0.01" max="999" required 
-                                value="{{'unitary_prices.'.$key}}"
-                            />
+                            <div class="flex items-center">
+                                <span class="w-1/12 mr-1">$</span>
+                                <x-number-input
+                                    name="unitary_prices[{{$key}}]" min="0.01" step="0.01" max="999" required 
+                                    value="{{'unitary_prices.'.$key}}" class="w-11/12"
+                                />
+                            </div>
                         </td>
-                        <td class="col-span-3 flex flex-col lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
+                        <td class="col-span-3 flex flex-col lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pl-4 text-slate-500 dark:text-slate-400">
                             <p class="block lg:hidden">Tipo de Movimiento</p>
                             @if($product->started_inventory)
                                 <x-select-input name="movement_types[]" class="block" required>
@@ -67,7 +70,7 @@
                                 </x-select-input>
                             @endif
                         </td>
-                        <td class="col-span-1 flex flex-col items-center justify-center lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
+                        <td class="col-span-1 flex flex-col items-center justify-center lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pl-4 text-slate-500 dark:text-slate-400">
                             <p class="block lg:hidden">Remover</p>
                             <x-secondary-button wire:click="dropProduct({{$product->id}})" class="text-red-600 hover:bg-red-600 hover:text-white">
                                 X

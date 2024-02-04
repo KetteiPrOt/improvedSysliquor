@@ -38,7 +38,6 @@
                         <p class="text-lg">Ventas</p>
                     </a>
                 @endcan
-                <p class="m-6 text-green-400">¡Hola Mundo!</p>
             </div>
         </div>
     </div>
