@@ -78,9 +78,47 @@ class SelectProducts extends Component
     }
 
     #[Js]
-    public function syncInputs(){
+    public function syncCountAndTotal(){
+        return <<<'JS'
+            $wire.manageUnitaryPriceOptions();
+            
+            const productKey = event.target.id.charAt(6);
+            
+            let unitaryPriceSelected;
+            const unitaryPrices = [
+                document.getElementById(
+                    `salePrice1Units${productKey}Product`
+                ),
+                document.getElementById(
+                    `salePrice6Units${productKey}Product`
+                ),
+                document.getElementById(
+                    `salePrice12Units${productKey}Product`
+                )
+            ];
+            for(let unitaryPrice of unitaryPrices){
+                if(unitaryPrice.selected){
+                    unitaryPriceSelected = unitaryPrice;
+                    break;
+                }
+            }
+            const totalPrice = document.getElementById(`totalPrice${productKey}`);
+            if(event.target.value){
+                let totalPriceValue = parseInt(event.target.value) 
+                                   * parseFloat(unitaryPriceSelected.textContent.slice(1));
+                totalPrice.value = totalPriceValue.toFixed(2)
+            } else {
+                totalPrice.value = 0;
+            }
+            $wire.calculateTotalPricesSummation();
+        JS;
+    }
+
+    #[Js]
+    public function manageUnitaryPriceOptions(){
         return <<<'JS'
             const productKey = event.target.id.charAt(6);
+
             const unitaryPriceOneUnit = document.getElementById(
                 `salePrice1Units${productKey}Product`
             );
@@ -90,6 +128,7 @@ class SelectProducts extends Component
             const unitaryPriceTwelveUnits = document.getElementById(
                 `salePrice12Units${productKey}Product`
             );
+
             if(event.target.value < 6){
                 unitaryPriceSixUnits.hidden = true;
                 unitaryPriceSixUnits.selected = false;
@@ -106,60 +145,23 @@ class SelectProducts extends Component
             } else {
                 unitaryPriceTwelveUnits.hidden = false;
             }
-
-            
-            let unitaryPriceSelected;
-            const unitaryPrices = [
-                unitaryPriceOneUnit,
-                unitaryPriceSixUnits,
-                unitaryPriceTwelveUnits
-            ];
-            for(let unitaryPrice of unitaryPrices){
-                if(unitaryPrice.selected){
-                    unitaryPriceSelected = unitaryPrice;
-                    break;
-                }
-            }
-            const totalPrice = document.getElementById(`totalPrice${productKey}`);
-            if(event.target.value){
-                let totalPriceValue = parseInt(event.target.value) 
-                                   * parseFloat(unitaryPriceSelected.textContent.slice(1));
-                totalPrice.value = totalPriceValue.toFixed(2)
-            } else {
-                totalPrice.value = 0;
-            }
-            const totalPricesSummation = document.getElementById('totalPricesSummation'),
-                  productsCount = document.getElementById('productsCount').textContent;
-            
-            let summation = 0;
-            for(let i = 0; i < productsCount; i++){
-                summation += parseFloat(document.getElementById(`totalPrice${i}`).value);
-            }
-            totalPricesSummation.textContent = summation.toFixed(2);
         JS;
     }
 
     #[Js]
-    public function updateTotalPrice(){
+    public function syncUnitaryPriceAndTotal(){
         return <<<'JS'
             const productKey = event.target.id.charAt(13),
                   totalPriceInput = document.getElementById(`totalPrice${productKey}`),
-                  amount = document.getElementById(`amount${productKey}`).value,
-                  unitaryPrice = event.target.selectedOptions[0].textContent;
+                  amount = parseInt(document.getElementById(`amount${productKey}`).value),
+                  unitaryPrice = parseFloat(event.target.selectedOptions[0].textContent.slice(1));
             if(amount){
-                totalPriceInput.value = (amount * unitaryPrice).toFixed(2);
+                totalPriceInput.value = parseFloat((amount * unitaryPrice).toFixed(2));
             } else {
                 totalPriceInput.value = 0;   
             }
 
-            const totalPricesSummation = document.getElementById('totalPricesSummation'),
-                  productsCount = document.getElementById('productsCount').textContent;
-            
-            let summation = 0;
-            for(let i = 0; i < productsCount; i++){
-                summation += parseFloat(document.getElementById(`totalPrice${i}`).value);
-            }
-            totalPricesSummation.textContent = summation.toFixed(2);
+            $wire.calculateTotalPricesSummation();
         JS;
     }
 

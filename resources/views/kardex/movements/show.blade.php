@@ -30,9 +30,11 @@
                         <x-card-item :tag="__('Usuario Responsable')">
                             {{$movement->invoice->user->name}}
                         </x-card-item>
-                        <x-card-item :tag="__('Factura')">
-                            {{$movement->invoice->number}}
-                        </x-card-item>
+                        @if($movement->invoice->number)
+                            <x-card-item :tag="__('Factura')">
+                                {{$movement->invoice->showInvoiceNumber()}}
+                            </x-card-item>
+                        @endif
                         <!-- Detailed Information -->
                         <x-card-title>
                             Detalles
@@ -44,10 +46,24 @@
                             {{$movement->amount}}
                         </x-card-item>   
                         <x-card-item :tag="__('Precio Unitario')">
-                            {{$movement->unitary_price}}
+                            {{
+                                '$'
+                                . number_format($movement->unitary_price, 2, '.', ' ')
+                            }}
                         </x-card-item> 
                         <x-card-item :tag="__('Precio Total')">
-                            {{round($movement->amount * $movement->unitary_price, 2, PHP_ROUND_HALF_UP)}}
+                            @php
+                                $totalPrice = round(
+                                    $movement->amount
+                                    * $movement->unitary_price,
+                                    2,
+                                    PHP_ROUND_HALF_UP
+                                )
+                            @endphp
+                            {{
+                                '$'
+                                . number_format($totalPrice, 2, '.', ' ')
+                            }}
                         </x-card-item>   
                     </x-card-frame>
 

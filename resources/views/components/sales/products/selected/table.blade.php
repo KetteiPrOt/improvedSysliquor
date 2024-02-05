@@ -4,6 +4,7 @@
 @endphp
 
 <span id="productsCount" class="hidden">{{count($selectedProducts)}}</span>
+
 <table class="border-collapse table-auto w-full text-sm mb-6">
     <thead>
         <tr>
@@ -46,14 +47,14 @@
                             }}" required 
                             value="{{old('amounts.'.$key, 1)}}"
                             id="amount{{$key}}" class="without-arrows-number-input"
-                            wire:keyup="syncInputs()"
+                            wire:keyup="syncCountAndTotal()"
                         />
                     </td>
                     <td class="col-span-2 flex flex-col lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">
                         <p class="block lg:hidden">P. Unitario</p>
                         <x-select-input
                             name="sale_prices[]" class="block" required
-                            wire:change="updateTotalPrice()"
+                            wire:change="syncUnitaryPriceAndTotal()"
                             id="unitaryPrices{{$key}}"
                         >
                             @foreach($product->salePrices as $salePriceKey => $salePrice)
@@ -130,29 +131,3 @@
         @endif
     </tbody>
 </table>
-
-@script
-<script>
-    $wire.on('product-selected', () => {
-        const calculateTotalPricesSummation = () => {
-            const totalPricesSummation = document.getElementById('totalPricesSummation'),
-                  productsCount = document.getElementById('productsCount').textContent;
-            
-            let summation = 0;
-            for(let i = 0; i < productsCount; i++){
-                summation += parseFloat(document.getElementById(`totalPrice${i}`).value);
-            }
-            totalPricesSummation.textContent = summation.toFixed(2);
-        }
-
-        try{ setTimeout(calculateTotalPricesSummation, 100); }catch(e){}
-        try{ setTimeout(calculateTotalPricesSummation, 200); }catch(e){}
-        try{ setTimeout(calculateTotalPricesSummation, 300); }catch(e){}
-        try{ setTimeout(calculateTotalPricesSummation, 500); }catch(e){}
-        try{ setTimeout(calculateTotalPricesSummation, 750); }catch(e){}
-        try{ setTimeout(calculateTotalPricesSummation, 1000); }catch(e){}
-        try{ setTimeout(calculateTotalPricesSummation, 2000); }catch(e){}
-        try{ setTimeout(calculateTotalPricesSummation, 3000); }catch(e){}
-    });
-</script>
-@endscript

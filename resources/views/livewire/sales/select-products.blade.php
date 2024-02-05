@@ -30,4 +30,16 @@
             <p class="text-red-400 mb-3">No se encontraron productos...</p>
         @endif
     @endif
+
+    @script
+    <script>
+        $wire.on('product-selected', () => {            
+            try{ setTimeout($wire.calculateTotalPricesSummation, 100); }catch(e){}
+            try{ setTimeout($wire.calculateTotalPricesSummation, 500); }catch(e){}
+            try{ setTimeout($wire.calculateTotalPricesSummation, 750); }catch(e){}
+            try{ setTimeout($wire.calculateTotalPricesSummation, 1000); }catch(e){}
+            try{ setTimeout($wire.calculateTotalPricesSummation, 3000); }catch(e){}
+        });
+    </script>
+    @endscript
 </div>

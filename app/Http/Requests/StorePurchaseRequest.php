@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Models\MovementType;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\PastDate;
 use App\Rules\SameSize;
 use App\Rules\IncomeType;
 use App\Rules\Products\StartedInventory;
 use App\Rules\UniqueInvoiceNumber;
+use Illuminate\Validation\Rule;
 
 class StorePurchaseRequest extends FormRequest
 {
@@ -18,12 +20,11 @@ class StorePurchaseRequest extends FormRequest
      */
     public function rules(): array
     {
+        $invoiceRequired = !$this->allMovementsAreInitialInventory(
+            $this->get('movement_types')
+        );
         return [
             'provider' => ['required', 'integer', 'exists:providers,id'],
-            'invoice_number' => ['required', 'array:0,1,2', 'size:3', new UniqueInvoiceNumber],
-            'invoice_number.0' => ['required', 'integer', 'min:1', 'max:999'],
-            'invoice_number.1' => ['required', 'integer', 'min:1', 'max:999'],
-            'invoice_number.2' => ['required', 'integer', 'min:1', 'max:999999999'],
             'date' => ['required', 'string', 'date_format:Y-m-d', new PastDate],
             'products' => ['required', 'array', 'min:1'],
             'products.*' => ['required', 'integer', 'exists:products,id'],
@@ -31,8 +32,26 @@ class StorePurchaseRequest extends FormRequest
             'amounts.*' => ['required', 'integer', 'min:1', 'max:65000'],
             'unitary_prices' => ['required', 'array', 'min:1', new SameSize('products', 'Productos')],
             'unitary_prices.*' => ['required', 'numeric', 'decimal:0,2', 'min:0.01', 'max:999'],
-            'movement_types' => ['required', 'array', 'min:1', new SameSize('products', 'Productos'), new StartedInventory],
-            'movement_types.*' => ['required', 'integer', new IncomeType]
+            'movement_types' => [
+                'required', 'array', 'min:1', new SameSize('products', 'Productos'), new StartedInventory
+            ],
+            'movement_types.*' => ['required', 'integer', new IncomeType],
+            'invoice_number' => [
+                'bail', Rule::excludeIf(!$invoiceRequired), Rule::requiredIf($invoiceRequired),
+                'array:0,1,2', 'size:3', new UniqueInvoiceNumber
+            ],
+            'invoice_number.0' => [
+                'bail', Rule::excludeIf(!$invoiceRequired), Rule::requiredIf($invoiceRequired),
+                'integer', 'min:1', 'max:999'
+            ],
+            'invoice_number.1' => [
+                'bail', Rule::excludeIf(!$invoiceRequired), Rule::requiredIf($invoiceRequired),
+                'integer', 'min:1', 'max:999'
+            ],
+            'invoice_number.2' => [
+                'bail', Rule::excludeIf(!$invoiceRequired), Rule::requiredIf($invoiceRequired),
+                'integer', 'min:1', 'max:999999999'
+            ],
         ];
     }
 
@@ -46,9 +65,9 @@ class StorePurchaseRequest extends FormRequest
         return [
             'provider' => 'Proveedor',
             'invoice_number' => 'Número de factura',
-            'invoice_number.0' => 'Número de factura',
-            'invoice_number.1' => 'Número de factura',
-            'invoice_number.2' => 'Número de factura',
+            'invoice_number.0' => 'Número de factura #:position',
+            'invoice_number.1' => 'Número de factura #:position',
+            'invoice_number.2' => 'Número de factura #:position',
             'date' => 'Fecha',
             'products' => 'Producto',
             'products.*' => 'Producto #:position',
@@ -66,5 +85,20 @@ class StorePurchaseRequest extends FormRequest
         return [
             'invoice_number.*.integer' => 'Excluye los ceros a la izquierda del número de factura.'
         ];
+    }
+
+    public function allMovementsAreInitialInventory(
+        $movementTypesIds
+    ): bool
+    {
+        $initialInventoryId = MovementType::initialInventory()->id;
+        $theyAre = true;
+        foreach($movementTypesIds as $movementTypesId){
+            if($movementTypesId != $initialInventoryId){
+                $theyAre = false;
+                break;
+            }
+        }
+        return $theyAre;
     }
 }

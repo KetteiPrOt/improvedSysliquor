@@ -31,15 +31,15 @@
                             Excluye los ceros a la izquierda
                         </p>
                         <x-number-input
-                            name="invoice_number[]" min="1" max="999" required class="invoice-number-input" id="invoiceNumberFirstInput"
+                            name="invoice_number[]" min="1" max="999" class="invoice-number-input" id="invoiceNumberFirstInput"
                             value="{{old('invoice_number.0')}}" placeholder="999"
                         /> <p class="inline">-</p>
                         <x-number-input
-                            name="invoice_number[]" min="1" max="999" required class="invoice-number-input" id="invoiceNumberSecondInput"
+                            name="invoice_number[]" min="1" max="999" class="invoice-number-input" id="invoiceNumberSecondInput"
                             value="{{old('invoice_number.1')}}" placeholder="999"
                         /> <p class="inline">-</p>
                         <x-number-input
-                            name="invoice_number[]" min="1" max="999999999" required class="invoice-number-input w-32" id="invoiceNumberThirdInput"
+                            name="invoice_number[]" min="1" max="999999999" class="invoice-number-input w-32" id="invoiceNumberThirdInput"
                             value="{{old('invoice_number.2')}}" placeholder="999999999"
                         /> 
                         <x-input-error :messages="$errors->get('invoice_number')" />
