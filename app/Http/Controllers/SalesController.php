@@ -11,7 +11,7 @@ use App\Models\Movement;
 use App\Models\Balance;
 use App\Models\SalePrice;
 
-class SalesController extends Controller
+class SalesController extends MovementController
 {
     public function create(Request $request){
         return view('kardex.sales.create', [
@@ -53,13 +53,25 @@ class SalesController extends Controller
     }
 
     private function registerExpense(array $data){
+        // Create Movement
         $lastBalance = Product::find($data['product_id'])
                                 ->movements()->orderBy('id', 'desc')->first()->balance;
         $data['unitary_price'] = $lastBalance->unitary_price;
+        $totalPrice = round(
+            $data['amount'] * $data['unitary_price'],
+            2,
+            PHP_ROUND_HALF_UP
+        );
+        $data['total_price'] = $totalPrice;
         $movement = Movement::create($data);
+        // Create Balance
+        $amount = $lastBalance->amount - $movement->amount;
+        $totalPrice = $lastBalance->total_price - $totalPrice;
+        $newUnitaryPrice = $this->averageWeighted($amount, $totalPrice);
         Balance::create([
-            'amount' => $lastBalance->amount - $movement->amount,
-            'unitary_price' => $lastBalance->unitary_price,
+            'amount' => $amount,
+            'unitary_price' => $newUnitaryPrice,
+            'total_price' => $totalPrice,
             'movement_id' => $movement->id
         ]);
     }

@@ -8,17 +8,6 @@
         {{'$' . $movement->unitary_price}}
     </x-slot>
     <x-slot name="third">
-        @php
-            $unitaryPrice = round(
-                $movement->amount
-                * $movement->unitary_price,
-                2,
-                PHP_ROUND_HALF_UP
-            )
-        @endphp
-        {{
-            '$'
-            . number_format($unitaryPrice, 2, '.', ' ')
-        }}
+        {{'$' . $movement->total_price}}
     </x-slot>
 </x-kardex.table.triple-cell>

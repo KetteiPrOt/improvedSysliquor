@@ -12,7 +12,7 @@ use App\Models\Movement;
 use App\Models\Balance;
 use App\Models\Product;
 
-class PurchaseController extends Controller
+class PurchaseController extends MovementController
 {
     public function create(Request $request){
         $incomeCategory = MovementCategory::income();
@@ -67,10 +67,17 @@ class PurchaseController extends Controller
     }
 
     private function startInventory(array $data){
+        $totalPrice = round(
+            $data['amount'] * $data['unitary_price'],
+            2,
+            PHP_ROUND_HALF_UP
+        );
+        $data['total_price'] = $totalPrice;
         $movement = Movement::create($data);
         Balance::create([
             'amount' => $data['amount'],
             'unitary_price' => $data['unitary_price'],
+            'total_price' => $totalPrice,
             'movement_id' => $movement->id
         ]);
         $product = Product::find($data['product_id']);
@@ -79,24 +86,25 @@ class PurchaseController extends Controller
     }
 
     private function pushIncome(array $data){
+        // Create Movement
         $product = Product::find($data['product_id']);
         $lastBalance = $product->movements()->orderBy('id', 'desc')->first()->balance;
+        $totalPrice = round(
+            $data['amount'] * $data['unitary_price'],
+            2,
+            PHP_ROUND_HALF_UP
+        );
+        $data['total_price'] = $totalPrice;
         $movement = Movement::create($data);
-        $newUnitaryPrice = $this->averageWeighted($lastBalance, $movement);
+        // Create Balance
+        $amount = $lastBalance->amount + $movement->amount;
+        $totalPrice = $lastBalance->totalPrice() + $movement->totalPrice();
+        $newUnitaryPrice = $this->averageWeighted($amount, $totalPrice);
         Balance::create([
-            'amount' => $lastBalance->amount + $movement->amount,
+            'amount' => $amount,
             'unitary_price' => $newUnitaryPrice,
-            'movement_id' => $movement->id
+            'total_price' => $totalPrice,
+            'movement_id' => $movement->id,
         ]);
-    }
-
-    private function averageWeighted(Balance $balance, Movement $movement): int | float
-    {
-        $balanceTotalPrice = $balance->amount * $balance->unitary_price;
-        $movementTotalPrice = $movement->amount * $movement->unitary_price;
-        $summatoryTotalPrices = $balanceTotalPrice + $movementTotalPrice;
-        $sumatoryAmounts = $balance->amount + $movement->amount;
-        $unitaryPrice = $summatoryTotalPrices / $sumatoryAmounts;
-        return round($unitaryPrice, 2, PHP_ROUND_HALF_UP);
     }
 }

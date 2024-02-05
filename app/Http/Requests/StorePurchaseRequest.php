@@ -93,11 +93,15 @@ class StorePurchaseRequest extends FormRequest
     {
         $initialInventoryId = MovementType::initialInventory()->id;
         $theyAre = true;
-        foreach($movementTypesIds as $movementTypesId){
-            if($movementTypesId != $initialInventoryId){
-                $theyAre = false;
-                break;
+        if(is_array($movementTypesIds)){
+            foreach($movementTypesIds as $movementTypesId){
+                if($movementTypesId != $initialInventoryId){
+                    $theyAre = false;
+                    break;
+                }
             }
+        } else {
+            $theyAre = false;
         }
         return $theyAre;
     }

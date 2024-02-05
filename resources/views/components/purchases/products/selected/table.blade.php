@@ -5,6 +5,8 @@
     $initialInventoryType = $initialinventorytype;
 @endphp
 
+<span class="hidden" id="productsCount">{{count($products)}}</span>
+<span class="hidden" id="initialInventoryid">{{$initialInventoryType->id}}</span>
 @if(count($products) > 0)
     <table class="border-collapse table-auto w-full text-sm mb-6">
         <thead>
@@ -54,7 +56,11 @@
                         <td class="col-span-3 flex flex-col lg:table-cell border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pl-4 text-slate-500 dark:text-slate-400">
                             <p class="block lg:hidden">Tipo de Movimiento</p>
                             @if($product->started_inventory)
-                                <x-select-input name="movement_types[]" class="block" required>
+                                <x-select-input
+                                    name="movement_types[]"
+                                    id="movementType{{$key}}"
+                                    class="block" required
+                                >
                                     @foreach($movementTypes as $movementType)
                                         <option 
                                             value="{{$movementType->id}}"
@@ -63,7 +69,7 @@
                                     @endforeach
                                 </x-select-input>
                             @else
-                                <x-select-input name="movement_types[]" class="block" required>
+                                <x-select-input id="movementType{{$key}}" name="movement_types[]" class="block" required>
                                     <option 
                                         value="{{$initialInventoryType->id}}" selected
                                     >{{$initialInventoryType->name}}</option>

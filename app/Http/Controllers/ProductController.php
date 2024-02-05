@@ -10,6 +10,7 @@ use App\Models\Presentation;
 use App\Models\SalePrice;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Invoice;
 
 class ProductController extends Controller
 {
@@ -87,7 +88,24 @@ class ProductController extends Controller
     }
 
     public function destroy(Product $product){
+        $invoiceIds = $product->movements()
+                            ->rightJoin('invoices', 'invoices.id', '=', 'movements.invoice_id')
+                            ->select('invoices.id')
+                            ->pluck('id')
+                            ->toArray();
+        $invoices = Invoice::whereIn('id', $invoiceIds)->get();
         $product->delete();
+        $this->purgeEmptyInvoices($invoices);
         return redirect()->route('products.index');
+    }
+
+    private function purgeEmptyInvoices($invoices): void
+    {
+        foreach($invoices as $invoice){
+            $movementsCount = $invoice->movements->count();
+            if(!($movementsCount > 0)){
+                $invoice->delete();
+            }
+        }
     }
 }

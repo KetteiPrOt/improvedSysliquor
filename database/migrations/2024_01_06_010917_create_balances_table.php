@@ -15,6 +15,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->mediumInteger('amount')->unsigned();
             $table->decimal('unitary_price', 5, 2, true)->unsigned();
+            $table->decimal('total_price', 8, 2, true)->unsigned();
 
             // Adding foreign keys
             $table->unsignedBigInteger('movement_id')->unique();

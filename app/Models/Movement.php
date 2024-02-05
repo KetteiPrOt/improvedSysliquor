@@ -9,7 +9,7 @@ class Movement extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['unitary_price', 'amount', 'movement_type_id', 'product_id', 'invoice_id'];
+    protected $fillable = ['unitary_price', 'amount', 'total_price', 'movement_type_id', 'product_id', 'invoice_id'];
 
     public $timestamps = false;
 
@@ -27,5 +27,10 @@ class Movement extends Model
 
     public function balance(){
         return $this->hasOne(Balance::class);
+    }
+
+    public function totalPrice()
+    {
+        return $this->amount * $this->unitary_price;
     }
 }
