@@ -51,7 +51,11 @@
                                             }}
                                         </x-slot>
                                         <x-slot name="second">
-                                            {{$movement->invoice->person->name}}
+                                            {{
+                                                $movement->invoice->person
+                                                ? $movement->invoice->person->name
+                                                : 'Desconocido'
+                                            }}
                                         </x-slot>
                                         <x-slot name="third">
                                             {{$movement->movementType->name}}

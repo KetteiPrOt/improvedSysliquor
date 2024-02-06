@@ -51,42 +51,42 @@
 
                     <div class="mt-3 flex justify-center sm:justify-start">
                         @if($client->id != $finalConsumer->id)
+                            <!-- Edit button -->
                             <x-secondary-link-button href="{{route('clients.edit', $client->id)}}" class="mr-3">
                                 Editar
                             </x-secondary-link-button>
+                            
+                            <!-- Delete button -->
+                            <x-danger-button
+                                x-data=""
+                                x-on:click.prevent="$dispatch('open-modal', 'confirm-product-deletion')"
+                            >{{ __('Eliminar') }}</x-danger-button>
+
+                            <x-modal name="confirm-product-deletion" focusable>
+                                <form method="post" action="#" class="p-6">
+                                    @csrf
+                                    @method('delete')
+
+                                    <h2 class="text-lg font-medium text-gray-900">
+                                        {{ __('¿Estás seguro que deseas eliminar el cliente?') }}
+                                    </h2>
+
+                                    <p class="mt-1 text-sm text-gray-600">
+                                        {{ __('Una vez elimines el cliente se establecerá "desconocido" en todos los movimientos asociados, ten mucho cuidado porque podrías perder información MUY IMPORTANTE.') }}
+                                    </p>
+
+                                    <div class="mt-6 flex justify-end">
+                                        <x-secondary-button x-on:click="$dispatch('close')">
+                                            {{ __('Cancel') }}
+                                        </x-secondary-button>
+
+                                        <x-danger-button class="ml-3">
+                                            {{ __('Eliminar Cliente') }}
+                                        </x-danger-button>
+                                    </div>
+                                </form>
+                            </x-modal>
                         @endif
-
-                        {{-- <!-- Start Delete button -->
-                        <x-danger-button
-                            x-data=""
-                            x-on:click.prevent="$dispatch('open-modal', 'confirm-product-deletion')"
-                        >{{ __('Eliminar') }}</x-danger-button>
-
-                        <x-modal name="confirm-product-deletion" focusable>
-                            <form method="post" action="#" class="p-6">
-                                @csrf
-                                @method('delete')
-
-                                <h2 class="text-lg font-medium text-gray-900">
-                                    {{ __('¿Estás seguro que deseas eliminar el cliente?') }}
-                                </h2>
-
-                                <p class="mt-1 text-sm text-gray-600">
-                                    {{ __('Una vez elimines el cliente estableceremos al consumidor final (cliente por defecto) en todos los registros asociados de movimientos y stock, ten mucho cuidado porque podrías perder información MUY IMPORTANTE.') }}
-                                </p>
-
-                                <div class="mt-6 flex justify-end">
-                                    <x-secondary-button x-on:click="$dispatch('close')">
-                                        {{ __('Cancel') }}
-                                    </x-secondary-button>
-
-                                    <x-danger-button class="ml-3">
-                                        {{ __('Eliminar Cliente') }}
-                                    </x-danger-button>
-                                </div>
-                            </form>
-                        </x-modal>
-                        <!-- End Delete Button --> --}}
                     </div>
 
                 </article>

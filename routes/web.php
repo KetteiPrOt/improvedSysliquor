@@ -7,6 +7,7 @@ use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\KardexController;
+use App\Http\Controllers\SellerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,7 @@ Route::middleware(['auth', 'permission:clients'])->controller(ClientController::
     Route::get('/clientes/{client}', 'show')->name('clients.show');
     Route::get('/clientes/{client}/editar', 'edit')->name('clients.edit');
     Route::put('/clientes/{client}', 'update')->name('clients.update');
+    Route::delete('/clientes/{client}', 'destroy')->name('clients.destroy');
 });
 
 /* --- CRUD Providers --- */
@@ -55,6 +57,15 @@ Route::middleware(['auth', 'permission:providers'])->controller(ProviderControll
     Route::get('/proveedores', 'index')->name('providers.index');
     Route::get('/proveedores/crear', 'create')->name('providers.create');
     Route::post('/proveedores', 'store')->name('providers.store');
+    Route::get('/proveedores/{provider}', 'show')->name('providers.show');
+    Route::get('/proveedores/{provider}/editar', 'edit')->name('providers.edit');
+    Route::put('/proveedores/{provider}', 'update')->name('providers.update');
+    Route::delete('/proveedores/{provider}', 'destroy')->name('providers.destroy');
+});
+
+/* --- CRUD Sellers --- */
+Route::middleware(['auth', 'permission:sellers'])->controller(SellerController::class)->group(function () {
+    Route::get('/vendedores', 'index')->name('sellers.index');
 });
 
 /* --- Kardex --- */

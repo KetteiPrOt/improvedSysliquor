@@ -15,8 +15,8 @@
                         @csrf
                         <!-- Providers -->
                         <x-input-label :value="__('Proveedor')" />
-                        <x-select-input name="provider" class="block" required>
-                            <option value="">Selecciona</option>
+                        <x-select-input name="provider" class="block">
+                            <option value="">Desconocido</option>
                             @foreach($providers as $provider)
                                 <option 
                                     value="{{$provider->id}}"

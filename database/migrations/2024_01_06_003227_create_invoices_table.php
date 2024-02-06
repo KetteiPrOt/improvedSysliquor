@@ -23,11 +23,11 @@ return new class extends Migration
                   ->on('users')
                   ->restrictOnDelete()->restrictOnUpdate();
                 
-            $table->unsignedMediumInteger('person_id');
+            $table->unsignedMediumInteger('person_id')->nullable();
             $table->foreign('person_id', 'invoice_person')
                   ->references('id')
                   ->on('persons')
-                  ->restrictOnDelete()->restrictOnUpdate();
+                  ->nullOnDelete()->cascadeOnUpdate();
 
             $table->timestamps();
         });

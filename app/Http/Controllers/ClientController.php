@@ -11,7 +11,8 @@ use App\Http\Requests\UpdateClientRequest;
 class ClientController extends Controller
 {
     public function index(Request $request){
-        $search = $request->get('search');
+        $search = $request->get('search') ?? null;
+        $search = is_string($search) ? $search : null;
         if($search){
             $clients = Client::join('persons', 'clients.person_id', '=', 'persons.id')
                             ->select('clients.*')
@@ -78,5 +79,13 @@ class ClientController extends Controller
             ]);
         }
         return redirect()->route('clients.show', $client->id);
+    }
+
+    public function destroy(Client $client){
+        if($client->id != Client::finalConsumer()->id){
+            $person = $client->person;
+            $person->delete();
+        }
+        return redirect()->route('clients.index');
     }
 }

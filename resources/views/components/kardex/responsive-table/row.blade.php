@@ -61,7 +61,11 @@
                 @else
                     <strong>Cliente: </strong>
                 @endif
-                {{$movement->invoice->person->name}}
+                {{
+                    $movement->invoice->person
+                    ? $movement->invoice->person->name
+                    : 'Desconocido'
+                }}
             </p>
 
             <!-- Body -->

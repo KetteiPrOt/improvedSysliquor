@@ -45,21 +45,6 @@ class DatabaseSeeder extends Seeder
             'person_id' => $person->id
         ]);
 
-        // Register providers
-        $providers = [
-            ['name' => 'Desconocido', 'ruc' => '0000000000000'],          
-        ];
-        foreach($providers as $provider){
-            $person = Person::create([
-                'name' => $provider['name'],
-            ]);
-            Provider::create([
-                'ruc' => $provider['ruc'],
-                'social_reason' => $provider['name'],
-                'person_id' => $person->id
-            ]);
-        }
-
         // Register warehouses
         $warehouses = [Warehouse::$depositName, Warehouse::$liquorStoreName];
         foreach($warehouses as $warehouse){

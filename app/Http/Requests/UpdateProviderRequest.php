@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateClientRequest extends FormRequest
+class UpdateProviderRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,24 +14,23 @@ class UpdateClientRequest extends FormRequest
      */
     public function rules(): array
     {
-        $client = $this->route('client');
+        $provider = $this->route('provider');
         return [
             'name' => [
                 'required', 'string', 'max:75',
-                Rule::unique('persons', 'name')->ignore($client->person->id)
+                Rule::unique('persons', 'name')->ignore($provider->person->id)
             ],
             'phone_number' => ['nullable', 'string', 'size:10'],
             'email'=> ['nullable', 'string', 'max:320'],
-            'identification_card' => [
-                'nullable', 'string', 'size:10',
-                Rule::unique('clients', 'identification_card')->ignore($client->id)
-            ],
-            'ruc' => [
-                'nullable', 'string', 'size:13',
-                Rule::unique('clients', 'ruc')->ignore($client->id)
-            ],
-            'social_reason' => ['nullable', 'string', 'max:75'],
             'address'=> ['nullable', 'string', 'max:200'],
+            'ruc' => [
+                'required', 'string', 'size:13',
+                Rule::unique('providers', 'ruc')->ignore($provider->id)
+            ],
+            'social_reason' => [
+                'required', 'string', 'min:2', 'max:75',
+                Rule::unique('providers', 'social_reason')->ignore($provider->id)
+            ],
         ];
     }
 
@@ -45,7 +44,7 @@ class UpdateClientRequest extends FormRequest
         return [
             'name' => 'Nombre',
             'email' => 'Email',
-            'identification_card' => 'Cedula',
+            'phone_number' => 'Número de Teléfono',
             'ruc' => 'RUC',
             'social_reason' => 'Razón Social',
             'address' => 'Direccón'

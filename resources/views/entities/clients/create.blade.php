@@ -14,7 +14,9 @@
                     <form action="{{route('clients.store')}}" method="POST">
                         @csrf
                         <!-- Name -->
-                        <x-input-label for="name" :value="__('Nombre')" />
+                        <x-input-label for="name">
+                            Nombre <span class="text-red-400">*</span>
+                        </x-input-label>
                         <x-text-input id="name" name="name" required value="{{old('name')}}" required maxlength="75" placeholder="..." />
                         <x-input-error :messages="$errors->get('name')" />
                         <!-- Phone -->
@@ -50,7 +52,7 @@
                         </x-primary-button>
 
                         @if($success && !$errors->any())
-                            <p class="text-green-400">El cliente fue agregado correctamente!</p>
+                            <p class="text-green-400">¡El cliente fue agregado!</p>
                         @endif
                     </form>
 

@@ -73,16 +73,17 @@ new class extends Component
                                 </x-slot>
                             </x-dropdown>
                         </div>
-                    @endif
-                    @if($canRegisterPurchases && !$canRegisterSales)
-                        <x-nav-link :href="route('purchases.create')" :active="request()->routeIs('purchases.create')">
-                            {{ __('Compras') }}
-                        </x-nav-link>
-                    @endif
-                    @if($canRegisterSales && !$canRegisterPurchases)
-                        <x-nav-link :href="route('sales.create')" :active="request()->routeIs('sales.create')">
-                            {{ __('Ventas') }}
-                        </x-nav-link>
+                    @else
+                        @if($canRegisterPurchases)
+                            <x-nav-link :href="route('purchases.create')" :active="request()->routeIs('purchases.create')">
+                                {{ __('Compras') }}
+                            </x-nav-link>
+                        @endif
+                        @if($canRegisterSales)
+                            <x-nav-link :href="route('sales.create')" :active="request()->routeIs('sales.create')">
+                                {{ __('Ventas') }}
+                            </x-nav-link>
+                        @endif
                     @endif
 
                     <!-- Admin Actors -->
@@ -117,7 +118,7 @@ new class extends Component
                                         </x-dropdown-link>
                                     @endcan
                                     @can('sellers')
-                                        <x-dropdown-link :href="__('#')">
+                                        <x-dropdown-link :href="route('sellers.index')">
                                             {{ __('Vendedores') }}
                                         </x-dropdown-link>
                                     @endcan
@@ -252,16 +253,17 @@ new class extends Component
                         </x-slot>
                     </x-dropdown>
                 </div>
-            @endif
-            @if($canRegisterPurchases && !$canRegisterSales)
-                <x-responsive-nav-link :href="route('purchases.create')" :active="request()->routeIs('purchases.create')">
-                    {{ __('Compras') }}
-                </x-responsive-nav-link>
-            @endif
-            @if($canRegisterSales && !$canRegisterPurchases)
-                <x-responsive-nav-link :href="route('sales.create')" :active="request()->routeIs('sales.create')">
-                    {{ __('Ventas') }}
-                </x-responsive-nav-link>
+            @else
+                @if($canRegisterPurchases)
+                    <x-responsive-nav-link :href="route('purchases.create')" :active="request()->routeIs('purchases.create')">
+                        {{ __('Compras') }}
+                    </x-responsive-nav-link>
+                @endif
+                @if($canRegisterSales)
+                    <x-responsive-nav-link :href="route('sales.create')" :active="request()->routeIs('sales.create')">
+                        {{ __('Ventas') }}
+                    </x-responsive-nav-link>
+                @endif
             @endif
 
             <!-- Admin Actors -->
@@ -292,7 +294,7 @@ new class extends Component
                                 </x-dropdown-link>
                             @endcan
                             @can('sellers')
-                                <x-dropdown-link :href="__('#')">
+                                <x-dropdown-link :href="route('sellers.index')">
                                     {{ __('Vendedores') }}
                                 </x-dropdown-link>
                             @endcan

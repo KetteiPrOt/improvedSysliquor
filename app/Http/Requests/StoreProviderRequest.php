@@ -19,7 +19,10 @@ class StoreProviderRequest extends FormRequest
             'email'=> ['nullable', 'string', 'max:320'],
             'address'=> ['nullable', 'string', 'max:200'],
             'ruc' => ['required', 'string', 'size:13', 'unique:App\Models\Provider,ruc'],
-            'social_reason' => ['required', 'string', 'min:2', 'max:75'],
+            'social_reason' => [
+                'required', 'string', 'min:2', 'max:75',
+                'unique:App\Models\Provider,social_reason'
+            ],
         ];
     }
 

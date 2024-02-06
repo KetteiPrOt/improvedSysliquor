@@ -24,7 +24,7 @@ class StorePurchaseRequest extends FormRequest
             $this->get('movement_types')
         );
         return [
-            'provider' => ['required', 'integer', 'exists:providers,id'],
+            'provider' => ['nullable', 'integer', 'exists:providers,id'],
             'date' => ['required', 'string', 'date_format:Y-m-d', new PastDate],
             'products' => ['required', 'array', 'min:1'],
             'products.*' => ['required', 'integer', 'exists:products,id'],

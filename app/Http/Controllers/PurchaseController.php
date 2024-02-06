@@ -48,12 +48,16 @@ class PurchaseController extends MovementController
         } else {
             $number = null;
         }
-        $person = Provider::find($data['provider'])->person;
+        if(isset($data['provider'])){
+            $personId = Provider::find($data['provider'])->person->id;
+        } else {
+            $personId = null;
+        }
         $invoice = Invoice::create([
             'number' => $number,
             'date' => $data['date'],
             'user_id' => auth()->user()->id,
-            'person_id' => $person->id
+            'person_id' => $personId
         ]);        
         return $invoice->id;
     }
