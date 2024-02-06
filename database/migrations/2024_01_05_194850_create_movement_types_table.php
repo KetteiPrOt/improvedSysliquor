@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreign('movement_category_id', 'movement_category_movement_type')
                   ->references('id')
                   ->on('movement_categories')
-                  ->restrictOnDelete()->restrictOnUpdate();;
+                  ->restrictOnDelete()->restrictOnUpdate();
         });
     }
 

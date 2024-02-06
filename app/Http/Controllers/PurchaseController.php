@@ -57,7 +57,8 @@ class PurchaseController extends MovementController
             'number' => $number,
             'date' => $data['date'],
             'user_id' => auth()->user()->id,
-            'person_id' => $personId
+            'person_id' => $personId,
+            'movement_category_id' => MovementCategory::income()->id
         ]);        
         return $invoice->id;
     }

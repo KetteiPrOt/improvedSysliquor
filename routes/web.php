@@ -78,6 +78,10 @@ Route::middleware(['auth', 'permission:kardex'])->controller(KardexController::c
 Route::middleware(['auth', 'permission:sales'])->controller(SalesController::class)->group(function () {
     Route::get('/ventas/crear', 'create')->name('sales.create');
     Route::post('/ventas', 'store')->name('sales.store');
+    Route::get('/ventas/{sale}', 'show')->name('sales.show');
+    Route::get('/ventas/{movement}/editar', 'edit')->name('sales.edit');
+    Route::put('/ventas/{movement}', 'update')->name('sales.update');
+    Route::delete('/ventas/{movement}', 'destroy')->name('sales.destroy');
 });
 
 Route::middleware(['auth', 'permission:purchases'])->controller(PurchaseController::class)->group(function () {

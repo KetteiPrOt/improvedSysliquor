@@ -51,4 +51,17 @@ class User extends Authenticatable
     public function invoices(){
         return $this->hasMany(Invoice::class);
     }
+
+    public function lastSale(): Invoice
+    {
+        $lastSaleInvoice = auth()->user()
+                            ->invoices()
+                            ->where(
+                                'movement_category_id',
+                                MovementCategory::expense()->id
+                            )
+                            ->orderBy('id', 'desc')
+                            ->first();
+        return $lastSaleInvoice;
+    }
 }

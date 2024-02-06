@@ -13,17 +13,30 @@
                     <!-- Create form -->
                     <form action="{{route('sales.store')}}" method="POST">
                         @csrf
-                        <!-- Clients -->
-                        <x-input-label :value="__('Cliente')" />
-                        <x-select-input name="client" class="block" required>
-                            @foreach($clients as $client)
-                                <option 
-                                    value="{{$client->id}}"
-                                    @selected(old('client', $finalConsumer->id) == $client->id)
-                                >{{$client->person->name}}</option>
-                            @endforeach
-                        </x-select-input>
-                        <x-input-error :messages="$errors->get('client')" />
+                        <div class="flex flex-col sm:flex-row">
+                            <div class="order-2 sm:order-1 w-full sm:w-1/2">
+                                <!-- Clients -->
+                                <x-input-label :value="__('Cliente')" />
+                                <x-select-input name="client" class="block" required>
+                                    @foreach($clients as $client)
+                                        <option 
+                                            value="{{$client->id}}"
+                                            @selected(old('client', $finalConsumer->id) == $client->id)
+                                        >{{$client->person->name}}</option>
+                                    @endforeach
+                                </x-select-input>
+                                <x-input-error :messages="$errors->get('client')" />
+                            </div>
+                            @if($lastSale)
+                                <div class="mb-6 sm:mb-0 justify-center order-1 sm:order-2 w-full sm:w-1/2 flex sm:justify-end items-start">
+                                    <x-secondary-link-button
+                                        :href="route('sales.show', $lastSale->id)"
+                                    >
+                                        Ver Ultima Venta
+                                    </x-secondary-link-button>
+                                </div>
+                            @endif
+                        </div>
                         
                         <!-- Select Products -->
                         <livewire:sales.select-products :success="$success" />

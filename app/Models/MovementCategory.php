@@ -29,4 +29,8 @@ class MovementCategory extends Model
     public function movementTypes(){
         return $this->hasMany(MovementType::class);
     }
+
+    public function invoices(){
+        return $this->hasMany(Invoice::class);
+    }
 }

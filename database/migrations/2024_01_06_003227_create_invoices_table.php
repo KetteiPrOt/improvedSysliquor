@@ -29,6 +29,12 @@ return new class extends Migration
                   ->on('persons')
                   ->nullOnDelete()->cascadeOnUpdate();
 
+            $table->unsignedTinyInteger('movement_category_id');
+            $table->foreign('movement_category_id', 'invoice_movement_category')
+                  ->references('id')
+                  ->on('movement_categories')
+                  ->restrictOnDelete()->restrictOnUpdate();
+
             $table->timestamps();
         });
     }

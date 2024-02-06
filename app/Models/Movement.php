@@ -33,4 +33,13 @@ class Movement extends Model
     {
         return $this->amount * $this->unitary_price;
     }
+
+    public function isLast(): bool
+    {
+        $last = $this->product
+                     ->movements()
+                     ->orderBy('id', 'desc')
+                     ->first();
+        return $this->id === $last->id;
+    }
 }

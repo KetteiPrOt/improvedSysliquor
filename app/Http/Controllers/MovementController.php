@@ -8,7 +8,11 @@ class MovementController extends Controller
 {
     protected function averageWeighted($amount, $totalPrice): int | float
     {
-        $unitaryPrice = $totalPrice / $amount;
+        if($amount > 0){
+            $unitaryPrice = $totalPrice / $amount;
+        } else {
+            $unitaryPrice = $totalPrice / 0.000000000000000000000001;
+        }
         return round($unitaryPrice, 2, PHP_ROUND_HALF_UP);
     }
 }
