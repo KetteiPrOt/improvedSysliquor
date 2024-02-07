@@ -52,7 +52,7 @@ class User extends Authenticatable
         return $this->hasMany(Invoice::class);
     }
 
-    public function lastSale(): Invoice
+    public function lastSale(): Invoice|null
     {
         $lastSaleInvoice = auth()->user()
                             ->invoices()
