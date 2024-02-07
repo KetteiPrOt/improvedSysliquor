@@ -36,22 +36,10 @@ class StorePurchaseRequest extends FormRequest
                 'required', 'array', 'min:1', new SameSize('products', 'Productos'), new StartedInventory
             ],
             'movement_types.*' => ['required', 'integer', new IncomeType],
-            'invoice_number' => [
-                'bail', Rule::excludeIf(!$invoiceRequired), Rule::requiredIf($invoiceRequired),
-                'array:0,1,2', 'size:3', new UniqueInvoiceNumber
-            ],
-            'invoice_number.0' => [
-                'bail', Rule::excludeIf(!$invoiceRequired), Rule::requiredIf($invoiceRequired),
-                'integer', 'min:1', 'max:999'
-            ],
-            'invoice_number.1' => [
-                'bail', Rule::excludeIf(!$invoiceRequired), Rule::requiredIf($invoiceRequired),
-                'integer', 'min:1', 'max:999'
-            ],
-            'invoice_number.2' => [
-                'bail', Rule::excludeIf(!$invoiceRequired), Rule::requiredIf($invoiceRequired),
-                'integer', 'min:1', 'max:999999999'
-            ],
+            'invoice_number' => $this->invoiceNumbersRules($invoiceRequired),
+            'invoice_number.0' => $this->invoiceNumberRules($invoiceRequired, 3),
+            'invoice_number.1' => $this->invoiceNumberRules($invoiceRequired, 3),
+            'invoice_number.2' => $this->invoiceNumberRules($invoiceRequired, 9),
         ];
     }
 
@@ -87,7 +75,7 @@ class StorePurchaseRequest extends FormRequest
         ];
     }
 
-    public function allMovementsAreInitialInventory(
+    private function allMovementsAreInitialInventory(
         $movementTypesIds
     ): bool
     {
@@ -104,5 +92,34 @@ class StorePurchaseRequest extends FormRequest
             $theyAre = false;
         }
         return $theyAre;
+    }
+
+    private function invoiceNumbersRules(bool $invoiceRequired): array
+    {
+        if($invoiceRequired){
+            return [
+                'bail', 'required',
+                'array:0,1,2', 'size:3', new UniqueInvoiceNumber
+            ];
+        } else {
+            return [
+                'bail', 'nullable',
+                'array:0,1,2', 'size:3', new UniqueInvoiceNumber
+            ];
+        }
+    }
+
+    private function invoiceNumberRules(bool $invoiceRequired, int $length): array
+    {
+        $length = $length == 3 ? 'max:999' : 'max:999999999';
+        if($invoiceRequired){
+            return [
+                'bail', 'required', 'integer', 'min:1', $length
+            ];
+        } else {
+            return [
+                'bail', 'nullable', 'integer', 'min:1', $length
+            ];
+        }
     }
 }

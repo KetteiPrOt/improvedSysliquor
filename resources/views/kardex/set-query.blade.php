@@ -84,7 +84,7 @@
 
                         <!-- Date from -->
                         <x-input-label for="dateFrom" :value="__('Desde')" class="mt-6" />
-                        <x-date-input max="{{date('Y-m-d', strtotime('-1 day'))}}" id="dateFrom" name="date_from" value="{{old('date_from', date( 'Y-m-d', strtotime('-1 month')))}}" required />
+                        <x-date-input max="{{date('Y-m-d', strtotime('-1 month'))}}" id="dateFrom" name="date_from" value="{{old('date_from', date( 'Y-m-d', strtotime('-1 month')))}}" required />
                         <x-input-error :messages="$errors->get('date_from')" />
                         <!-- Date to -->
                         <x-input-label for="dateTo" :value="__('Hasta')" class="mt-6" />

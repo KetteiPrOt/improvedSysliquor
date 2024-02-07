@@ -152,20 +152,36 @@
                         @endforeach
                     </x-kardex.responsive-table>
 
-                    <!-- Delete last movement button -->
-                    {{-- @can('pop movement')
-                        @if($movements->currentPage() == $movements->lastPage())
-                            <form action="{{route('kardex.popMovement')}}" method="POST" class="px-4 mb-6 flex justify-center xl:justify-normal">
+                    @if($movements->currentPage() == $movements->lastPage())
+                        <!-- Start Delete button -->
+                        <x-danger-button
+                            class="m-6"
+                            x-data=""
+                            x-on:click.prevent="$dispatch('open-modal', 'confirm-movement-deletion')"
+                        >Eliminar Movimiento</x-danger-button>
+
+                        <x-modal name="confirm-movement-deletion" focusable>
+                            <form method="post" action="{{route('kardex.popMovement', $product->id)}}" class="p-6">
                                 @csrf
                                 @method('delete')
-                                <input hidden type="number" name="product" value="{{$product->id}}">
-                                <input hidden type="date" name="date" value="{{$date}}">
-                                <x-danger-button>
-                                    Eliminar Movimiento
-                                </x-danger-button>
+
+                                <h2 class="text-lg font-medium text-gray-900">
+                                    {{ __('¿Desea eliminar el ultimo movimiento?') }}
+                                </h2>
+
+                                <div class="mt-6 flex justify-end">
+                                    <x-secondary-button x-on:click="$dispatch('close')">
+                                        {{ __('Cancel') }}
+                                    </x-secondary-button>
+
+                                    <x-danger-button class="ml-3">
+                                        {{ __('Eliminar') }}
+                                    </x-danger-button>
+                                </div>
                             </form>
-                        @endif
-                    @endcan --}}
+                        </x-modal>
+                        <!-- End Delete Button -->
+                    @endif
 
                     <!-- Pagination Links -->
                     <div class="px-4">

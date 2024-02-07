@@ -68,4 +68,31 @@ class KardexController extends Controller
             'movement' => $movement
         ]);
     }
+
+    public function popMovement(Product $product){
+        $lastMovement = $product->movements()->orderBy('id', 'desc')->first();
+        if($lastMovement){
+            $invoice = $lastMovement->invoice;
+            $lastMovement->delete();
+            $this->purgeEmptyInvoice($invoice); 
+        }
+        if($product->movements->count() == 0){
+            $product->started_inventory = false;
+            $product->save();
+            return redirect()->route('kardex.setQuery');
+        } else {
+            return redirect()->route('kardex.show', [
+                'date_from' => date('Y-m-d', strtotime('-1 month')),
+                'date_to' => date('Y-m-d'),
+                'product' => $product->id
+            ]);
+        }
+    }
+
+    private function purgeEmptyInvoice($invoice): void
+    {
+        if($invoice->movements->count() == 0){
+            $invoice->delete();
+        }
+    }
 }

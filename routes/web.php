@@ -73,6 +73,7 @@ Route::middleware(['auth', 'permission:kardex'])->controller(KardexController::c
     Route::get('/kardex/consulta', 'setQuery')->name('kardex.setQuery');
     Route::get('/kardex', 'show')->name('kardex.show');
     Route::get('/kardex/movimientos/{movement}', 'showMovement')->name('kardex.showMovement');
+    Route::delete('/kardex/movimientos/{product}', 'popMovement')->name('kardex.popMovement');
 });
 
 Route::middleware(['auth', 'permission:sales'])->controller(SalesController::class)->group(function () {

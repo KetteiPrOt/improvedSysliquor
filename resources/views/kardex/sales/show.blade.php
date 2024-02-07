@@ -21,7 +21,7 @@
                     </p>
 
                     <p class="px-4 mb-4">
-                        <strong>Movimientos:</strong>
+                        <strong>Transacciones</strong>
                     </p>
 
                     <!-- Primary Table -->

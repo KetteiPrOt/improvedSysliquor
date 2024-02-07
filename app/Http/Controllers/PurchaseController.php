@@ -43,10 +43,14 @@ class PurchaseController extends MovementController
 
     private function storeInvoice(array $data): int
     {
-        if(isset($data['invoice_number'])){
-            $number = Invoice::constructInvoiceNumber($data['invoice_number']);
-        } else {
+        if(
+            is_null($data['invoice_number'][0])
+            || is_null($data['invoice_number'][1])
+            || is_null($data['invoice_number'][2])
+        ){
             $number = null;
+        } else {
+            $number = Invoice::constructInvoiceNumber($data['invoice_number']);
         }
         if(isset($data['provider'])){
             $personId = Provider::find($data['provider'])->person->id;

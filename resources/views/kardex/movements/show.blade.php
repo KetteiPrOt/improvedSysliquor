@@ -16,10 +16,15 @@
                             Información General
                         </x-card-title>                 
                         <x-card-item :tag="__('Fecha')">
-                            {{$movement->invoice->date}}
+                            {{
+                                date(
+                                    'd/m/Y',
+                                    strtotime($movement->invoice->date)
+                                )
+                            }}
                         </x-card-item>              
                         <x-card-item :tag="__('Cliente/Proveedor')">
-                            {{$movement->invoice->person->name}}
+                            {{$movement->invoice->person?->name ?? "Desconocido"}}
                         </x-card-item>                 
                         <x-card-item :tag="__('Tipo')">
                             {{
@@ -27,7 +32,7 @@
                                 ' (' . $movement->movementType->movementCategory->name . ')'
                             }}
                         </x-card-item>
-                        <x-card-item :tag="__('Usuario Responsable')">
+                        <x-card-item :tag="__('Usuario')">
                             {{$movement->invoice->user->name}}
                         </x-card-item>
                         @if($movement->invoice->number)

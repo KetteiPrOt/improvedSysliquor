@@ -122,18 +122,7 @@ class SalesController extends MovementController
 
     public function update(UpdateSaleRequest $request, Movement $movement){
         $data = $request->validated();
-        $validUpdate = false;
-        $lastSale = auth()->user()->lastSale();
-        foreach($lastSale->movements as $validMovement){
-            if(
-                ($movement->id === $validMovement->id)
-                && ($movement->isLast())
-            ){
-                $validUpdate = true;
-                break;
-            }
-        }
-        if($validUpdate){
+        if($this->validSaleOperation($movement)){
             // This is the normal sale price
             // $data['sale_price']
 
@@ -169,32 +158,34 @@ class SalesController extends MovementController
     }
 
     public function destroy(Movement $movement){
-        $validDestroy = false;
+        if($this->validSaleOperation($movement)){
+            $invoice = $movement->invoice;
+            $movement->delete();
+            $this->purgeEmptyInvoice($invoice);  
+        }
+        return redirect()->route('sales.create');
+    }
+
+    private function purgeEmptyInvoice($invoice): void
+    {
+        if($invoice->movements->count() == 0){
+            $invoice->delete();
+        }
+    }
+
+    private function validSaleOperation(Movement $movement): bool
+    {
+        $valid = false;
         $lastSale = auth()->user()->lastSale();
         foreach($lastSale->movements as $validMovement){
             if(
                 ($movement->id === $validMovement->id)
                 && ($movement->isLast())
             ){
-                $validDestroy = true;
+                $valid = true;
                 break;
             }
         }
-        if($validDestroy){
-            $invoice = $movement->invoice;
-            $movement->delete();
-            $this->purgeEmptyInvoice($invoice);
-            return redirect()->route('sales.show', $invoice->id);
-        } else {
-            return redirect()->route('sales.create');
-        }
-    }
-
-    private function purgeEmptyInvoice($invoice): void
-    {
-        $movementsCount = $invoice->movements->count();
-        if(!($movementsCount > 0)){
-            $invoice->delete();
-        }
+        return $valid;
     }
 }
