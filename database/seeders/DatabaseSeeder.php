@@ -28,13 +28,23 @@ class DatabaseSeeder extends Seeder
         }
 
         // Register types of products
-        $types = ['WHISKY', 'VINO', 'RON', 'AGUARDIENTE', 'TEQUILA', 'COCKTAIL'];
+        $types = [
+            'WHISKY',
+            'VINO',
+            'RON',
+            'AGUARDIENTE',
+            'TEQUILA',
+            'COCKTAIL',
+            'ESPUMANTE',
+            'SANGRIA',
+            'VODKA'
+        ];
         foreach($types as $type){
             Type::create(['name' => $type]);
         }
 
         // Register presentation of products
-        $presentations = [200, 375, 750, 1000, 1500];
+        $presentations = [200, 375, 750, 1000, 1500, 600, 700];
         foreach($presentations as $presentation){
             Presentation::create(['content' => $presentation]);
         }
@@ -80,5 +90,8 @@ class DatabaseSeeder extends Seeder
                 'movement_category_id' => $egressCategory->id
             ]);
         }
+
+        // Register Products
+        $this->call([ProductsSeeder::class]);
     }
 }
