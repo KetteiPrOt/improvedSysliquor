@@ -10,6 +10,8 @@ use App\Models\MovementType;
 use App\Models\Product;
 use App\Models\SalePrice;
 use App\Models\User;
+use App\Models\Warehouse;
+use App\Models\WarehousesExistence;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -46,6 +48,8 @@ class ProductsSeeder extends Seeder
         $types = $this->types;
         $presentations = $this->presentations;
         $products = $this->defineProducts();
+        $depositId = Warehouse::deposit()->id;
+        $liquorStoreId = Warehouse::liquorStore()->id;
 
         foreach($products as $product){
             // Register Product
@@ -71,11 +75,21 @@ class ProductsSeeder extends Seeder
                 ]);
             }
             // Register initial inventory
-            $this->registerInitialInventory($product);
+            $this->registerInitialInventory(
+                $product,
+                $liquorStoreId
+            );
+            $this->registerPurchase(
+                $product,
+                $depositId
+            );
         }
     }
 
-    public function registerInitialInventory(Product $product): void
+    public function registerInitialInventory(
+        Product $product,
+        int $liquorStoreId
+    ): void
     {
         // Store Invoice
         $userId = User::where('name', 'Fernando Joel Mero Trávez')->first()->id;
@@ -85,12 +99,13 @@ class ProductsSeeder extends Seeder
             'date' => date('Y-m-d'),
             'user_id' => $userId,
             'person_id' => null,
-            'movement_category_id' => $movementCategoryId
-        ]);  
+            'movement_category_id' => $movementCategoryId,
+            'warehouse_id' => $liquorStoreId
+        ]);
 
         // Start Inventory
         $initialInventoryId = MovementType::initialInventory()->id;
-        $amount_input = 200;
+        $amount_input = 100;
         $unitary_price_input = 10.00;
         $totalPrice = round(
             $amount_input * $unitary_price_input,
@@ -116,6 +131,85 @@ class ProductsSeeder extends Seeder
         $product = Product::find($product->id);
         $product->started_inventory = true;
         $product->save();
+
+        // Create Warehouses Existence
+        WarehousesExistence::create([
+            'amount' => $data['amount'],
+            'product_id' => $data['product_id'],
+            'warehouse_id' => $liquorStoreId
+        ]);
+    }
+
+    public function registerPurchase(
+        Product $product,
+        int $depositId
+    ): void
+    {
+        // Store Invoice
+        $userId = User::where('name', 'Fernando Joel Mero Trávez')->first()->id;
+        $movementCategoryId = MovementCategory::income()->id;
+        $invoice = Invoice::create([
+            'number' => null,
+            'date' => date('Y-m-d'),
+            'user_id' => $userId,
+            'person_id' => null,
+            'movement_category_id' => $movementCategoryId,
+            'warehouse_id' => $depositId
+        ]);
+        // Create Movement
+        $data = [
+            'product_id' => $product->id,
+            'amount' => 100,
+            'unitary_price' => 10.00,
+            'movement_type_id' => MovementType::purchase()->id,
+            'invoice_id' => $invoice->id
+        ];
+        $lastBalance = $product->movements()->orderBy('id', 'desc')->first()->balance;
+        $totalPrice = round(
+            $data['amount'] * $data['unitary_price'],
+            2,
+            PHP_ROUND_HALF_UP
+        );
+        $data['total_price'] = $totalPrice;
+        $movement = Movement::create($data);
+        // Create Balance
+        $amount = $lastBalance->amount + $movement->amount;
+        $totalPrice = $lastBalance->totalPrice() + $movement->totalPrice();
+        $newUnitaryPrice = $this->averageWeighted($amount, $totalPrice);
+        Balance::create([
+            'amount' => $amount,
+            'unitary_price' => $newUnitaryPrice,
+            'total_price' => $totalPrice,
+            'movement_id' => $movement->id,
+        ]);
+        // Warehouses Existence
+        $warehousesExistence = WarehousesExistence::where('product_id', $data['product_id'])
+                ->where('warehouse_id', $depositId)
+                ->first();
+        if($warehousesExistence){
+            // Update Warehouses Existence
+            $oldAmount = $warehousesExistence->amount;
+            $warehousesExistence->update([
+                'amount' => $oldAmount + $data['amount']
+            ]);
+        } else {
+            // Create Warehouses Existence
+            WarehousesExistence::create([
+                'amount' => $data['amount'],
+                'product_id' => $data['product_id'],
+                'warehouse_id' => $depositId
+            ]);
+        }
+    }
+
+    protected function averageWeighted($amount, $totalPrice): int | float
+    {
+        if($amount > 0){
+            $unitaryPrice = $totalPrice / $amount;
+        } else {
+            $unitaryPrice = $totalPrice / 0.00000000001;
+        }
+        return round($unitaryPrice, 2, PHP_ROUND_HALF_UP);
     }
 
     private function defineProducts(): array

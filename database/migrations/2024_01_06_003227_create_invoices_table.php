@@ -35,6 +35,12 @@ return new class extends Migration
                   ->on('movement_categories')
                   ->restrictOnDelete()->restrictOnUpdate();
 
+            $table->unsignedTinyInteger('warehouse_id');
+            $table->foreign('warehouse_id', 'invoice_warehouse')
+                ->references('id')
+                ->on('warehouses')
+                ->restrictOnDelete()->restrictOnUpdate();
+
             $table->timestamps();
         });
     }

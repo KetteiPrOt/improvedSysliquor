@@ -25,7 +25,6 @@ class SalesController extends MovementController
         $lastSale = Auth::user()->lastSale();
         return view('kardex.sales.create', [
             'clients' => Client::all(),
-            'finalConsumer' => Client::finalConsumer(),
             'success' => $request->get('success') ?? null,
             'lastSale' => $lastSale,
             'warehouse' => Warehouse::find(
@@ -47,27 +46,29 @@ class SalesController extends MovementController
                 'movement_type_id' => $validated['movement_types'][$i],
                 'product_id' => $validated['products'][$i],
                 'invoice_id' => $invoiceId,
-                'warehouse_id' => $validated['warehouse'],
             ];
-            $this->registerExpense($data);
+            $this->registerExpense($data, $validated['warehouse']);
         }
         return redirect()->route('sales.create', ['success' => true]);
     }
 
     private function storeInvoice(array $data): int
     {
-        $person = Client::find($data['client'])->person;
+        $personId =  isset($data['client'])
+                    ? Client::find($data['client'])->person->id
+                    : null;
         $invoice = Invoice::create([
             'number' => null,
             'date' => date('Y-m-d'),
             'user_id' => auth()->user()->id,
-            'person_id' => $person->id,
-            'movement_category_id' => MovementCategory::expense()->id
+            'person_id' => $personId,
+            'movement_category_id' => MovementCategory::expense()->id,
+            'warehouse_id' => $data['warehouse']
         ]);        
         return $invoice->id;
     }
 
-    private function registerExpense(array $data): void
+    private function registerExpense(array $data, int $warehouseId): void
     {
         // Create Movement
         $lastBalance = Product::find($data['product_id'])
@@ -92,7 +93,7 @@ class SalesController extends MovementController
         ]);
         // Update Warehouses Existence
         $warehousesExistence = WarehousesExistence::where('product_id', $data['product_id'])
-                ->where('warehouse_id', $data['warehouse_id'])
+                ->where('warehouse_id', $warehouseId)
                 ->first();
         $oldAmount = $warehousesExistence->amount;
         $warehousesExistence->update([
@@ -106,11 +107,7 @@ class SalesController extends MovementController
             if($lastSale->id === $sale->id){
                 return view('kardex.sales.show', [
                     'invoice' => $lastSale,
-                    'movements' => $lastSale->movements,
-                    'movementCategories' => [
-                        'income' => MovementCategory::$incomeName,
-                        'expense' => MovementCategory::$expenseName
-                    ]
+                    'movements' => $lastSale->movements
                 ]);
             }
         }
@@ -131,13 +128,14 @@ class SalesController extends MovementController
         }
         if($validEdit){
             $product = $movement->product;
-            $warehouse = $movement->warehouse;
+            $warehouse = $lastSale->warehouse;
             return view('kardex.sales.edit', [
                 'movement' => $movement,
                 'movementCategoryId' => MovementCategory::income()->id,
                 'warehousesExistence' => $product->warehousesExistences()
                                                 ->where('warehouse_id', $warehouse->id)
-                                                ->first()
+                                                ->first(),
+                'warehouseId' => $warehouse->id
             ]);   
         } else {
             return redirect()->route('sales.create');
@@ -180,7 +178,7 @@ class SalesController extends MovementController
             ]);
             // Fix Warehouses Existences
             $product = $movement->product;
-            $warehouse = Warehouse::find($data['warehouse']);
+            $warehouse = $movement->invoice->warehouse;
             $warehousesExistence = WarehousesExistence::where('product_id', $product->id)
                                     ->where('warehouse_id', $warehouse->id)
                                     ->first();
@@ -221,7 +219,7 @@ class SalesController extends MovementController
     ): void
     {
         $product = $lastMovement->product;
-        $warehouse = $lastMovement->warehouse;
+        $warehouse = $invoice->warehouse;
         $warehousesExistence = WarehousesExistence::where('product_id', $product->id)
                                     ->where('warehouse_id', $warehouse->id)
                                     ->first();

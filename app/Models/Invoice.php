@@ -9,7 +9,7 @@ class Invoice extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['number', 'date', 'user_id', 'person_id', 'movement_category_id'];
+    protected $fillable = ['number', 'date', 'user_id', 'person_id', 'movement_category_id', 'warehouse_id'];
 
     public function user(){
         return $this->belongsTo(User::class);
@@ -25,6 +25,10 @@ class Invoice extends Model
 
     public function movementCategory(){
         return $this->belongsTo(MovementCategory::class);
+    }
+
+    public function warehouse(){
+        return $this->belongsTo(Warehouse::class);
     }
 
     public static function constructInvoiceNumber(array $parts): string

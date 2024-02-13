@@ -58,14 +58,19 @@
                     == $movementCategories['income']
                 )
                     <strong>Proveedor: </strong>
+                    {{
+                        $movement->invoice->person
+                        ? $movement->invoice->person->name
+                        : 'Desconocido'
+                    }}
                 @else
                     <strong>Cliente: </strong>
+                    {{
+                        $movement->invoice->person
+                        ? $movement->invoice->person->name
+                        : 'Consumidor Final'
+                    }}
                 @endif
-                {{
-                    $movement->invoice->person
-                    ? $movement->invoice->person->name
-                    : 'Desconocido'
-                }}
             </p>
 
             <!-- Body -->

@@ -15,8 +15,7 @@ class Movement extends Model
         'total_price',
         'movement_type_id',
         'product_id',
-        'invoice_id',
-        'warehouse_id'
+        'invoice_id'
     ];
 
     public $timestamps = false;
@@ -35,10 +34,6 @@ class Movement extends Model
 
     public function balance(){
         return $this->hasOne(Balance::class);
-    }
-
-    public function warehouse(){
-        return $this->belongsTo(Warehouse::class);
     }
 
     public function totalPrice()

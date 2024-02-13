@@ -69,7 +69,8 @@ class KardexController extends Controller
 
     public function showMovement(Movement $movement){
         return view('kardex.movements.show', [
-            'movement' => $movement
+            'movement' => $movement,
+            'incomeName' => MovementCategory::$incomeName
         ]);
     }
 

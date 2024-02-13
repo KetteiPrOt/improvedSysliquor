@@ -89,11 +89,7 @@
                                             }}
                                         </x-slot>
                                         <x-slot name="second">
-                                            {{
-                                                $invoice->person
-                                                ? $invoice->person->name
-                                                : 'Desconocido'
-                                            }}
+                                            {{$movement->invoice->person?->name ?? 'Consumidor Final'}}
                                         </x-slot>
                                         <x-slot name="third">
                                             @if($movement->isLast())
@@ -107,10 +103,12 @@
                                                 <!-- Start Delete button -->
                                                 <x-danger-button-link
                                                     x-data=""
-                                                    x-on:click.prevent="$dispatch('open-modal', 'confirm-movement-deletion')"
+                                                    x-on:click.prevent="
+                                                        $dispatch('open-modal', 'confirm-movement-deletion-{{$movement->id}}')
+                                                    "
                                                 >(Eliminable)</x-danger-button-link>
 
-                                                <x-modal name="confirm-movement-deletion" focusable>
+                                                <x-modal name="confirm-movement-deletion-{{$movement->id}}" focusable>
                                                     <form method="post" action="{{route('sales.destroy', $movement->id)}}" class="p-6">
                                                         @csrf
                                                         @method('delete')
@@ -137,16 +135,9 @@
                                         </x-slot>
                                     </x-kardex.table.triple-cell>
                                     <!-- Expenses -->
-                                    @if(
-                                        $movement->movementType->movementCategory->name
-                                        == $movementCategories['expense']
-                                    )
-                                        <x-kardex.table.movement
-                                            :movement="$movement"
-                                        />
-                                    @else
-                                        <x-kardex.table.triple-cell />
-                                    @endif
+                                    <x-kardex.table.movement
+                                        :movement="$movement"
+                                    />
                                 </tr>
                             @endforeach
                         </x-kardex.table.body>
@@ -244,19 +235,8 @@
                                         @endif
                                         
                                         <p class="mb-3">
-                                            @if(
-                                                $movement->movementType->movementCategory->name
-                                                == $movementCategories['income']
-                                            )
-                                                <strong>Proveedor: </strong>
-                                            @else
-                                                <strong>Cliente: </strong>
-                                            @endif
-                                            {{
-                                                $movement->invoice->person
-                                                ? $movement->invoice->person->name
-                                                : 'Desconocido'
-                                            }}
+                                            <strong>Cliente: </strong>
+                                            {{$movement->invoice->person?->name ?? 'Consumidor Final'}}
                                         </p>
 
                                         <!-- Body -->

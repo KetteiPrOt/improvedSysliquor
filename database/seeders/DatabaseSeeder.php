@@ -7,14 +7,11 @@ use Illuminate\Database\Seeder;
 use App\Models\UnitsNumber;
 use App\Models\Type;
 use App\Models\Presentation;
-use App\Models\Person;
-use App\Models\Client;
-use App\Models\Provider;
 use App\Models\Warehouse;
 use App\Models\MovementCategory;
 use App\Models\MovementType;
 // Testing
-use Database\Seeders\Testing\ProductsSeeder;
+// use Database\Seeders\Testing\ProductsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -50,12 +47,6 @@ class DatabaseSeeder extends Seeder
         foreach($presentations as $presentation){
             Presentation::create(['content' => $presentation]);
         }
-
-        // Register final consumer client
-        $person = Person::create(['name' => Client::$finalConsumerName]);
-        Client::create([
-            'person_id' => $person->id
-        ]);
 
         // Register warehouses
         $warehouses = [Warehouse::$depositName, Warehouse::$liquorStoreName];

@@ -57,9 +57,8 @@ class PurchaseController extends MovementController
                 'movement_type_id' => $validated['movement_types'][$i],
                 'product_id' => $validated['products'][$i],
                 'invoice_id' => $invoiceId,
-                'warehouse_id' => $validated['warehouse'],
             ];
-            $this->registerMovement($data);
+            $this->registerMovement($data, $validated['warehouse']);
         }
         return redirect()->route('purchases.create', ['success' => true]);
     }
@@ -76,8 +75,9 @@ class PurchaseController extends MovementController
             'date' => $data['date'],
             'user_id' => Auth::user()->id,
             'person_id' => $personId,
-            'movement_category_id' => MovementCategory::income()->id
-        ]);        
+            'movement_category_id' => MovementCategory::income()->id,
+            'warehouse_id' => $data['warehouse']
+        ]);
         return $invoice->id;
     }
 
@@ -95,16 +95,16 @@ class PurchaseController extends MovementController
         return $number;
     }
 
-    private function registerMovement(array $data): void
+    private function registerMovement(array $data, int $warehouseId): void
     {
         if($data['movement_type_id'] == MovementType::initialInventory()->id){
-            $this->startInventory($data);
+            $this->startInventory($data, $warehouseId);
         } else {
-            $this->pushIncome($data);
+            $this->pushIncome($data, $warehouseId);
         }
     }
 
-    private function startInventory(array $data): void
+    private function startInventory(array $data, int $warehouseId): void
     {
         // Create Movement
         $totalPrice = round(
@@ -128,11 +128,11 @@ class PurchaseController extends MovementController
         WarehousesExistence::create([
             'amount' => $data['amount'],
             'product_id' => $data['product_id'],
-            'warehouse_id' => $data['warehouse_id']
+            'warehouse_id' => $warehouseId
         ]);
     }
 
-    private function pushIncome(array $data): void
+    private function pushIncome(array $data, int $warehouseId): void
     {
         // Create Movement
         $product = Product::find($data['product_id']);
@@ -156,7 +156,7 @@ class PurchaseController extends MovementController
         ]);
         // Warehouses Existence
         $warehousesExistence = WarehousesExistence::where('product_id', $data['product_id'])
-                ->where('warehouse_id', $data['warehouse_id'])
+                ->where('warehouse_id', $warehouseId)
                 ->first();
         if($warehousesExistence){
             // Update Warehouses Existence
@@ -169,7 +169,7 @@ class PurchaseController extends MovementController
             WarehousesExistence::create([
                 'amount' => $data['amount'],
                 'product_id' => $data['product_id'],
-                'warehouse_id' => $data['warehouse_id']
+                'warehouse_id' => $warehouseId
             ]);
         }
     }

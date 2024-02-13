@@ -34,7 +34,7 @@
                                 </x-secondary-link-button>
                             </div>
                             @if($lastSale)
-                                @if($warehouse->id == $lastSale->movements[0]->warehouse->id)
+                                @if($warehouse->id == $lastSale->warehouse->id)
                                     <div class="mb-6 sm:mb-0 justify-center order-1 sm:order-2 w-full sm:w-1/2 flex sm:justify-end items-start">
                                         <x-secondary-link-button
                                             :href="route('sales.show', $lastSale->id)"
@@ -48,11 +48,15 @@
 
                         <!-- Clients -->
                         <x-input-label :value="__('Cliente')" />
-                        <x-select-input name="client" class="block" required>
+                        <x-select-input name="client" class="block">
+                            <option 
+                                value=""
+                                @selected(is_null(old('client')))
+                            >Consumidor Final</option>
                             @foreach($clients as $client)
                                 <option 
                                     value="{{$client->id}}"
-                                    @selected(old('client', $finalConsumer->id) == $client->id)
+                                    @selected(old('client') == $client->id)
                                 >{{$client->person->name}}</option>
                             @endforeach
                         </x-select-input>

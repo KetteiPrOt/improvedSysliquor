@@ -30,8 +30,8 @@ class Warehouse extends Model
         return $this->hasMany(Seller::class);
     }
 
-    public function movements(){
-        return $this->hasMany(Movement::class);
+    public function invoice(){
+        return $this->hasMany(Invoice::class);
     }
 
     public function warehousesExistences(){

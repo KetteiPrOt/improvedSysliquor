@@ -25,9 +25,11 @@ class StoreSaleRequest extends FormRequest
      */
     public function rules(): array
     {
+        $client = $this->get('client');
+        $clientRules = is_null($client) ? 'exclude' : ['required', 'integer', 'exists:clients,id'];
         return [
             'warehouse' => ['required', 'int', 'exists:warehouses,id'],
-            'client' => ['required', 'integer', 'exists:clients,id'],
+            'client' => $clientRules,
             'products' => ['required', 'array', 'min:1'],
             'products.*' => ['required', 'integer', 'exists:products,id'],
             'amounts' => ['required', 'array', 'min:1', new SameSize('products', 'Productos'), new HaveExistences],

@@ -35,12 +35,6 @@ return new class extends Migration
                   ->references('id')
                   ->on('invoices')
                   ->cascadeOnDelete()->cascadeOnUpdate();
-
-            $table->unsignedTinyInteger('warehouse_id');
-            $table->foreign('warehouse_id', 'movement_warehouse')
-                ->references('id')
-                ->on('warehouses')
-                ->restrictOnDelete()->restrictOnUpdate();
         });
     }
 

@@ -51,11 +51,20 @@
                                             }}
                                         </x-slot>
                                         <x-slot name="second">
-                                            {{
-                                                $movement->invoice->person
-                                                ? $movement->invoice->person->name
-                                                : 'Desconocido'
-                                            }}
+                                            @php
+                                                if(is_null($movement->invoice->person)){
+                                                    if(
+                                                        $movement->movementType->movementCategory->name
+                                                        == $movementCategories['income']
+                                                    ){
+                                                        echo 'Desconocido';
+                                                    } else {
+                                                        echo 'Consumidor Final';
+                                                    }
+                                                } else {
+                                                    echo $movement->invoice->person->name;
+                                                }
+                                            @endphp
                                         </x-slot>
                                         <x-slot name="third">
                                             {{$movement->movementType->name}}

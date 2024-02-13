@@ -18,7 +18,7 @@
                         <input
                             type="number"
                             class="hidden"
-                            value="{{$movement->warehouse->id}}"
+                            value="{{$warehouseId}}"
                             name="warehouse"
                         >
                         @php

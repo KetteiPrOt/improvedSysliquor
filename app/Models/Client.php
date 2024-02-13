@@ -14,13 +14,6 @@ class Client extends Model
 
     public $timestamps = false;
 
-    public static $finalConsumerName = 'Consumidor Final';
-
-    public static function finalConsumer(): Client
-    {
-        return Person::where('name', Client::$finalConsumerName)->first()->client;
-    }
-
     public function person(){
         return $this->belongsTo(Person::class);
     }

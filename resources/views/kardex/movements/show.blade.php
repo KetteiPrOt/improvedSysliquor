@@ -24,8 +24,17 @@
                             }}
                         </x-card-item>              
                         <x-card-item :tag="__('Cliente/Proveedor')">
-                            {{$movement->invoice->person?->name ?? "Desconocido"}}
-                        </x-card-item>                 
+                            @if(is_null($movement->invoice->person))
+                                {{
+                                    $movement->invoice->movementCategory->name
+                                    === $incomeName
+                                    ? "Desconocido"
+                                    : "Consumidor Final"
+                                }}
+                            @else
+                                {{$movement->invoice->person?->name}}
+                            @endif
+                        </x-card-item>          
                         <x-card-item :tag="__('Tipo')">
                             {{
                                 $movement->movementType->name .
@@ -34,7 +43,7 @@
                         </x-card-item>
                         <x-card-item :tag="__('Bodega')">
                             {{
-                                $movement->warehouse->name
+                                $movement->invoice->warehouse->name
                             }}
                         </x-card-item>
                         <x-card-item :tag="__('Usuario')">
