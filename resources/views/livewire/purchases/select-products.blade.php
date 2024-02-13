@@ -14,14 +14,3 @@
         <x-purchases.products.select.table :products="$products" />
     @endif
 </div>
-@script
-<script>
-    $wire.on('product-selected', () => {
-        try{ setTimeout($wire.syncInvoiceNumberRequirement, 100); }catch(e){}
-        try{ setTimeout($wire.syncInvoiceNumberRequirement, 500); }catch(e){}
-        try{ setTimeout($wire.syncInvoiceNumberRequirement, 750); }catch(e){}
-        try{ setTimeout($wire.syncInvoiceNumberRequirement, 1000); }catch(e){}
-        try{ setTimeout($wire.syncInvoiceNumberRequirement, 3000); }catch(e){} 
-    });
-</script>
-@endscript
