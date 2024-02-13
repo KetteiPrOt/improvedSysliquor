@@ -1,4 +1,7 @@
-@props(['products'])
+@props(['data'])
+@php
+    extract($data);
+@endphp
 
 <!-- Table -->
 <table class="border-collapse table-auto w-full text-sm mb-6">
@@ -27,11 +30,14 @@
                 </td>
                 @php
                     if($product->started_inventory){
-                        $unitsAvailable = $product->movements()
-                                ->orderBy('id', 'desc')
-                                ->first()->balance->amount;
-                    } else {
-                        $unitsAvailable = 0;
+                        $warehousesExistence = $product->warehousesExistences()
+                                        ->where('warehouse_id', $warehouse->id)
+                                        ->first();
+                        if(is_null($warehousesExistence)){
+                            $unitsAvailable = 0;
+                        } else {
+                            $unitsAvailable = $warehousesExistence->amount;
+                        }
                     }
                 @endphp
                 <td class="border-b border-slate-100 text-center dark:border-slate-700 p-2 sm:pr-4 pl-2 sm:pl-8 text-slate-500 dark:text-slate-400">

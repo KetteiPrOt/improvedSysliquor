@@ -46,7 +46,7 @@
                                             {{
                                                 date(
                                                     'd/m/Y',
-                                                    strtotime($movement->invoice->date)
+                                                    strtotime($movement->invoice->created_at)
                                                 )
                                             }}
                                         </x-slot>
@@ -112,7 +112,7 @@
                                     {{
                                         date(
                                             'd/m/Y',
-                                            strtotime($movement->invoice->date)
+                                            strtotime($movement->invoice->created_at)
                                         )
                                         . " | "
                                         . $movement->movementType->name

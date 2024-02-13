@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Http\Requests\ShowKardexRequest;
+use App\Models\Invoice;
 use App\Models\MovementCategory;
 use App\Models\Movement;
+use App\Models\WarehousesExistence;
 
 class KardexController extends Controller
 {
@@ -44,7 +46,7 @@ class KardexController extends Controller
             'income' => MovementCategory::$incomeName,
             'expense' => MovementCategory::$expenseName
         ];
-        if($request->get('page')){
+        if(is_null($request->get('page'))){
             return view('kardex.show', [
                 'product' => $product,
                 'movements' => $movements,
@@ -52,7 +54,7 @@ class KardexController extends Controller
                 'date_from' => $validated['date_from'],
                 'date_to' => $validated['date_to']
             ]);
-        } else {
+        } else if(is_null($request->get('page')) && !is_null($product)) {
             $movements->lastPage();
             return redirect()->route('kardex.show', [
                 'date_from' => $validated['date_from'],
@@ -60,6 +62,8 @@ class KardexController extends Controller
                 'product' => $validated['product'],
                 'page' => $movements->lastPage()
             ]);
+        } else {
+            return redirect()->route('kardex.setQuery');
         }
     }
 
@@ -71,12 +75,19 @@ class KardexController extends Controller
 
     public function popMovement(Product $product){
         $lastMovement = $product->movements()->orderBy('id', 'desc')->first();
+        $movementsCount = $product->movements->count();
         if($lastMovement){
             $invoice = $lastMovement->invoice;
+            // update warehouses existence
+            $this->updateWarehousesExistence(
+                $lastMovement,
+                $invoice,
+                $movementsCount
+            );
             $lastMovement->delete();
             $this->purgeEmptyInvoice($invoice); 
         }
-        if($product->movements->count() == 0){
+        if($movementsCount == 1){
             $product->started_inventory = false;
             $product->save();
             return redirect()->route('kardex.setQuery');
@@ -87,6 +98,42 @@ class KardexController extends Controller
                 'product' => $product->id
             ]);
         }
+    }
+
+    private function updateWarehousesExistence(
+        Movement $lastMovement,
+        Invoice $invoice,
+        int $movementsCount
+    ): void
+    {
+        $product = $lastMovement->product;
+        $warehouse = $lastMovement->warehouse;
+        $warehousesExistence = WarehousesExistence::where('product_id', $product->id)
+                                    ->where('warehouse_id', $warehouse->id)
+                                    ->first();
+        $oldAmount = $warehousesExistence?->amount;
+        if($movementsCount == 1){
+            // delete warehouses existence
+            $warehousesExistence->delete();
+        } else {
+            // update warehouses existence
+            if($warehousesExistence){
+                if(
+                    $invoice->movementCategory->id 
+                    == MovementCategory::income()->id
+                ){
+                    // Restore Warehouses Existence of a bad purchase
+                    $warehousesExistence->update([
+                        'amount' => $oldAmount - $lastMovement->amount
+                    ]);
+                } else {
+                    // Restore Warehouses Existence of a bad sale
+                    $warehousesExistence->update([
+                        'amount' => $oldAmount + $lastMovement->amount
+                    ]);
+                }   
+            }
+        }        
     }
 
     private function purgeEmptyInvoice($invoice): void

@@ -11,22 +11,44 @@ use App\Models\Invoice;
 use App\Models\Movement;
 use App\Models\Balance;
 use App\Models\Product;
+use App\Models\Warehouse;
+use App\Models\WarehousesExistence;
+use Illuminate\Support\Facades\Auth;
 
 class PurchaseController extends MovementController
 {
     public function create(Request $request){
+        if(!$request->session()->has('current-purchases-warehouse')){
+            return redirect()->route('purchases.selectWarehouse');
+        }
         $incomeCategory = MovementCategory::income();
         return view('kardex.purchases.create', [
             'providers' => Provider::all(),
             'movementTypes' => $incomeCategory->movementTypes,
             'purchaseType' => MovementType::purchase(),
-            'success' => $request->get('success') ?? null
+            'success' => $request->get('success') ?? null,
+            'warehouse' => Warehouse::find(
+                $request->session()->get('current-purchases-warehouse')
+            )
         ]);
     }
 
     public function store(StorePurchaseRequest $request){
         $validated = $request->validated();
-        $invoiceId = $this->storeInvoice($validated);
+        $invoices = Invoice::all();
+        $number = $this->getInvoiceNumber($validated);
+        foreach($invoices as $invoice){
+            if(
+                ($invoice->number === $number)
+                && ($number !== null)
+            ){
+                $invoiceId = $invoice->id;
+                break;
+            }
+        }
+        if(!isset($invoiceId)){
+            $invoiceId = $this->storeInvoice($validated, $number);
+        }
         $movementsCount = count($validated['products']);
         for($i = 0; $i <  $movementsCount; $i++){
             $data = [
@@ -34,14 +56,32 @@ class PurchaseController extends MovementController
                 'amount' => $validated['amounts'][$i],
                 'movement_type_id' => $validated['movement_types'][$i],
                 'product_id' => $validated['products'][$i],
-                'invoice_id' => $invoiceId
+                'invoice_id' => $invoiceId,
+                'warehouse_id' => $validated['warehouse'],
             ];
             $this->registerMovement($data);
         }
         return redirect()->route('purchases.create', ['success' => true]);
     }
 
-    private function storeInvoice(array $data): int
+    private function storeInvoice(array $data, string|null $number): int
+    {
+        if(isset($data['provider'])){
+            $personId = Provider::find($data['provider'])->person->id;
+        } else {
+            $personId = null;
+        }
+        $invoice = Invoice::create([
+            'number' => $number,
+            'date' => $data['date'],
+            'user_id' => Auth::user()->id,
+            'person_id' => $personId,
+            'movement_category_id' => MovementCategory::income()->id
+        ]);        
+        return $invoice->id;
+    }
+
+    private function getInvoiceNumber(array $data): string|null
     {
         if(
             is_null($data['invoice_number'][0])
@@ -52,22 +92,11 @@ class PurchaseController extends MovementController
         } else {
             $number = Invoice::constructInvoiceNumber($data['invoice_number']);
         }
-        if(isset($data['provider'])){
-            $personId = Provider::find($data['provider'])->person->id;
-        } else {
-            $personId = null;
-        }
-        $invoice = Invoice::create([
-            'number' => $number,
-            'date' => $data['date'],
-            'user_id' => auth()->user()->id,
-            'person_id' => $personId,
-            'movement_category_id' => MovementCategory::income()->id
-        ]);        
-        return $invoice->id;
+        return $number;
     }
 
-    private function registerMovement(array $data){
+    private function registerMovement(array $data): void
+    {
         if($data['movement_type_id'] == MovementType::initialInventory()->id){
             $this->startInventory($data);
         } else {
@@ -75,7 +104,9 @@ class PurchaseController extends MovementController
         }
     }
 
-    private function startInventory(array $data){
+    private function startInventory(array $data): void
+    {
+        // Create Movement
         $totalPrice = round(
             $data['amount'] * $data['unitary_price'],
             2,
@@ -83,6 +114,7 @@ class PurchaseController extends MovementController
         );
         $data['total_price'] = $totalPrice;
         $movement = Movement::create($data);
+        // Create Balance
         Balance::create([
             'amount' => $data['amount'],
             'unitary_price' => $data['unitary_price'],
@@ -92,9 +124,16 @@ class PurchaseController extends MovementController
         $product = Product::find($data['product_id']);
         $product->started_inventory = true;
         $product->save();
+        // Create Warehouses Existence
+        WarehousesExistence::create([
+            'amount' => $data['amount'],
+            'product_id' => $data['product_id'],
+            'warehouse_id' => $data['warehouse_id']
+        ]);
     }
 
-    private function pushIncome(array $data){
+    private function pushIncome(array $data): void
+    {
         // Create Movement
         $product = Product::find($data['product_id']);
         $lastBalance = $product->movements()->orderBy('id', 'desc')->first()->balance;
@@ -115,5 +154,23 @@ class PurchaseController extends MovementController
             'total_price' => $totalPrice,
             'movement_id' => $movement->id,
         ]);
+        // Warehouses Existence
+        $warehousesExistence = WarehousesExistence::where('product_id', $data['product_id'])
+                ->where('warehouse_id', $data['warehouse_id'])
+                ->first();
+        if($warehousesExistence){
+            // Update Warehouses Existence
+            $oldAmount = $warehousesExistence->amount;
+            $warehousesExistence->update([
+                'amount' => $oldAmount + $data['amount']
+            ]);
+        } else {
+            // Create Warehouses Existence
+            WarehousesExistence::create([
+                'amount' => $data['amount'],
+                'product_id' => $data['product_id'],
+                'warehouse_id' => $data['warehouse_id']
+            ]);
+        }
     }
 }

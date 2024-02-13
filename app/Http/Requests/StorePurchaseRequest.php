@@ -9,10 +9,16 @@ use App\Rules\SameSize;
 use App\Rules\IncomeType;
 use App\Rules\Products\StartedInventory;
 use App\Rules\UniqueInvoiceNumber;
-use Illuminate\Validation\Rule;
 
 class StorePurchaseRequest extends FormRequest
 {
+    /**
+     * Indicates if the validator should stop on the first rule failure.
+     *
+     * @var bool
+     */
+    protected $stopOnFirstFailure = true;
+    
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,22 +30,23 @@ class StorePurchaseRequest extends FormRequest
             $this->get('movement_types')
         );
         return [
-            'provider' => ['nullable', 'integer', 'exists:providers,id'],
-            'date' => ['required', 'string', 'date_format:Y-m-d', new PastDate],
-            'products' => ['required', 'array', 'min:1'],
-            'products.*' => ['required', 'integer', 'exists:products,id'],
-            'amounts' => ['required', 'array', 'min:1', new SameSize('products', 'Productos')],
-            'amounts.*' => ['required', 'integer', 'min:1', 'max:65000'],
-            'unitary_prices' => ['required', 'array', 'min:1', new SameSize('products', 'Productos')],
-            'unitary_prices.*' => ['required', 'numeric', 'decimal:0,2', 'min:0.01', 'max:999'],
-            'movement_types' => [
+            'provider' => ['bail', 'nullable', 'integer', 'exists:providers,id'],
+            'date' => ['bail', 'required', 'string', 'date_format:Y-m-d', new PastDate],
+            'products' => ['bail', 'required', 'array', 'min:1'],
+            'products.*' => ['bail', 'required', 'integer', 'exists:products,id'],
+            'amounts' => ['bail', 'required', 'array', 'min:1', new SameSize('products', 'Productos')],
+            'amounts.*' => ['bail', 'required', 'integer', 'min:1', 'max:65000'],
+            'unitary_prices' => ['bail', 'required', 'array', 'min:1', new SameSize('products', 'Productos')],
+            'unitary_prices.*' => ['bail', 'required', 'numeric', 'decimal:0,2', 'min:0.01', 'max:999'],
+            'movement_types' => ['bail', 
                 'required', 'array', 'min:1', new SameSize('products', 'Productos'), new StartedInventory
             ],
-            'movement_types.*' => ['required', 'integer', new IncomeType],
+            'movement_types.*' => ['bail', 'required', 'integer', new IncomeType],
             'invoice_number' => $this->invoiceNumbersRules($invoiceRequired),
             'invoice_number.0' => $this->invoiceNumberRules($invoiceRequired, 3),
             'invoice_number.1' => $this->invoiceNumberRules($invoiceRequired, 3),
             'invoice_number.2' => $this->invoiceNumberRules($invoiceRequired, 9),
+            'warehouse' => 'required|int|exists:warehouses,id',
         ];
     }
 

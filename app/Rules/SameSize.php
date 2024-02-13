@@ -7,8 +7,16 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\DataAwareRule;
 
 class SameSize implements ValidationRule, DataAwareRule
-{
+{ 
+    /**
+     * All of the data under validation.
+     *
+     * @var array<string, mixed>
+     */
+    protected $data = [];
+
     private string $targetInputKey;
+
     public string $targetInputName;
 
     public function __construct($targetInputKey, $targetInputName)
@@ -16,13 +24,33 @@ class SameSize implements ValidationRule, DataAwareRule
         $this->targetInputKey = $targetInputKey;
         $this->targetInputName = $targetInputName;
     }
-    
+
     /**
-     * All of the data under validation.
+     * Run the validation rule.
      *
-     * @var array<string, mixed>
+     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
      */
-    protected $data = [];
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        $input = $value;
+        $targetInput = $this->data[$this->targetInputKey];
+        if($this->validStructure($input, $targetInput)){
+            $size = count($input);    
+            $targetSize = count($targetInput);
+            if($size !== $targetSize){
+                $fail("Debe iguales :attribute como ".$this->targetInputName.".");
+            }
+        }
+    }
+
+    private function validStructure(mixed $input, mixed $targetInput): bool
+    {
+        if(is_array($input) && is_array($targetInput)){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Set the data under validation.
@@ -34,24 +62,5 @@ class SameSize implements ValidationRule, DataAwareRule
         $this->data = $data;
  
         return $this;
-    }
-
-    /**
-     * Run the validation rule.
-     *
-     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
-     */
-    public function validate(string $attribute, mixed $value, Closure $fail): void
-    {
-        if(is_array($value)){
-            $size = count($value);
-            $targetInput = $this->data[$this->targetInputKey];
-            if(is_array($targetInput)){
-                $targetSize = count($targetInput);
-                if($size !== $targetSize){
-                    $fail("Debe iguales :attribute como ".$this->targetInputName.".");
-                }
-            }
-        }
     }
 }

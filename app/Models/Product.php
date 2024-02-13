@@ -27,6 +27,10 @@ class Product extends Model
         return $this->hasMany(Movement::class);
     }
 
+    public function warehousesExistences(){
+        return $this->hasMany(WarehousesExistence::class);
+    }
+
     public function productTag(): string
     {
         $tag = $this->type->name . ' ' . 

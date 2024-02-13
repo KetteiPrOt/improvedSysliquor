@@ -12,6 +12,13 @@ use App\Rules\ExpenseType;
 class StoreSaleRequest extends FormRequest
 {
     /**
+     * Indicates if the validator should stop on the first rule failure.
+     *
+     * @var bool
+     */
+    protected $stopOnFirstFailure = true;
+    
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -19,6 +26,7 @@ class StoreSaleRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'warehouse' => ['required', 'int', 'exists:warehouses,id'],
             'client' => ['required', 'integer', 'exists:clients,id'],
             'products' => ['required', 'array', 'min:1'],
             'products.*' => ['required', 'integer', 'exists:products,id'],
@@ -27,7 +35,7 @@ class StoreSaleRequest extends FormRequest
             'sale_prices' => ['required', 'array', 'min:1', new SameSize('products', 'Productos'), new ProductSalePrice],
             'sale_prices.*' => ['required', 'integer', 'exists:sale_prices,id'],
             'movement_types' => ['required', 'array', 'min:1', new SameSize('products', 'Productos'), new StartedInventory],
-            'movement_types.*' => ['required', 'integer', new ExpenseType]
+            'movement_types.*' => ['required', 'integer', new ExpenseType],
         ];
     }
 

@@ -19,7 +19,7 @@
                             {{
                                 date(
                                     'd/m/Y',
-                                    strtotime($movement->invoice->date)
+                                    strtotime($movement->invoice->created_at)
                                 )
                             }}
                         </x-card-item>              
@@ -32,12 +32,25 @@
                                 ' (' . $movement->movementType->movementCategory->name . ')'
                             }}
                         </x-card-item>
+                        <x-card-item :tag="__('Bodega')">
+                            {{
+                                $movement->warehouse->name
+                            }}
+                        </x-card-item>
                         <x-card-item :tag="__('Usuario')">
                             {{$movement->invoice->user->name}}
                         </x-card-item>
                         @if($movement->invoice->number)
                             <x-card-item :tag="__('Factura')">
                                 {{$movement->invoice->showInvoiceNumber()}}
+                            </x-card-item>                
+                            <x-card-item :tag="__('Fecha de Factura')">
+                                {{
+                                    date(
+                                        'd/m/Y',
+                                        strtotime($movement->invoice->date)
+                                    )
+                                }}
                             </x-card-item>
                         @endif
                         <!-- Detailed Information -->

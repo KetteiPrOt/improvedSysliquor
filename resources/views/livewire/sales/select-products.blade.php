@@ -25,7 +25,9 @@
     @if($products)
         @if($products->count() > 0)
             <!-- Select Products -->
-            <x-sales.products.select.table :products="$products" />
+            <x-sales.products.select.table
+                :data="compact('products', 'warehouse')"
+            />
         @else
             <p class="text-red-400 mb-3">No se encontraron productos...</p>
         @endif

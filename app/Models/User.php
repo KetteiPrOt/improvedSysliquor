@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -54,8 +55,8 @@ class User extends Authenticatable
 
     public function lastSale(): Invoice|null
     {
-        $lastSaleInvoice = auth()->user()
-                            ->invoices()
+        $user = Auth::user();
+        $lastSaleInvoice = $user->invoices()
                             ->where(
                                 'movement_category_id',
                                 MovementCategory::expense()->id

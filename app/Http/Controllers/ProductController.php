@@ -32,7 +32,7 @@ class ProductController extends Controller
     public function create(Request $request){
         return view('entities.products.create', [
             'types' => Type::orderBy('used', 'desc')->get(),
-            'presentations' => Presentation::orderBy('used', 'desc')->get(),
+            'presentations' => Presentation::orderBy('content')->get(),
             'success' => $request->get('success') ?? null
         ]);
     }

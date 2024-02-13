@@ -2,43 +2,54 @@
 
 namespace Database\Seeders;
 
+use App\Models\Balance;
+use App\Models\Invoice;
+use App\Models\Movement;
+use App\Models\MovementCategory;
+use App\Models\MovementType;
 use App\Models\Product;
 use App\Models\SalePrice;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ProductsSeeder extends Seeder
 {
+    private array $types = [
+        'WHISKY' =>  1,
+        'VINO' =>  2,
+        'RON' =>  3,
+        'AGUARDIENTE' =>  4,
+        'TEQUILA' =>  5,
+        'COCKTAIL' =>  6,
+        'ESPUMANTE' => 7,
+        'SANGRIA' => 8,
+        'VODKA' => 9
+    ];
+
+    private array $presentations = [
+        200 => 1,
+        375 => 2,
+        750 => 3,
+        1000 => 4,
+        1500 => 5,
+        600 => 6,
+        700 => 7
+    ];
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
         $defaultMinimunStock = 12;
-        $types = [
-            'WHISKY' =>  1,
-            'VINO' =>  2,
-            'RON' =>  3,
-            'AGUARDIENTE' =>  4,
-            'TEQUILA' =>  5,
-            'COCKTAIL' =>  6,
-            'ESPUMANTE' => 7,
-            'SANGRIA' => 8,
-            'VODKA' => 9
-        ];
-        $presentations = [
-            200 => 1,
-            375 => 2,
-            750 => 3,
-            1000 => 4,
-            1500 => 5,
-            600 => 6,
-            700 => 7
-        ];
-
+        $types = $this->types;
+        $presentations = $this->presentations;
         $products = $this->defineProducts();
+
         foreach($products as $product){
-            $productId = Product::create([
+            // Register Product
+            $product = Product::create([
                 'name' => str_replace(
                     "ñ", "Ñ", strtoupper($product[0])
                 ),
@@ -49,17 +60,62 @@ class ProductsSeeder extends Seeder
                 'presentation_id' => $presentations[
                     $product[2]
                 ],
-            ])->id;
+            ]);
             // Save sale prices
             $unitsIds = [1,2, 3];
             foreach($unitsIds as $unitsId){
                 SalePrice::create([
                     'price' => 1.00,
                     'units_number_id' => $unitsId,
-                    'product_id' => $productId
+                    'product_id' => $product->id
                 ]);
             }
+            // Register initial inventory
+            $this->registerInitialInventory($product);
         }
+    }
+
+    public function registerInitialInventory(Product $product): void
+    {
+        // Store Invoice
+        $userId = User::where('name', 'Fernando Joel Mero Trávez')->first()->id;
+        $movementCategoryId = MovementCategory::income()->id;
+        $invoice = Invoice::create([
+            'number' => null,
+            'date' => date('Y-m-d'),
+            'user_id' => $userId,
+            'person_id' => null,
+            'movement_category_id' => $movementCategoryId
+        ]);  
+
+        // Start Inventory
+        $initialInventoryId = MovementType::initialInventory()->id;
+        $amount_input = 200;
+        $unitary_price_input = 10.00;
+        $totalPrice = round(
+            $amount_input * $unitary_price_input,
+            2,
+            PHP_ROUND_HALF_UP
+        );
+
+        $data = [
+            'unitary_price' => $unitary_price_input,
+            'amount' => $amount_input,
+            'total_price' => $totalPrice,
+            'movement_type_id' => $initialInventoryId,
+            'product_id' => $product->id,
+            'invoice_id' => $invoice->id
+        ];
+        $movement = Movement::create($data);
+        Balance::create([
+            'amount' => $amount_input,
+            'unitary_price' => $unitary_price_input,
+            'total_price' => $totalPrice,
+            'movement_id' => $movement->id
+        ]);
+        $product = Product::find($product->id);
+        $product->started_inventory = true;
+        $product->save();
     }
 
     private function defineProducts(): array

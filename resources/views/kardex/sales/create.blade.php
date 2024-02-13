@@ -13,33 +13,56 @@
                     <!-- Create form -->
                     <form action="{{route('sales.store')}}" method="POST">
                         @csrf
+
                         <div class="flex flex-col sm:flex-row">
                             <div class="order-2 sm:order-1 w-full sm:w-1/2">
-                                <!-- Clients -->
-                                <x-input-label :value="__('Cliente')" />
-                                <x-select-input name="client" class="block" required>
-                                    @foreach($clients as $client)
-                                        <option 
-                                            value="{{$client->id}}"
-                                            @selected(old('client', $finalConsumer->id) == $client->id)
-                                        >{{$client->person->name}}</option>
-                                    @endforeach
-                                </x-select-input>
-                                <x-input-error :messages="$errors->get('client')" />
+                                <!-- Warehouse -->
+                                <x-input-label :value="__('Bodega')" />
+                                <x-number-input
+                                    class="hidden" name="warehouse"
+                                    value="{{$warehouse->id}}"
+                                />
+                                <x-text-input
+                                    class="inline mr-42opacity-70" disabled
+                                    value="{{$warehouse->name}}"
+                                />
+                                <x-secondary-link-button
+                                    href="{{route('sales.selectWarehouse')}}"
+                                    class="mt-1 sm:mt-0"
+                                >
+                                    cambiar
+                                </x-secondary-link-button>
                             </div>
                             @if($lastSale)
-                                <div class="mb-6 sm:mb-0 justify-center order-1 sm:order-2 w-full sm:w-1/2 flex sm:justify-end items-start">
-                                    <x-secondary-link-button
-                                        :href="route('sales.show', $lastSale->id)"
-                                    >
-                                        Ver Ultima Venta
-                                    </x-secondary-link-button>
-                                </div>
+                                @if($warehouse->id == $lastSale->movements[0]->warehouse->id)
+                                    <div class="mb-6 sm:mb-0 justify-center order-1 sm:order-2 w-full sm:w-1/2 flex sm:justify-end items-start">
+                                        <x-secondary-link-button
+                                            :href="route('sales.show', $lastSale->id)"
+                                        >
+                                            Ver Ultima Venta
+                                        </x-secondary-link-button>
+                                    </div>
+                                @endif
                             @endif
                         </div>
+
+                        <!-- Clients -->
+                        <x-input-label :value="__('Cliente')" />
+                        <x-select-input name="client" class="block" required>
+                            @foreach($clients as $client)
+                                <option 
+                                    value="{{$client->id}}"
+                                    @selected(old('client', $finalConsumer->id) == $client->id)
+                                >{{$client->person->name}}</option>
+                            @endforeach
+                        </x-select-input>
+                        <x-input-error :messages="$errors->get('client')" />
                         
                         <!-- Select Products -->
-                        <livewire:sales.select-products :success="$success" />
+                        <livewire:sales.select-products
+                            :warehouse="$warehouse"
+                            :success="$success"
+                        />
 
                         <x-input-error :messages="$errors->get('products')" />
                         @foreach($errors->get('products.*') as $error)

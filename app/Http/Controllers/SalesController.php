@@ -12,16 +12,25 @@ use App\Models\Movement;
 use App\Models\Balance;
 use App\Models\MovementCategory;
 use App\Models\SalePrice;
+use App\Models\Warehouse;
+use App\Models\WarehousesExistence;
+use Illuminate\Support\Facades\Auth;
 
 class SalesController extends MovementController
 {
     public function create(Request $request){
-        $lastSale = auth()->user()->lastSale();
+        if(!$request->session()->has('current-sales-warehouse')){
+            return redirect()->route('sales.selectWarehouse');
+        }
+        $lastSale = Auth::user()->lastSale();
         return view('kardex.sales.create', [
             'clients' => Client::all(),
             'finalConsumer' => Client::finalConsumer(),
             'success' => $request->get('success') ?? null,
-            'lastSale' => $lastSale
+            'lastSale' => $lastSale,
+            'warehouse' => Warehouse::find(
+                $request->session()->get('current-sales-warehouse')
+            )
         ]);
     }
 
@@ -37,7 +46,8 @@ class SalesController extends MovementController
                 'amount' => $validated['amounts'][$i],
                 'movement_type_id' => $validated['movement_types'][$i],
                 'product_id' => $validated['products'][$i],
-                'invoice_id' => $invoiceId
+                'invoice_id' => $invoiceId,
+                'warehouse_id' => $validated['warehouse'],
             ];
             $this->registerExpense($data);
         }
@@ -80,6 +90,14 @@ class SalesController extends MovementController
             'total_price' => $totalPrice,
             'movement_id' => $movement->id
         ]);
+        // Update Warehouses Existence
+        $warehousesExistence = WarehousesExistence::where('product_id', $data['product_id'])
+                ->where('warehouse_id', $data['warehouse_id'])
+                ->first();
+        $oldAmount = $warehousesExistence->amount;
+        $warehousesExistence->update([
+            'amount' => $oldAmount - $data['amount']
+        ]);
     }
 
     public function show(Invoice $sale){
@@ -101,7 +119,7 @@ class SalesController extends MovementController
 
     public function edit(Movement $movement){
         $validEdit = false;
-        $lastSale = auth()->user()->lastSale();
+        $lastSale = Auth::user()->lastSale();
         foreach($lastSale->movements as $validMovement){
             if(
                 ($movement->id === $validMovement->id)
@@ -112,8 +130,14 @@ class SalesController extends MovementController
             }
         }
         if($validEdit){
+            $product = $movement->product;
+            $warehouse = $movement->warehouse;
             return view('kardex.sales.edit', [
-                'movement' => $movement
+                'movement' => $movement,
+                'movementCategoryId' => MovementCategory::income()->id,
+                'warehousesExistence' => $product->warehousesExistences()
+                                                ->where('warehouse_id', $warehouse->id)
+                                                ->first()
             ]);   
         } else {
             return redirect()->route('sales.create');
@@ -127,6 +151,7 @@ class SalesController extends MovementController
             // $data['sale_price']
 
             // Update Movement
+            $oldMovementAmount = $movement->amount;
             $lastBalance = $movement->product
                             ->movements()
                             ->orderBy('id', 'desc')
@@ -153,17 +178,76 @@ class SalesController extends MovementController
                 'unitary_price' => $newUnitaryPrice,
                 'total_price' => $totalPrice
             ]);
+            // Fix Warehouses Existences
+            $product = $movement->product;
+            $warehouse = Warehouse::find($data['warehouse']);
+            $warehousesExistence = WarehousesExistence::where('product_id', $product->id)
+                                    ->where('warehouse_id', $warehouse->id)
+                                    ->first();
+            $oldAmount = $warehousesExistence?->amount;
+            $warehousesExistence->update([
+                'amount' => ($oldMovementAmount - $data['amount']) + $oldAmount
+            ]);
         }
         return redirect()->route('sales.show', $movement->invoice->id);
     }
 
     public function destroy(Movement $movement){
-        if($this->validSaleOperation($movement)){
-            $invoice = $movement->invoice;
-            $movement->delete();
-            $this->purgeEmptyInvoice($invoice);  
+        $lastMovement = $movement;
+        if($this->validSaleOperation($lastMovement)){
+            $product = $lastMovement->product;
+            $movementsCount = $product->movements->count();
+            $invoice = $lastMovement->invoice;
+            // update warehouses existence
+            $this->updateWarehousesExistence(
+                $lastMovement,
+                $invoice,
+                $movementsCount
+            );
+            $lastMovement->delete();
+            $this->purgeEmptyInvoice($invoice); 
+            if($movementsCount == 1){
+                $product->started_inventory = false;
+                $product->save();
+            }
         }
         return redirect()->route('sales.create');
+    }
+
+    private function updateWarehousesExistence(
+        Movement $lastMovement,
+        Invoice $invoice,
+        int $movementsCount
+    ): void
+    {
+        $product = $lastMovement->product;
+        $warehouse = $lastMovement->warehouse;
+        $warehousesExistence = WarehousesExistence::where('product_id', $product->id)
+                                    ->where('warehouse_id', $warehouse->id)
+                                    ->first();
+        $oldAmount = $warehousesExistence?->amount;
+        if($movementsCount == 1){
+            // delete warehouses existence
+            $warehousesExistence->delete();
+        } else {
+            // update warehouses existence
+            if($warehousesExistence){
+                if(
+                    $invoice->movementCategory->id 
+                    == MovementCategory::income()->id
+                ){
+                    // Restore Warehouses Existence of a bad purchase
+                    $warehousesExistence->update([
+                        'amount' => $oldAmount - $lastMovement->amount
+                    ]);
+                } else {
+                    // Restore Warehouses Existence of a bad sale
+                    $warehousesExistence->update([
+                        'amount' => $oldAmount + $lastMovement->amount
+                    ]);
+                }   
+            }
+        }        
     }
 
     private function purgeEmptyInvoice($invoice): void
@@ -176,7 +260,7 @@ class SalesController extends MovementController
     private function validSaleOperation(Movement $movement): bool
     {
         $valid = false;
-        $lastSale = auth()->user()->lastSale();
+        $lastSale = Auth::user()->lastSale();
         foreach($lastSale->movements as $validMovement){
             if(
                 ($movement->id === $validMovement->id)

@@ -22,7 +22,7 @@
                             {{$product->name}}
                         </x-card-item>                        
                         <x-card-item :tag="__('Presentación')">
-                            {{$product->presentation->content}}
+                            {{$product->presentation->content . ' ml'}}
                         </x-card-item>
                         {{-- <x-card-item :tag="__('Stock Mínimo')">
                             {{$product->minimun_stock}}

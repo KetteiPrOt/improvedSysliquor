@@ -8,16 +8,25 @@ use Livewire\Attributes\Js;
 use App\Models\Product;
 use App\Models\MovementCategory;
 use App\Models\MovementType;
+use App\Models\Warehouse;
 use Livewire\WithPagination;
 
 class SelectProducts extends Component
 {
     use WithPagination;
 
+    #[Locked]
+    public Warehouse $warehouse;
+
     public $search = null;
 
     #[Locked]
     public $selectedProductsIds = [];
+
+    public function mount(Warehouse $warehouse)
+    {
+        $this->warehouse = $warehouse;
+    }
 
     public function render()
     {

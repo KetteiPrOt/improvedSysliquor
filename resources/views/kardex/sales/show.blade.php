@@ -28,19 +28,18 @@
                     <x-kardex.table>
                         <thead>
                             <tr>
+                                <th class="border-b border-r dark:border-slate-600 font-medium p-4 pl-4 sm:pl-8 pb-3 text-slate-400 dark:text-slate-200 text-left"
+                                ></th>
                                 <x-kardex.table.triple-header />
                                 <x-kardex.table.triple-header>
                                     <x-slot name="second">
-                                        Egresos
-                                    </x-slot>
-                                </x-kardex.table.triple-header>
-                                <x-kardex.table.triple-header>
-                                    <x-slot name="second">
-                                        Existencias
+                                        Vendido
                                     </x-slot>
                                 </x-kardex.table.triple-header>
                             </tr>
                             <tr>
+                                <th class="border-b border-r dark:border-slate-600 font-medium p-4 pl-4 sm:pl-8 pb-3 text-slate-400 dark:text-slate-200 text-left"
+                                >Producto</th>
                                 <x-kardex.table.triple-header>
                                     <x-slot name="first">
                                         Fecha
@@ -49,10 +48,10 @@
                                         Cliente/<br>Proveedor
                                     </x-slot>
                                     <x-slot name="third">
-                                        Tipo
+                                        Modificación
                                     </x-slot>
                                 </x-kardex.table.triple-header>
-                                @for($i = 0; $i < 2; $i++)
+                                @for($i = 0; $i < 1; $i++)
                                     <x-kardex.table.triple-header>
                                         <x-slot name="first">
                                             Cantidad
@@ -71,6 +70,14 @@
                             <!-- Table rows -->
                             @foreach($movements as $movement)
                                 <tr class="hover:bg-slate-100">
+                                    <!-- Product -->
+                                    <td class="
+                                        text-left text-slate-500 dark:text-slate-400 text-xs
+                                        p-1 border-b border-slate-100 dark:border-slate-700
+                                    "
+                                    >
+                                        {{$movement->product->productTag()}}
+                                    </td>
                                     <!-- Movement information -->
                                     <x-kardex.table.triple-cell :textleft="true">
                                         <x-slot name="first">
@@ -89,7 +96,6 @@
                                             }}
                                         </x-slot>
                                         <x-slot name="third">
-                                            {{$movement->movementType->name}}
                                             @if($movement->isLast())
                                                 <a
                                                     href="{{route('sales.edit', $movement->id)}}"
@@ -102,7 +108,7 @@
                                                 <x-danger-button-link
                                                     x-data=""
                                                     x-on:click.prevent="$dispatch('open-modal', 'confirm-movement-deletion')"
-                                                >{{ __('(Eliminable)') }}</x-danger-button-link>
+                                                >(Eliminable)</x-danger-button-link>
 
                                                 <x-modal name="confirm-movement-deletion" focusable>
                                                     <form method="post" action="{{route('sales.destroy', $movement->id)}}" class="p-6">
@@ -125,6 +131,8 @@
                                                     </form>
                                                 </x-modal>
                                                 <!-- End Delete Button -->
+                                            @else
+                                                (No Editable)
                                             @endif
                                         </x-slot>
                                     </x-kardex.table.triple-cell>
@@ -139,10 +147,6 @@
                                     @else
                                         <x-kardex.table.triple-cell />
                                     @endif
-                                    <!-- Balance -->
-                                    <x-kardex.table.movement
-                                        :movement="$movement->balance"
-                                    />
                                 </tr>
                             @endforeach
                         </x-kardex.table.body>
@@ -172,7 +176,7 @@
                                                 strtotime($movement->invoice->date)
                                             )
                                             . " | "
-                                            . $movement->movementType->name
+                                            . $movement->product->productTag()
                                         }}
                                         <span
                                             class="-mr-1 ml-auto h-5 w-5 shrink-0 rotate-[-180deg] fill-[#336dec] transition-transform duration-200 ease-in-out group-[[data-te-collapse-collapsed]]:mr-0 group-[[data-te-collapse-collapsed]]:rotate-0 group-[[data-te-collapse-collapsed]]:fill-[#212529] motion-reduce:transition-none dark:fill-blue-300 dark:group-[[data-te-collapse-collapsed]]:fill-white">
@@ -258,23 +262,13 @@
                                         <!-- Body -->
                                         <p class="mb-3">
                                             <strong>
-                                                Información:
+                                                Vendido:
                                             </strong>
                                         </p>
 
                                         <x-kardex.responsive-table.subtable>
                                             <x-kardex.table.movement
                                                 :movement="$movement"
-                                            />
-                                        </x-kardex.responsive-table.subtable>
-
-                                        <p class="mb-3">
-                                            <strong>Existencias:</strong>
-                                        </p>
-
-                                        <x-kardex.responsive-table.subtable>
-                                            <x-kardex.table.movement
-                                                :movement="$movement->balance"
                                             />
                                         </x-kardex.responsive-table.subtable>
                                     </div>

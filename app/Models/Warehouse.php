@@ -29,4 +29,12 @@ class Warehouse extends Model
     public function sellers(){
         return $this->hasMany(Seller::class);
     }
+
+    public function movements(){
+        return $this->hasMany(Movement::class);
+    }
+
+    public function warehousesExistences(){
+        return $this->hasMany(WarehousesExistence::class);
+    }
 }

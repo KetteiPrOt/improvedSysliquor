@@ -13,6 +13,22 @@
                     <!-- Create form -->
                     <form action="{{route('purchases.store')}}" method="POST">
                         @csrf
+                        <!-- Warehouse -->
+                        <x-input-label :value="__('Bodega')" />
+                        <x-number-input
+                            class="hidden" name="warehouse"
+                            value="{{$warehouse->id}}"
+                        />
+                        <x-text-input
+                            class="inline mr-42opacity-70" disabled
+                            value="{{$warehouse->name}}"
+                        />
+                        <x-secondary-link-button
+                            href="{{route('purchases.selectWarehouse')}}"
+                            class="mt-1 sm:mt-0"
+                        >
+                            cambiar
+                        </x-secondary-link-button>
                         <!-- Providers -->
                         <x-input-label :value="__('Proveedor')" />
                         <x-select-input name="provider" class="block">

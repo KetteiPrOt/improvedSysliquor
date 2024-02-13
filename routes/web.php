@@ -71,12 +71,14 @@ Route::middleware(['auth', 'permission:sellers'])->controller(SellerController::
 /* --- Kardex --- */
 Route::middleware(['auth', 'permission:kardex'])->controller(KardexController::class)->group(function () {
     Route::get('/kardex/consulta', 'setQuery')->name('kardex.setQuery');
-    Route::get('/kardex', 'show')->name('kardex.show');
+    Route::get('/kardex', 'show')->name('kardex.show');    
     Route::get('/kardex/movimientos/{movement}', 'showMovement')->name('kardex.showMovement');
     Route::delete('/kardex/movimientos/{product}', 'popMovement')->name('kardex.popMovement');
 });
 
 Route::middleware(['auth', 'permission:sales'])->controller(SalesController::class)->group(function () {
+    Route::get('/ventas/seleccionar-bodega', 'selectWarehouse')->name('sales.selectWarehouse');
+    Route::post('/ventas/guardar-bodega', 'saveWarehouse')->name('sales.saveWarehouse');
     Route::get('/ventas/crear', 'create')->name('sales.create');
     Route::post('/ventas', 'store')->name('sales.store');
     Route::get('/ventas/{sale}', 'show')->name('sales.show');
@@ -86,6 +88,8 @@ Route::middleware(['auth', 'permission:sales'])->controller(SalesController::cla
 });
 
 Route::middleware(['auth', 'permission:purchases'])->controller(PurchaseController::class)->group(function () {
+    Route::get('/compras/seleccionar-bodega', 'selectWarehouse')->name('purchases.selectWarehouse');
+    Route::post('/compras/guardar-bodega', 'saveWarehouse')->name('purchases.saveWarehouse');
     Route::get('/compras/crear', 'create')->name('purchases.create');
     Route::post('/compras', 'store')->name('purchases.store');
 });

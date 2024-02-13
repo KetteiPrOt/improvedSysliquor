@@ -9,7 +9,15 @@ class Movement extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['unitary_price', 'amount', 'total_price', 'movement_type_id', 'product_id', 'invoice_id'];
+    protected $fillable = [
+        'unitary_price',
+        'amount',
+        'total_price',
+        'movement_type_id',
+        'product_id',
+        'invoice_id',
+        'warehouse_id'
+    ];
 
     public $timestamps = false;
 
@@ -27,6 +35,10 @@ class Movement extends Model
 
     public function balance(){
         return $this->hasOne(Balance::class);
+    }
+
+    public function warehouse(){
+        return $this->belongsTo(Warehouse::class);
     }
 
     public function totalPrice()

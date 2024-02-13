@@ -4,10 +4,30 @@ namespace App\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\DataAwareRule;
 use App\Models\Invoice;
 
-class UniqueInvoiceNumber implements ValidationRule
+class UniqueInvoiceNumber implements ValidationRule, DataAwareRule
 {
+    /**
+     * All of the data under validation.
+     *
+     * @var array<string, mixed>
+     */
+    protected $data = [];
+
+    /**
+     * Set the data under validation.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    public function setData(array $data): static
+    {
+        $this->data = $data;
+ 
+        return $this;
+    }
+
     /**
      * Run the validation rule.
      *
@@ -19,7 +39,10 @@ class UniqueInvoiceNumber implements ValidationRule
             $number = Invoice::constructInvoiceNumber($value);
             $invoices = Invoice::all();
             foreach($invoices as $invoice){
-                if($invoice->number === $number){
+                if(
+                    $invoice->number === $number
+                    && $this->data['date'] !== $invoice->date
+                ){
                     $fail('El Número de Factura ya ha sido registrado.');
                     break;
                 }

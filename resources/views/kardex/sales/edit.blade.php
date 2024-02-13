@@ -15,10 +15,14 @@
                         @csrf
                         @method('put')
 
+                        <input
+                            type="number"
+                            class="hidden"
+                            value="{{$movement->warehouse->id}}"
+                            name="warehouse"
+                        >
                         @php
-                            $unitsAvailable = $movement->product->movements()
-                                                    ->orderBy('id', 'desc')
-                                                    ->get()->get(1)->balance->amount;
+                            $unitsAvailable = $warehousesExistence->amount + $movement->amount;
                         @endphp
                         <x-input-label for="amount" :value="__(
                             'Cantidad (hay ' .
@@ -26,7 +30,7 @@
                             ' unidades disponibles)'
                         )" />
                         <x-number-input
-                            id="amount" name="amount" min="1" max="9999" required 
+                            id="amount" name="amount" min="1" max="{{$unitsAvailable}}" required 
                             value="{{old('amount', $movement->amount)}}"
                         />
                         <x-input-error :messages="$errors->get('amount')" />
