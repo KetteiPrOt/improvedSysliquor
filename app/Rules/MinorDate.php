@@ -34,7 +34,7 @@ class MinorDate implements ValidationRule, DataAwareRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $isMinor = $value < $this->data['date_to'];
+        $isMinor = $value <= $this->data['date_to'];
         if(!$isMinor){
             $fail('La fecha inicial debe ser menor a la fecha final.');
         }

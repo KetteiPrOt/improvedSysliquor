@@ -26,7 +26,7 @@ class ShowKardexRequest extends FormRequest
         return [
             'product' => ['required', 'integer', 'exists:products,id', new ProductStartedInventory],
             'date_to' => ['required', 'string', 'date_format:Y-m-d', new PastDate],
-            'date_from' => ['required', 'string', 'date_format:Y-m-d', new PastDate, new MinorDate('date_to', 'Fecha Final')],
+            'date_from' => ['required', 'string', 'date_format:Y-m-d', new PastDate, new MinorDate],
         ];
     }
     

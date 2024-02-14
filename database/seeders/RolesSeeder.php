@@ -27,6 +27,7 @@ class RolesSeeder extends Seeder
             'purchases',
             'sales',
             'kardex',
+            'cash-closing',
             'permissions'
         ];
         foreach($permissions as $permission){

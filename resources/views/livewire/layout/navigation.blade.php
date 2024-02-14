@@ -132,7 +132,7 @@ new class extends Component
                         // auth()->user()->can('...') ||
                         // auth()->user()->can('...') ||
                         // auth()->user()->can('...')
-                        auth()->user()->can('query reports')
+                        auth()->user()->can('cash-closing')
                     )
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <x-dropdown align="right" width="48">
@@ -155,9 +155,11 @@ new class extends Component
                                     <x-dropdown-link :href="__('#')">
                                         {{ __('Cuentas por pagar') }}
                                     </x-dropdown-link>
-                                    <x-dropdown-link :href="__('#')">
-                                        {{ __('Cierre de caja') }}
-                                    </x-dropdown-link>
+                                    @can('cash-closing')
+                                        <x-dropdown-link :href="route('cash-closing.query')">
+                                            {{ __('Cierre de caja') }}
+                                        </x-dropdown-link>
+                                    @endcan
                                     <x-dropdown-link :href="__('#')">
                                         {{ __('Reporte de Stock') }}
                                     </x-dropdown-link>
@@ -308,7 +310,7 @@ new class extends Component
                 // auth()->user()->can('...') ||
                 // auth()->user()->can('...') ||
                 // auth()->user()->can('...')
-                auth()->user()->can('query reports')
+                auth()->user()->can('cash-closing')
             )
                 <div class="flex items-center">
                     <x-dropdown align="right" width="48">
@@ -325,9 +327,11 @@ new class extends Component
                             <x-dropdown-link :href="__('#')">
                                 {{ __('Cuentas por pagar') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="__('#')">
-                                {{ __('Cierre de caja') }}
-                            </x-dropdown-link>
+                            @can('cash-closing')
+                                <x-dropdown-link :href="route('cash-closing.query')">
+                                    {{ __('Cierre de caja') }}
+                                </x-dropdown-link>
+                            @endcan
                             <x-dropdown-link :href="__('#')">
                                 {{ __('Reporte de inventario') }}
                             </x-dropdown-link>
