@@ -36,6 +36,10 @@ class Movement extends Model
         return $this->hasOne(Balance::class);
     }
 
+    public function revenue(){
+        return $this->hasOne(Revenue::class);
+    }
+
     public function totalPrice()
     {
         return $this->amount * $this->unitary_price;

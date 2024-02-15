@@ -42,7 +42,7 @@ class ShowCashClosingRequest extends FormRequest
             ],
             'warehouse' => ['bail', 'nullable', 'integer', 'exists:warehouses,id'],
             'seller' => ['bail', 'nullable', 'integer', 'exists:sellers,id'],
-            'product' => ['bail', 'nullable', 'integer', 'exists:products,id'],
+            'product' => ['bail', 'nullable', 'integer', 'exists:products,id']
         ];
     }
 

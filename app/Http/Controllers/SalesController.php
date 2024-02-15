@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\Movement;
 use App\Models\Balance;
 use App\Models\MovementCategory;
+use App\Models\Revenue;
 use App\Models\SalePrice;
 use App\Models\Warehouse;
 use App\Models\WarehousesExistence;
@@ -39,7 +40,6 @@ class SalesController extends MovementController
         $movementsCount = count($validated['products']);
         for($i = 0; $i <  $movementsCount; $i++){
             // This is the normal sale price
-            // $salePrice = SalePrice::find($validated['sale_prices'][$i])->price;
             $data = [
                 // 'unitary_price' => $salePrice,
                 'amount' => $validated['amounts'][$i],
@@ -47,7 +47,13 @@ class SalesController extends MovementController
                 'product_id' => $validated['products'][$i],
                 'invoice_id' => $invoiceId,
             ];
-            $this->registerExpense($data, $validated['warehouse']);
+            $movement = $this->registerExpense($data, $validated['warehouse']);
+            $salePrice = SalePrice::find($validated['sale_prices'][$i])->price;
+            $this->storeRevenue([
+                'movement_id' => $movement->id,
+                'unitary_price' => $salePrice,
+                'amount' => $data['amount']
+            ]);
         }
         return redirect()->route('sales.create', ['success' => true]);
     }
@@ -68,7 +74,7 @@ class SalesController extends MovementController
         return $invoice->id;
     }
 
-    private function registerExpense(array $data, int $warehouseId): void
+    private function registerExpense(array $data, int $warehouseId): Movement
     {
         // Create Movement
         $lastBalance = Product::find($data['product_id'])
@@ -99,6 +105,19 @@ class SalesController extends MovementController
         $warehousesExistence->update([
             'amount' => $oldAmount - $data['amount']
         ]);
+
+        return $movement;
+    }
+
+    private function storeRevenue(array $data): void
+    {
+        $totalPrice = round(
+            $data['amount'] * $data['unitary_price'],
+            2,
+            PHP_ROUND_HALF_UP
+        );
+        $data['total_price'] = $totalPrice;
+        Revenue::create($data);
     }
 
     public function show(Invoice $sale){

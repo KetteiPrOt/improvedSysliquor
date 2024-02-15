@@ -69,16 +69,24 @@
                         <x-card-item :tag="__('Producto')">
                             {{$movement->product->productTag()}}
                         </x-card-item>                  
+                        @if($movement->revenue)
+                            <x-card-item :tag="__('Precio de Unitario (de venta)')">
+                                {{
+                                    '$'
+                                    . number_format($movement->revenue->unitary_price, 2, '.', ' ')
+                                }}
+                            </x-card-item> 
+                        @endif
                         <x-card-item :tag="__('Cantidad')">
                             {{$movement->amount}}
                         </x-card-item>   
-                        <x-card-item :tag="__('Precio Unitario')">
+                        <x-card-item :tag="__('Precio de Unitario (de compra)')">
                             {{
                                 '$'
                                 . number_format($movement->unitary_price, 2, '.', ' ')
                             }}
                         </x-card-item> 
-                        <x-card-item :tag="__('Precio Total')">
+                        <x-card-item :tag="__('Precio Total (kardex)')">
                             @php
                                 $totalPrice = round(
                                     $movement->amount
