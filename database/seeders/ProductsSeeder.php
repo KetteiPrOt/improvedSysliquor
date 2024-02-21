@@ -26,7 +26,9 @@ class ProductsSeeder extends Seeder
         'COCKTAIL' =>  6,
         'ESPUMANTE' => 7,
         'SANGRIA' => 8,
-        'VODKA' => 9
+        'VODKA' => 9,
+        'LICOR' => 10,
+        'OTRO' => 11
     ];
 
     private array $presentations = [
@@ -352,7 +354,8 @@ class ProductsSeeder extends Seeder
             ['lambrusco rosato', 'VINO', 750],
             ['lambrusco roso', 'VINO', 750],
             ['miraflores', 'VINO', 750],
-            ['reservados', 'VINO', 750],
+            ['reservado tapa roja', 'VINO', 750],
+            ['reservado tapa morada', 'VINO', 750],
             ['tinto klaus', 'VINO', 750],
             ['blanco tocornal', 'VINO', 750],
             ['tinto tocornal', 'VINO', 750],
@@ -369,6 +372,10 @@ class ProductsSeeder extends Seeder
             ['royal blend', 'WHISKY', 750],
             ['lawsons', 'WHISKY', 750],
             ['zhumir pink', 'COCKTAIL', 750],
+            ['zander', 'LICOR', 1000],
+            ['genio', 'WHISKY', 750],
+            ['agua tonica', 'OTRO', 1000],
+            ['switch', 'OTRO', 1000],
         ];
     }
 }

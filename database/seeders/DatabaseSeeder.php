@@ -36,7 +36,9 @@ class DatabaseSeeder extends Seeder
             'COCKTAIL',
             'ESPUMANTE',
             'SANGRIA',
-            'VODKA'
+            'VODKA',
+            'LICOR',
+            'OTRO'
         ];
         foreach($types as $type){
             Type::create(['name' => $type]);
@@ -85,6 +87,6 @@ class DatabaseSeeder extends Seeder
         }
 
         // Register Products
-        // $this->call([ProductsSeeder::class]);
+        $this->call([ProductsSeeder::class]);
     }
 }
