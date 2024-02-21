@@ -128,7 +128,8 @@ class PurchaseController extends MovementController
         WarehousesExistence::create([
             'amount' => $data['amount'],
             'product_id' => $data['product_id'],
-            'warehouse_id' => $warehouseId
+            'warehouse_id' => $warehouseId,
+            'movement_id' => $movement->id
         ]);
     }
 
@@ -162,14 +163,16 @@ class PurchaseController extends MovementController
             // Update Warehouses Existence
             $oldAmount = $warehousesExistence->amount;
             $warehousesExistence->update([
-                'amount' => $oldAmount + $data['amount']
+                'amount' => $oldAmount + $data['amount'],
+                'movement_id' => $movement->id
             ]);
         } else {
             // Create Warehouses Existence
             WarehousesExistence::create([
                 'amount' => $data['amount'],
                 'product_id' => $data['product_id'],
-                'warehouse_id' => $warehouseId
+                'warehouse_id' => $warehouseId,
+                'movement_id' => $movement->id
             ]);
         }
     }

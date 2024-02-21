@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ShowCashClosingRequest;
-use Illuminate\Pagination\LengthAwarePaginator;
 use App\Models\Product;
 use App\Models\Revenue;
 use App\Models\Seller;
 use App\Models\Warehouse;
-use Illuminate\Http\Request;
 
 class CashClosingController extends Controller
 {
@@ -70,33 +68,6 @@ class CashClosingController extends Controller
                 'total_prices_summation' => $total_prices_summation
             ]);
         }
-    }
-
-    private function createPagination(
-        $collection,
-        Request $request,
-        int $perPage
-    ): LengthAwarePaginator
-    {
-        $currentPage = 1;
-        if($request->has('page')){
-            if(is_numeric($request->input('page'))){
-                if(intval($request->input('page')) > 0){
-                    $currentPage = $request->input('page');
-                }
-            }
-        }
-        $total = $collection->count();
-        $startingPoint = ($currentPage * $perPage) - $perPage;
-        $collection = $collection->slice($startingPoint, $perPage);
-        return new LengthAwarePaginator(
-            $collection,
-            $total,
-            $perPage,
-            options: [
-                'path' => $request->url(),
-            ]
-        );
     }
 
     private function customizeQuery($query, $validated): object

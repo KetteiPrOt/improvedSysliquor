@@ -4,9 +4,10 @@ use App\Http\Controllers\CashClosingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PurchaseController;
-use App\Http\Controllers\SalesController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\KardexController;
 use App\Http\Controllers\SellerController;
 
@@ -78,7 +79,7 @@ Route::middleware(['auth', 'permission:kardex'])->controller(KardexController::c
 });
 
 /* --- Sales --- */
-Route::middleware(['auth', 'permission:sales'])->controller(SalesController::class)->group(function () {
+Route::middleware(['auth', 'permission:sales'])->controller(SaleController::class)->group(function () {
     Route::get('/ventas/seleccionar-bodega', 'selectWarehouse')->name('sales.selectWarehouse');
     Route::post('/ventas/guardar-bodega', 'saveWarehouse')->name('sales.saveWarehouse');
     Route::get('/ventas/crear', 'create')->name('sales.create');
@@ -101,6 +102,12 @@ Route::middleware(['auth', 'permission:purchases'])->controller(PurchaseControll
 Route::middleware(['auth', 'permission:cash-closing'])->controller(CashClosingController::class)->group(function () {
     Route::get('/cierre-de-caja/consulta', 'query')->name('cash-closing.query');
     Route::get('/cierre-de-caja/ver', 'show')->name('cash-closing.show');
+});
+
+/* -- Inventory -- */
+Route::middleware(['auth', 'permission:inventory'])->controller(InventoryController::class)->group(function () {
+    Route::get('/inventario/consulta', 'query')->name('inventory.query');
+    Route::get('/inventario/ver', 'show')->name('inventory.show');
 });
 
 require __DIR__.'/auth.php';

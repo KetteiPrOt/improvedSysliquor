@@ -75,12 +75,14 @@ class KardexController extends Controller
     }
 
     public function popMovement(Product $product){
-        $lastMovement = $product->movements()->orderBy('id', 'desc')->first();
-        $movementsCount = $product->movements->count();
+        $allMovements = $product->movements()->orderBy('id', 'desc')->get();
+        $lastMovement = $allMovements->get(0);
+        $movementsCount = $allMovements->count();
         if($lastMovement){
             $invoice = $lastMovement->invoice;
             // update warehouses existence
             $this->updateWarehousesExistence(
+                $allMovements,
                 $lastMovement,
                 $invoice,
                 $movementsCount
@@ -102,13 +104,14 @@ class KardexController extends Controller
     }
 
     private function updateWarehousesExistence(
+        $allMovements,
         Movement $lastMovement,
         Invoice $invoice,
         int $movementsCount
     ): void
     {
         $product = $lastMovement->product;
-        $warehouse = $lastMovement->warehouse;
+        $warehouse = $invoice->warehouse;
         $warehousesExistence = WarehousesExistence::where('product_id', $product->id)
                                     ->where('warehouse_id', $warehouse->id)
                                     ->first();
@@ -119,18 +122,21 @@ class KardexController extends Controller
         } else {
             // update warehouses existence
             if($warehousesExistence){
+                $newHeadMovement = $allMovements->get(1);
                 if(
                     $invoice->movementCategory->id 
                     == MovementCategory::income()->id
                 ){
                     // Restore Warehouses Existence of a bad purchase
                     $warehousesExistence->update([
-                        'amount' => $oldAmount - $lastMovement->amount
+                        'amount' => $oldAmount - $lastMovement->amount,
+                        'movement_id' => $newHeadMovement->id
                     ]);
                 } else {
                     // Restore Warehouses Existence of a bad sale
                     $warehousesExistence->update([
-                        'amount' => $oldAmount + $lastMovement->amount
+                        'amount' => $oldAmount + $lastMovement->amount,
+                        'movement_id' => $newHeadMovement->id
                     ]);
                 }   
             }

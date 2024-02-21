@@ -13,7 +13,7 @@ class MovementController extends Controller
         if($amount > 0){
             $unitaryPrice = $totalPrice / $amount;
         } else {
-            $unitaryPrice = $totalPrice / 0.00000000001;
+            $unitaryPrice = $totalPrice;
         }
         return round($unitaryPrice, 2, PHP_ROUND_HALF_UP);
     }

@@ -17,7 +17,7 @@ use App\Models\Warehouse;
 use App\Models\WarehousesExistence;
 use Illuminate\Support\Facades\Auth;
 
-class SalesController extends MovementController
+class SaleController extends MovementController
 {
     public function create(Request $request){
         if(!$request->session()->has('current-sales-warehouse')){
@@ -39,9 +39,7 @@ class SalesController extends MovementController
         $invoiceId = $this->storeInvoice($validated);
         $movementsCount = count($validated['products']);
         for($i = 0; $i <  $movementsCount; $i++){
-            // This is the normal sale price
             $data = [
-                // 'unitary_price' => $salePrice,
                 'amount' => $validated['amounts'][$i],
                 'movement_type_id' => $validated['movement_types'][$i],
                 'product_id' => $validated['products'][$i],
@@ -103,7 +101,8 @@ class SalesController extends MovementController
                 ->first();
         $oldAmount = $warehousesExistence->amount;
         $warehousesExistence->update([
-            'amount' => $oldAmount - $data['amount']
+            'amount' => $oldAmount - $data['amount'],
+            'movement_id' => $movement->id
         ]);
 
         return $movement;
@@ -213,10 +212,12 @@ class SalesController extends MovementController
         $lastMovement = $movement;
         if($this->validSaleOperation($lastMovement)){
             $product = $lastMovement->product;
-            $movementsCount = $product->movements->count();
+            $allMovements = $product->movements()->orderBy('id', 'desc')->get();
+            $movementsCount = $allMovements->count();
             $invoice = $lastMovement->invoice;
             // update warehouses existence
             $this->updateWarehousesExistence(
+                $allMovements,
                 $lastMovement,
                 $invoice,
                 $movementsCount
@@ -232,6 +233,7 @@ class SalesController extends MovementController
     }
 
     private function updateWarehousesExistence(
+        $allMovements,
         Movement $lastMovement,
         Invoice $invoice,
         int $movementsCount
@@ -249,18 +251,21 @@ class SalesController extends MovementController
         } else {
             // update warehouses existence
             if($warehousesExistence){
+                $newHeadMovement = $allMovements->get(1);
                 if(
                     $invoice->movementCategory->id 
                     == MovementCategory::income()->id
                 ){
                     // Restore Warehouses Existence of a bad purchase
                     $warehousesExistence->update([
-                        'amount' => $oldAmount - $lastMovement->amount
+                        'amount' => $oldAmount - $lastMovement->amount,
+                        'movement_id' => $newHeadMovement->id
                     ]);
                 } else {
                     // Restore Warehouses Existence of a bad sale
                     $warehousesExistence->update([
-                        'amount' => $oldAmount + $lastMovement->amount
+                        'amount' => $oldAmount + $lastMovement->amount,
+                        'movement_id' => $newHeadMovement->id
                     ]);
                 }   
             }

@@ -40,6 +40,10 @@ class Movement extends Model
         return $this->hasOne(Revenue::class);
     }
 
+    public function warehouseExistence(){
+        return $this->hasOne(WarehousesExistence::class);
+    }
+    
     public function totalPrice()
     {
         return $this->amount * $this->unitary_price;

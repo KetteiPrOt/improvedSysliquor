@@ -85,6 +85,6 @@ class DatabaseSeeder extends Seeder
         }
 
         // Register Products
-        $this->call([ProductsSeeder::class]);
+        // $this->call([ProductsSeeder::class]);
     }
 }

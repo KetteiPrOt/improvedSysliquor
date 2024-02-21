@@ -11,7 +11,9 @@ class Search extends Component
 {
     use WithPagination;
     
-    public $search;
+    private bool $show = false;
+
+    public $search;    
 
     public function render()
     {
@@ -21,10 +23,18 @@ class Search extends Component
         ]);
     }
 
-    private function query(): null|object
+    public function mount($show = false)
     {
+        $this->show = $show;
+    }
+
+    protected function query(): null|object
+    {
+        // Show all by default?
+        $warehouses = $this->show
+                        ? Warehouse::paginate(5)
+                        : null;
         // Validation
-        $warehouses = null;
         if(is_string($this->search)){
             if(
                 mb_strlen($this->search) >= 2
@@ -37,7 +47,7 @@ class Search extends Component
         return $warehouses;
     }
 
-    private function current(): null|object
+    protected function current(): null|object
     {
         $id = session('current-sales-warehouse', null);
         $warehouse = Warehouse::find($id);

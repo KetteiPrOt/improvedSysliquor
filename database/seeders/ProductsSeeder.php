@@ -136,7 +136,8 @@ class ProductsSeeder extends Seeder
         WarehousesExistence::create([
             'amount' => $data['amount'],
             'product_id' => $data['product_id'],
-            'warehouse_id' => $liquorStoreId
+            'warehouse_id' => $liquorStoreId,
+            'movement_id' => $movement->id
         ]);
     }
 
@@ -197,7 +198,8 @@ class ProductsSeeder extends Seeder
             WarehousesExistence::create([
                 'amount' => $data['amount'],
                 'product_id' => $data['product_id'],
-                'warehouse_id' => $depositId
+                'warehouse_id' => $depositId,
+                'movement_id' => $movement->id
             ]);
         }
     }

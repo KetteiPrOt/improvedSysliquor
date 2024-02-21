@@ -133,6 +133,7 @@ new class extends Component
                         // auth()->user()->can('...') ||
                         // auth()->user()->can('...')
                         auth()->user()->can('cash-closing')
+                        || auth()->user()->can('inventory')
                     )
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <x-dropdown align="right" width="48">
@@ -160,9 +161,11 @@ new class extends Component
                                             {{ __('Cierre de caja') }}
                                         </x-dropdown-link>
                                     @endcan
-                                    <x-dropdown-link :href="__('#')">
-                                        {{ __('Reporte de Stock') }}
-                                    </x-dropdown-link>
+                                    @can('inventory')
+                                        <x-dropdown-link :href="route('inventory.query')">
+                                            {{ __('Reporte de Stock') }}
+                                        </x-dropdown-link>
+                                    @endcan
                                 </x-slot>
                             </x-dropdown>
                         </div>
@@ -311,6 +314,7 @@ new class extends Component
                 // auth()->user()->can('...') ||
                 // auth()->user()->can('...')
                 auth()->user()->can('cash-closing')
+                || auth()->user()->can('inventory')
             )
                 <div class="flex items-center">
                     <x-dropdown align="right" width="48">
@@ -332,9 +336,11 @@ new class extends Component
                                     {{ __('Cierre de caja') }}
                                 </x-dropdown-link>
                             @endcan
-                            <x-dropdown-link :href="__('#')">
-                                {{ __('Reporte de inventario') }}
-                            </x-dropdown-link>
+                            @can('inventory')
+                                <x-dropdown-link :href="route('inventory.query')">
+                                    {{ __('Reporte de Stock') }}
+                                </x-dropdown-link>
+                            @endcan
                         </x-slot>
                     </x-dropdown>
                 </div>
