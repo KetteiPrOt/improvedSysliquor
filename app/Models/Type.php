@@ -10,6 +10,8 @@ class Type extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'active'];
+
     public $timestamps = false;
 
     public function products(){

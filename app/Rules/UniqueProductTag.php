@@ -9,6 +9,12 @@ use App\Models\Product;
 
 class UniqueProductTag implements ValidationRule, DataAwareRule
 {
+    private int $ignoreId;
+
+    public function __construct(int $ignore = 0)
+    {
+        $this->ignoreId = $ignore;
+    }
     /**
      * All of the data under validation.
      *
@@ -35,14 +41,22 @@ class UniqueProductTag implements ValidationRule, DataAwareRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $products = Product::all();
-        foreach($products as $product){
-            $sameTag = ($product->type_id == $this->data['type']) &&
-                       ($product->name == strtoupper($value)) &&
-                       ($product->presentation_id == $this->data['presentation']);
-            if($sameTag){
-                $fail('El producto ya esta registrado');
+        foreach(Product::all() as $product){
+            if($product->id !== $this->ignoreId){
+                $notUnique = $this->validateTag($product, $value);
+                if($notUnique){
+                    $fail('El producto ya esta registrado');
+                }
             }
         }
+    }
+
+    private function validateTag(Product $product, mixed $value): bool
+    {
+        $sameTag =
+            ($product->type_id == $this->data['type'])
+            && ($product->name == strtoupper($value))
+            && ($product->presentation_id == $this->data['presentation']);
+        return $sameTag;
     }
 }

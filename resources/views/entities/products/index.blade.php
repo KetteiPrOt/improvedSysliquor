@@ -16,7 +16,12 @@
                         <div class="order-2 flex flex-col items-center sm:order-1 sm:block">
                             <!-- Search input -->
                             <x-input-label for="search" :value="__('Buscar producto:')" />
-                            <x-text-input id="search" name="search" value="{{$formBag['search'] ?? null}}" placeholder="..." class="mb-2" />
+                            <x-text-input
+                                id="search" name="search" class="mb-2"
+                                placeholder="..." minlength="2" maxlength="255" required
+                                value="{{$formBag['search'] ?? null}}" 
+                            />
+                            <x-input-error :messages="$errors->get('search')" />
                             <div>
                                 <!-- Send button -->
                                 <x-primary-button type="submit">

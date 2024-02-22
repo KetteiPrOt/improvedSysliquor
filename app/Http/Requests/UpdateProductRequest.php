@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\UniqueProductTag;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductRequest extends FormRequest
@@ -20,13 +21,17 @@ class UpdateProductRequest extends FormRequest
      */
     public function rules(): array
     {
+        $product = $this->route('product');
         return [
-            'type' => ['required', 'integer', 'exists:types,id'],
-            'name' => ['required', 'string', 'max:50'],
-            'presentation' => ['required', 'integer', 'exists:presentations,id'],
+            'type' => ['bail', 'required', 'integer', 'exists:types,id'],
+            'presentation' => ['bail', 'required', 'integer', 'exists:presentations,id'],
+            'name' => [
+                'bail', 'required', 'string', 'min:2', 'max:50',
+                new UniqueProductTag(ignore: $product->id)
+            ],
             'minimun_stock' => ['required', 'integer', 'min:1', 'max:9999'],
-            'sale_prices' => ['required', 'array:1,6,12', 'size:3'],
-            'sale_prices.*' => ['required', 'numeric', 'decimal:0,2', 'min:0.01', 'max:999']
+            'sale_prices' => ['required', 'array:0,1,2', 'size:3'],
+            'sale_prices.*' => ['numeric', 'decimal:0,2', 'min:0.01', 'max:999'],
         ];
     }
 
@@ -43,9 +48,9 @@ class UpdateProductRequest extends FormRequest
             'presentation' => 'Presentación',
             'minimun_stock' => 'Stock Mínimo',
             'sale_prices' => 'Precios de venta',
-            'sale_prices.1' => '1 unidad',
-            'sale_prices.6' => '6 unidades',
-            'sale_prices.12' => '12 unidades'
+            'sale_prices.0' => '1 unidad',
+            'sale_prices.1' => '6 unidades',
+            'sale_prices.2' => '12 unidades'
         ];
     }
 }

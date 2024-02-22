@@ -10,6 +10,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\KardexController;
 use App\Http\Controllers\SellerController;
+use App\Http\Controllers\TypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,16 @@ Route::middleware(['auth', 'permission:products'])->controller(ProductController
     Route::get('/productos/{product}/editar', 'edit')->name('products.edit');
     Route::put('/productos/{product}', 'update')->name('products.update');
     Route::delete('/productos/{product}', 'destroy')->name('products.destroy');
+});
+
+/* --- CRU Types --- */
+Route::middleware(['auth', 'permission:products'])->controller(TypeController::class)->group(function(){
+    Route::get('/tipos', 'index')->name('types.index');
+    Route::get('/tipos/crear', 'create')->name('types.create');
+    Route::post('/tipos', 'store')->name('types.store');
+    Route::get('/tipos/{type}', 'show')->name('types.show');
+    Route::get('/tipos/{type}/editar', 'edit')->name('types.edit');
+    Route::put('/tipos/{type}', 'update')->name('types.update');
 });
 
 /* --- CRUD Clients --- */

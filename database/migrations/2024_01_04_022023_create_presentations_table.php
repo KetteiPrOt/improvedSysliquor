@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('presentations', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->unsignedSmallInteger('content');
-            $table->unsignedInteger('used')->default(0);
+            $table->boolean('active')->default(true);
         });
     }
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('types', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->string('name', 20);
-            $table->unsignedInteger('used')->default(0);
+            $table->boolean('active')->default(true);
         });
     }
 

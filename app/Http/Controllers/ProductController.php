@@ -11,12 +11,22 @@ use App\Models\SalePrice;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Invoice;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
     public function index(Request $request){
-        $search = $request->get('search');
-        if($search){
+        $validator = Validator::make($request->all(), [
+            'search' => 'string|min:2|max:255'
+        ], attributes: ['search' => 'Buscar']);
+        if($validator->fails()){
+            return redirect()
+                ->route('products.index')
+                ->withErrors($validator)->withInput();
+        }
+        $validated = $validator->validated();
+        if(isset($validated['search'])){
+            $search = $validated['search'];
             $products = Product::searchByTag($search);
             $formBag['search'] = $search;
         } else {            
@@ -31,7 +41,7 @@ class ProductController extends Controller
 
     public function create(Request $request){
         return view('entities.products.create', [
-            'types' => Type::orderBy('used', 'desc')->get(),
+            'types' => Type::where('active', true)->orderBy('name')->get(),
             'presentations' => Presentation::orderBy('content')->get(),
             'success' => $request->get('success') ?? null
         ]);
@@ -40,18 +50,25 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request){
         $validated = $request->validated();
         // Save product
-        $product_id = Product::create([
-            'name' => strtoupper($validated['name']),
+        $product = Product::create([
+            'name' => str_replace(
+                "ñ", "Ñ", strtoupper($validated['name'])
+            ),
             'minimun_stock' => $validated['minimun_stock'],
             'type_id' => $validated['type'],
             'presentation_id' => $validated['presentation']
-        ])->id;
+        ]);
         // Save sale prices
-        foreach($validated['sale_prices'] as $units => $salePrice){
+        foreach($validated['sale_prices'] as $key => $salePrice){
+            $unitsNumbers = [1, 6, 12];
+            // If don't have (is null) sale price, take the last in the array
+            $salePrice = $salePrice ?? (
+                $validated['sale_prices'][1] ?? $validated['sale_prices'][0]
+            );
             SalePrice::create([
                 'price' => $salePrice,
-                'units_number_id' => UnitsNumber::where('units', $units)->first()->id,
-                'product_id' => $product_id
+                'units_number_id' => UnitsNumber::where('units', $unitsNumbers[$key])->value('id'),
+                'product_id' => $product->id
             ]);
         }
         return redirect()->route('products.create', ['success' => true]);
@@ -64,22 +81,25 @@ class ProductController extends Controller
     public function edit(Product $product){
         return view('entities.products.edit', [
             'product' => $product,
-            'types' => Type::orderBy('used', 'desc')->get(),
-            'presentations' => Presentation::orderBy('used', 'desc')->get()
+            'types' => Type::where('active', true)->orderBy('name')->get(),
+            'presentations' => Presentation::orderBy('content')->get()
         ]);
     }
 
     public function update(UpdateProductRequest $request, Product $product){
         $validated = $request->validated();
         // Update sale prices
-        foreach($product->salePrices as $salePrice){
-            $salePrice->update([
-                'price' => $validated['sale_prices'][$salePrice->unitsNumber->units]
+        $salePrices = $product->salePrices;
+        foreach($validated['sale_prices'] as $key => $newSalePrice){
+            $salePrices->get($key)->update([
+                'price' => $newSalePrice
             ]);
         }
         // Update product
         $product->update([
-            'name' => $validated['name'],
+            'name' => str_replace(
+                "ñ", "Ñ", strtoupper($validated['name'])
+            ),
             'minimun_stock' => $validated['minimun_stock'],
             'type_id' => $validated['type'],
             'presentation_id' => $validated['presentation']

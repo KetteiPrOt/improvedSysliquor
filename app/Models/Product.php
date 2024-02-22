@@ -33,25 +33,33 @@ class Product extends Model
 
     public function productTag(): string
     {
-        $tag = $this->type->name . ' ' . 
-                $this->name . ' ' . 
-                $this->presentation->content . 'ml';
-        return $tag;
+        return 
+            Product::join('types', 'products.type_id', '=', 'types.id')
+                ->join('presentations', 'products.presentation_id', '=', 'presentations.id')
+                ->selectRaw("
+                    CONCAT_WS(' ',
+                        `types`.`name`,
+                        `products`.`name`,
+                        CONCAT(`presentations`.`content`, 'ml')
+                    ) as `name`
+                ")->where('products.id', $this->id)->value('name');
     }
 
     public static function searchByTag($search, $pagination = 25){
-        $search = strtoupper($search);
-        $products = Product::join('types', 'products.type_id', '=', 'types.id')
-                            ->join('presentations', 'products.presentation_id', '=', 'presentations.id')
-                            ->select('products.*')
-                            ->whereRaw("
-                                CONCAT_WS(' ',
-                                    `types`.`name`,
-                                    `products`.`name`,
-                                    CONCAT(`presentations`.`content`, 'ml')
-                                ) LIKE ?
-                            ", ["%$search%"])
-                            ->paginate($pagination);
-        return $products;
+        $search = str_replace(
+            "ñ", "Ñ", strtoupper($search)
+        );
+        return 
+            Product::join('types', 'products.type_id', '=', 'types.id')
+                ->join('presentations', 'products.presentation_id', '=', 'presentations.id')
+                ->select('products.*')
+                ->whereRaw("
+                    CONCAT_WS(' ',
+                        `types`.`name`,
+                        `products`.`name`,
+                        CONCAT(`presentations`.`content`, 'ml')
+                    ) LIKE ?
+                ", ["%$search%"])
+                ->paginate($pagination);
     }
 }
