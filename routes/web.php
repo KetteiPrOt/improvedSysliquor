@@ -9,8 +9,10 @@ use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\KardexController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\TypeController;
+use App\Http\Controllers\UserPermissionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,6 +121,26 @@ Route::middleware(['auth', 'permission:cash-closing'])->controller(CashClosingCo
 Route::middleware(['auth', 'permission:inventory'])->controller(InventoryController::class)->group(function () {
     Route::get('/inventario/consulta', 'query')->name('inventory.query');
     Route::get('/inventario/ver', 'show')->name('inventory.show');
+});
+
+/* -- Permissions -- */
+Route::middleware(['auth', 'permission:permissions'])->controller(UserPermissionsController::class)->group(function () {
+    Route::get('/permisos-de-usuario', 'users')->name('user-permissions.users');
+    Route::get('/permisos-de-usuario/{user}/editar', 'edit')->name('user-permissions.edit');
+    Route::put('/permisos-de-usuario/{user}', 'update')->name('user-permissions.update');
+    // Route::get('/permisos-de-usuario/{user}/roles/editar', 'edit-roles')->name('user-permissions.edit-roles');
+    // Route::put('/permisos-de-usuario/{user}/roles', 'update')->name('user-permissions.update');
+});
+
+Route::middleware(['auth', 'permission:permissions'])->controller(RoleController::class)->group(function () {
+    Route::get('/roles', 'index')->name('roles.index');
+    // Route::get('/roles/crear', 'create')->name('roles.create');
+    // Route::post('/roles', 'store')->name('roles.store');
+    // Route::get('/roles/{role}/usuarios/editar', 'edit')->name('roles.edit-users');
+    // Route::put('/roles/{role}/usuarios', 'update')->name('roles.update-users');
+    // Route::get('/roles/{role}/editar', 'edit')->name('roles.edit');
+    // Route::put('/roles/{role}', 'update')->name('roles.update');
+    // Route::delete('/roles/{role}', 'destroy')->name('roles.destroy');
 });
 
 require __DIR__.'/auth.php';

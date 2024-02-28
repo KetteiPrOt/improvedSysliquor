@@ -10,8 +10,6 @@ use App\Models\Presentation;
 use App\Models\Warehouse;
 use App\Models\MovementCategory;
 use App\Models\MovementType;
-// Testing
-// use Database\Seeders\Testing\ProductsSeeder;
 
 class DatabaseSeeder extends Seeder
 {

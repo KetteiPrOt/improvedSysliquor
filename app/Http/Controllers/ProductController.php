@@ -34,7 +34,7 @@ class ProductController extends Controller
             $formBag = null;
         }
         return view('entities.products.index', [
-            'products' => $products,
+            'products' => $products->withQueryString(),
             'formBag' => $formBag
         ]);
     }

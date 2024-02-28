@@ -7,9 +7,8 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
-                'resources/css/components/InvoiceNumberInput/styles.css',
-                'resources/js/components/InvoiceNumberInput/InvoiceNumber.js',
-                'resources/js/components/InvoiceNumberInput/main.js',
+                'resources/css/components/*/*.css',
+                'resources/js/components/*/*.js',
             ],
             refresh: true,
         }),

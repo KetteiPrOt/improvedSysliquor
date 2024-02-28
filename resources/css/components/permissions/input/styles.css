@@ -1,0 +1,9 @@
+.permission-btn-enabled {
+    background-color: white;
+    opacity: 1;
+}
+
+.permission-btn-disabled {
+    background-color: #F2F3F5; /*bg-gray-200*/
+    opacity: 0.5;
+}
