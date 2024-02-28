@@ -128,7 +128,7 @@ Route::middleware(['auth', 'permission:permissions'])->controller(UserPermission
     Route::get('/permisos-de-usuario', 'users')->name('user-permissions.users');
     Route::get('/permisos-de-usuario/{user}/editar', 'edit')->name('user-permissions.edit');
     Route::put('/permisos-de-usuario/{user}', 'update')->name('user-permissions.update');
-    // Route::get('/permisos-de-usuario/{user}/roles/editar', 'edit-roles')->name('user-permissions.edit-roles');
+    Route::get('/permisos-de-usuario/{user}/roles/editar', 'editRoles')->name('user-permissions.edit-roles');
     // Route::put('/permisos-de-usuario/{user}/roles', 'update')->name('user-permissions.update');
 });
 

@@ -59,4 +59,11 @@ class UserPermissionsController extends Controller
         }
         return redirect()->route('user-permissions.users');
     }
+
+    public function editRoles(User $user)
+    {
+        return view('user-permissions.edit-roles', [
+            'user' => $user
+        ]);
+    }
 }

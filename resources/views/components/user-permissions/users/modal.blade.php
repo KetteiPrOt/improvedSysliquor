@@ -28,6 +28,13 @@
             @endforelse
         </p>
 
+        <x-secondary-link-button
+            class="mt-2 mb-2"
+            :href="route('user-permissions.edit-roles', $user->id)"
+        >
+            Modificar Roles
+        </x-secondary-link-button>
+
         <h4 class="text-lg font-bold">
             <strong>Permisos Directos:</strong>
         </h4>

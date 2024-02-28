@@ -150,12 +150,12 @@ new class extends Component
                                 </x-slot>
             
                                 <x-slot name="content">
-                                    <x-dropdown-link :href="__('#')">
+                                    {{-- <x-dropdown-link :href="__('#')">
                                         {{ __('Cuentas por cobrar') }}
                                     </x-dropdown-link>
                                     <x-dropdown-link :href="__('#')">
                                         {{ __('Cuentas por pagar') }}
-                                    </x-dropdown-link>
+                                    </x-dropdown-link> --}}
                                     @can('cash-closing')
                                         <x-dropdown-link :href="route('cash-closing.query')">
                                             {{ __('Cierre de caja') }}
@@ -191,7 +191,7 @@ new class extends Component
                                     <x-dropdown-link :href="route('user-permissions.users')">
                                         {{ __('Usuarios') }}
                                     </x-dropdown-link>
-                                    <x-dropdown-link :href="route('roles.index')">
+                                    <x-dropdown-link :href="__('#')"{{-- :href="route('roles.index')" --}}>
                                         {{ __('Roles') }}
                                     </x-dropdown-link>
                                 </x-slot>
@@ -346,12 +346,12 @@ new class extends Component
                         </x-slot>
 
                         <x-slot name="content">
-                            <x-dropdown-link :href="__('#')">
+                            {{-- <x-dropdown-link :href="__('#')">
                                 {{ __('Cuentas por cobrar') }}
                             </x-dropdown-link>
                             <x-dropdown-link :href="__('#')">
                                 {{ __('Cuentas por pagar') }}
-                            </x-dropdown-link>
+                            </x-dropdown-link> --}}
                             @can('cash-closing')
                                 <x-dropdown-link :href="route('cash-closing.query')">
                                     {{ __('Cierre de caja') }}
@@ -370,7 +370,7 @@ new class extends Component
             <!-- Admin Permissions -->
             @can('permissions')
                 <div class="flex items-center">
-                    <x-dropdown align="right" width="48">
+                    <x-dropdown align="center" width="32">
                         <x-slot name="trigger">
                             <x-responsive-dropdown-button>
                                 Permisos
@@ -381,7 +381,7 @@ new class extends Component
                             <x-dropdown-link :href="route('user-permissions.users')">
                                 {{ __('Usuarios') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('roles.index')">
+                            <x-dropdown-link :href="__('#')"{{-- :href="route('roles.index')" --}}>
                                 {{ __('Roles') }}
                             </x-dropdown-link>
                         </x-slot>
