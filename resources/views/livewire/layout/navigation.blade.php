@@ -191,7 +191,7 @@ new class extends Component
                                     <x-dropdown-link :href="route('user-permissions.users')">
                                         {{ __('Usuarios') }}
                                     </x-dropdown-link>
-                                    <x-dropdown-link :href="__('#')"{{-- :href="route('roles.index')" --}}>
+                                    <x-dropdown-link :href="route('roles.index')">
                                         {{ __('Roles') }}
                                     </x-dropdown-link>
                                 </x-slot>
@@ -381,7 +381,7 @@ new class extends Component
                             <x-dropdown-link :href="route('user-permissions.users')">
                                 {{ __('Usuarios') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="__('#')"{{-- :href="route('roles.index')" --}}>
+                            <x-dropdown-link :href="route('roles.index')">
                                 {{ __('Roles') }}
                             </x-dropdown-link>
                         </x-slot>
