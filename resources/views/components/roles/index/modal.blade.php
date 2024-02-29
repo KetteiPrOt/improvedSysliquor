@@ -39,7 +39,7 @@
         @if($role->name != 'Administrador')
             <x-secondary-link-button
                 class="mt-2"
-                :href="__('#')"
+                :href="route('roles.edit', $role->id)"
             >
                 Modificar
             </x-secondary-link-button>
@@ -73,7 +73,7 @@
 
         <x-secondary-link-button
             class="mt-2 mb-2"
-            :href="__('#')"
+            :href="route('roles.edit-users', $role->id)"
         >
             Modificar
         </x-secondary-link-button>

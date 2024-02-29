@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\UserPermissions;
+namespace App\Livewire\Roles;
 
 use App\Models\User;
 use Livewire\Attributes\Locked;
@@ -8,55 +8,56 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Role;
 
-class EditRoles extends Component
+class EditUsers extends Component
 {
+    use WithPagination;
     use WithPagination;
 
     #[Locked]
-    public User $user;
+    public Role $role;
 
     #[Locked]
-    public array $currentRoles = [];
+    public array $currentUsers = [];
 
     public $search;
 
-    public function mount($roles, $user)
+    public function mount($users, $role)
     {
-        $this->user = $user;
-        foreach($roles as $role){
-            $this->currentRoles[$role->id] = $role->name;
+        $this->role = $role;
+        foreach($users as $user){
+            $this->currentUsers[$user->id] = $user->name;
         }
     }
 
     public function render()
     {
-        return view('livewire..user-permissions.edit-roles', [
-            'roles' => $this->queryRoles()
+        return view('livewire..roles.edit-users', [
+            'users' => $this->queryUsers()
         ]);
     }
 
-    private function queryRoles()
+    private function queryUsers()
     {
         $search = $this->validateSearch();
         if(is_null($search)){
-            $roles = 
-                Role::whereNotIn(
+            $users = 
+                User::whereNotIn(
                         'id',
-                        array_flip($this->currentRoles)
+                        array_flip($this->currentUsers)
                     )->paginate(5);
         } else {
-            $roles = 
-                Role::whereRaw("
+            $users = 
+                User::whereRaw("
                         `name` LIKE ?
                     ", ["%$search%"])
                     ->whereNotIn(
                         'id',
-                        array_flip($this->currentRoles)
+                        array_flip($this->currentUsers)
                     )
                     ->paginate(5);
             $this->resetPage();
         }
-        return $roles;
+        return $users;
     }
 
     private function validateSearch(): string|null
@@ -84,29 +85,29 @@ class EditRoles extends Component
         return $validated;
     }
 
-    public function removeRole($roleId, $userId)
+    public function removeUser($userId, $roleId)
     {
-        $role = Role::find($this->validateId($roleId));
         $user = User::find($this->validateId($userId));
+        $role = Role::find($this->validateId($roleId));
         if(!is_null($role) && !is_null($user)){
             $user->removeRole($role->name);
         }
-        $this->reset('currentRoles');
-        foreach($user->roles as $currentRole){
-            $this->currentRoles[$currentRole->id] = $currentRole->name;
+        $this->reset('currentUsers');
+        foreach($role->users as $currentUser){
+            $this->currentUsers[$currentUser->id] = $currentUser->name;
         }
     }
 
-    public function addRole($roleId, $userId)
+    public function addUser($userId, $roleId)
     {
-        $role = Role::find($this->validateId($roleId));
         $user = User::find($this->validateId($userId));
+        $role = Role::find($this->validateId($roleId));
         if(!is_null($role) && !is_null($user)){
             $user->assignRole($role->name);
         }
-        $this->reset('currentRoles');
-        foreach($user->roles as $currentRole){
-            $this->currentRoles[$currentRole->id] = $currentRole->name;
+        $this->reset('currentUsers');
+        foreach($role->users as $currentUser){
+            $this->currentUsers[$currentUser->id] = $currentUser->name;
         }
     }
 }

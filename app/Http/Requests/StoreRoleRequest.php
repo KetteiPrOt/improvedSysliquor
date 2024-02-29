@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Permission;
+use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateUserPermissionsRequest extends FormRequest
+class StoreRoleRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,6 +15,11 @@ class UpdateUserPermissionsRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'name' => [
+                'required', 'string', 'min:2', 'max:255',
+                'regex:/^(?!Administrador$).*/i',
+                'unique:roles,name'
+            ],
             'products' => ['sometimes', 'accepted'],
             'clients' => ['sometimes', 'accepted'],
             'providers' => ['sometimes', 'accepted'],
@@ -31,6 +36,15 @@ class UpdateUserPermissionsRequest extends FormRequest
 
     public function attributes(): array
     {
-        return Permission::$directPermissionNames;
+        $attributes = Permission::$directPermissionNames;
+        $attributes['name'] = 'Nombre';
+        return $attributes;
+    }
+    
+    public function messages(): array
+    {
+        return [
+            'name.regex' => 'El rol de Administrador es único.'
+        ];
     }
 }

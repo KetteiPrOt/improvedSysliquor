@@ -134,13 +134,12 @@ Route::middleware(['auth', 'permission:permissions'])->controller(UserPermission
 
 Route::middleware(['auth', 'permission:permissions'])->controller(RoleController::class)->group(function () {
     Route::get('/roles', 'index')->name('roles.index');
-    // Route::get('/roles/crear', 'create')->name('roles.create');
-    // Route::post('/roles', 'store')->name('roles.store');
-    // Route::get('/roles/{role}/usuarios/editar', 'edit')->name('roles.edit-users');
-    // Route::put('/roles/{role}/usuarios', 'update')->name('roles.update-users');
-    // Route::get('/roles/{role}/editar', 'edit')->name('roles.edit');
-    // Route::put('/roles/{role}', 'update')->name('roles.update');
-    // Route::delete('/roles/{role}', 'destroy')->name('roles.destroy');
+    Route::get('/roles/crear', 'create')->name('roles.create');
+    Route::post('/roles', 'store')->name('roles.store');
+    Route::get('/roles/{role}/usuarios/editar', 'editUsers')->name('roles.edit-users');
+    Route::get('/roles/{role}/editar', 'edit')->name('roles.edit');
+    Route::put('/roles/{role}', 'update')->name('roles.update');
+    Route::delete('/roles/{role}', 'destroy')->name('roles.destroy');
 });
 
 require __DIR__.'/auth.php';

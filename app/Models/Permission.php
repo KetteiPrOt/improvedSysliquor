@@ -45,4 +45,18 @@ class Permission extends SpatieModel
         'inventory' => 'Reporte de stock',
         'permissions' => 'Parametrizar permisos'
     ];
+
+    public static array $directPermissionNames = [
+        'products' => 'Productos',
+        'clients' => 'Clientes',
+        'providers' => 'Proveedores',
+        'sellers' => 'Vendedores',
+        'purchases' => 'Compras',
+        'sales' => 'Ventas',
+        'kardex' => 'Kardex',
+        'cash-closing' => 'Cierre de Caja',
+        'inventory' => 'Reporte de stock',
+        // Only role Administrator can manage permissions
+        // 'permissions'
+    ];
 }

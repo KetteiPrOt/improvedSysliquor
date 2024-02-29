@@ -1,4 +1,4 @@
-@props(['permissions', 'translator'])
+@props(['permissions' => collect([]), 'translator'])
 
 @php
     $visualLayout = false;
