@@ -10,6 +10,8 @@ class Presentation extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['content', 'active'];
+    
     public $timestamps = false;
 
     public function products(){

@@ -42,6 +42,9 @@
                                 >{{$presentation->content . 'ml'}}</option>
                             @endforeach
                         </x-select-input>
+                        <a href="{{route('presentations.index')}}" class="text-blue-400 underline">
+                            Administrar Presentaciones
+                        </a>
                         <!-- Error messages -->
                         <x-input-error :messages="$errors->get('type')" />
                         <x-input-error :messages="$errors->get('name')" />

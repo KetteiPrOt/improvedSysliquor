@@ -9,6 +9,7 @@ use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\KardexController;
+use App\Http\Controllers\PresentationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\TypeController;
@@ -54,6 +55,16 @@ Route::middleware(['auth', 'permission:products'])->controller(TypeController::c
     Route::get('/tipos/{type}', 'show')->name('types.show');
     Route::get('/tipos/{type}/editar', 'edit')->name('types.edit');
     Route::put('/tipos/{type}', 'update')->name('types.update');
+});
+
+/* -- CRU Presentations -- */
+Route::middleware(['auth', 'permission:products'])->controller(PresentationController::class)->group(function(){
+    Route::get('/presentationes', 'index')->name('presentations.index');
+    Route::get('/presentationes/crear', 'create')->name('presentations.create');
+    Route::post('/presentationes', 'store')->name('presentations.store');
+    Route::get('/presentationes/{presentation}', 'show')->name('presentations.show');
+    Route::get('/presentationes/{presentation}/editar', 'edit')->name('presentations.edit');
+    Route::put('/presentationes/{presentation}', 'update')->name('presentations.update');
 });
 
 /* --- CRUD Clients --- */
@@ -129,7 +140,6 @@ Route::middleware(['auth', 'permission:permissions'])->controller(UserPermission
     Route::get('/permisos-de-usuario/{user}/editar', 'edit')->name('user-permissions.edit');
     Route::put('/permisos-de-usuario/{user}', 'update')->name('user-permissions.update');
     Route::get('/permisos-de-usuario/{user}/roles/editar', 'editRoles')->name('user-permissions.edit-roles');
-    // Route::put('/permisos-de-usuario/{user}/roles', 'update')->name('user-permissions.update');
 });
 
 Route::middleware(['auth', 'permission:permissions'])->controller(RoleController::class)->group(function () {

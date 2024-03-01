@@ -20,6 +20,13 @@
                         :users="$role->users"
                     />
 
+                    <x-secondary-button
+                        class="mt-4"
+                        :href="route('roles.index')"
+                    >
+                        Volver
+                    </x-secondary-button>
+
                 </div>
             </div>
         </div>

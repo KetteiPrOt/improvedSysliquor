@@ -42,7 +42,7 @@ class ProductController extends Controller
     public function create(Request $request){
         return view('entities.products.create', [
             'types' => Type::where('active', true)->orderBy('name')->get(),
-            'presentations' => Presentation::orderBy('content')->get(),
+            'presentations' => Presentation::where('active', true)->orderBy('content')->get(),
             'success' => $request->get('success') ?? null
         ]);
     }
@@ -82,7 +82,7 @@ class ProductController extends Controller
         return view('entities.products.edit', [
             'product' => $product,
             'types' => Type::where('active', true)->orderBy('name')->get(),
-            'presentations' => Presentation::orderBy('content')->get()
+            'presentations' => Presentation::where('active', true)->orderBy('content')->get()
         ]);
     }
 
