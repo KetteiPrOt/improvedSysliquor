@@ -17,6 +17,7 @@ class ShowInventoryRequest extends FormRequest
         return [
             'warehouse' => ['integer', 'exists:warehouses,id'],
             'date' => ['exclude_with:warehouse', 'required', 'string', 'date_format:Y-m-d', new PastDate],
+            'page' => 'integer|min:1',
             'orderBy' => ['string', 'min:2', 'max:255'],
             'order' => 'boolean',
         ];

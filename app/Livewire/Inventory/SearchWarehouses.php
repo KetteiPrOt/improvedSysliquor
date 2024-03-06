@@ -23,11 +23,12 @@ class SearchWarehouses extends Search
             dateInput.disabled = true;
             dateInput.redonly = true;
             const date = new Date();
-            let month = date.getMonth() + 1;
+            let month = date.getMonth() + 1,
+                day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
             let currentDate =
                 `${date.getFullYear()}-${
                     (month < 10) ? '0' + (month) : month
-                }-${date.getDate()}`;
+                }-${day}`;
             dateInput.value = currentDate;
         JS;
     }

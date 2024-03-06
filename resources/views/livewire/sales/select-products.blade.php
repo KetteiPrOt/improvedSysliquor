@@ -8,7 +8,8 @@
             :data="compact(
                 'selectedProducts',
                 'movementTypes',
-                'saleType'
+                'saleType',
+                'warehouse'
             )"
         />
 
@@ -32,6 +33,41 @@
             <p class="text-red-400 mb-3">No se encontraron productos...</p>
         @endif
     @endif
+
+    <x-input-error :messages="$errors->get('products')" />
+    @foreach($errors->get('products.*') as $error)
+        <x-input-error :messages="$error" />
+    @endforeach
+
+    <x-input-error :messages="$errors->get('amounts')" />
+    @foreach($errors->get('amounts.*') as $error)
+        <x-input-error :messages="$error" />
+    @endforeach
+
+    <x-input-error :messages="$errors->get('sale_prices')" />
+    @foreach($errors->get('sale_prices.*') as $error)
+        <x-input-error :messages="$error" />
+    @endforeach
+
+    <x-input-error :messages="$errors->get('movement_types')" />
+    @foreach($errors->get('movement_types.*') as $error)
+        <x-input-error :messages="$error" />
+    @endforeach
+
+    <x-input-error :messages="$errors->get('comments')" />
+    @foreach($errors->get('comments.*') as $error)
+        <x-input-error :messages="$error" />
+    @endforeach
+
+    <x-input-error :messages="$errors->get('credits')" />
+    @foreach($errors->get('credits.*') as $error)
+        <x-input-error :messages="$error" />
+    @endforeach
+
+    <x-input-error :messages="$errors->get('due_dates')" />
+    @foreach($errors->get('due_dates.*') as $error)
+        <x-input-error :messages="$error" />
+    @endforeach
 
     @script
     <script>

@@ -32,7 +32,7 @@ class SelectProducts extends Component
     {
         $selectedProducts = $this->querySelectedProducts();
         if($this->search){
-            $products = Product::searchByTag($this->search, 5);
+            $products = Product::searchByTag($this->search, 5, 'product');
         }
         $incomeCategory = MovementCategory::expense();
         $movementTypes = $incomeCategory
@@ -185,6 +185,39 @@ class SelectProducts extends Component
                 summation += parseFloat(document.getElementById(`totalPrice${i}`).value);
             }
             totalPricesSummation.textContent = summation.toFixed(2);
+        JS;
+    }
+
+    #[Js]
+    public function handleCreditInputChange()
+    {
+        return <<<'JS'
+            let targetId = event.target.id,
+                productId = targetId.substring(
+                    targetId.indexOf('-') + 1,
+                    targetId.lastIndexOf('-'),
+                ),
+                dateElement = document.getElementById(`due-date-${productId}`),
+                dateInput = document.getElementById(`due-date-${productId}-input`);
+
+            if(event.target.checked){
+                // show input
+                dateElement.classList.remove('hidden');
+                dateElement.classList.add('show');
+            } else {
+                // reset and hide input
+                let date = new Date();
+                date.setDate(date.getDate() + 25);
+
+                let month = date.getMonth() + 1,
+                    day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+                    nextMonthDate = `${date.getFullYear()}-${
+                            (month < 10) ? '0' + (month) : month
+                        }-${day}`;
+                dateInput.value = nextMonthDate;
+                dateElement.classList.remove('show');
+                dateElement.classList.add('hidden');
+            }
         JS;
     }
 }

@@ -24,6 +24,8 @@ class UpdateUserPermissionsRequest extends FormRequest
             'kardex' => ['sometimes', 'accepted'],
             'cash-closing' => ['sometimes', 'accepted'],
             'inventory' => ['sometimes', 'accepted'],
+            'sales-report' => ['sometimes', 'accepted'],
+            'purchases-report' => ['sometimes', 'accepted'],
             // Only role Administrator can manage permissions
             // 'permissions' => ['sometimes', 'accepted']
         ];

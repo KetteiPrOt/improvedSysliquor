@@ -12,30 +12,18 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    protected function createPagination(
-        $collection,
-        Request $request,
-        int $perPage
-    ): LengthAwarePaginator
+    protected function paginate($collection, $perPage, $currentPage, $path): LengthAwarePaginator
     {
-        $currentPage = 1;
-        if($request->has('page')){
-            if(is_numeric($request->input('page'))){
-                if(intval($request->input('page')) > 0){
-                    $currentPage = $request->input('page');
-                }
-            }
-        }
-        $total = $collection->count();
-        $startingPoint = ($currentPage * $perPage) - $perPage;
-        $collection = $collection->slice($startingPoint, $perPage);
-        return new LengthAwarePaginator(
-            $collection,
-            $total,
+        $start = $perPage * ($currentPage - 1);
+        $paginated = new LengthAwarePaginator(
+            $collection->slice($start, $perPage),
+            $collection->count(),
             $perPage,
+            $currentPage,
             options: [
-                'path' => $request->url(),
+                'path' => $path,
             ]
         );
+        return $paginated;
     }
 }

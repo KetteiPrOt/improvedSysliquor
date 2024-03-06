@@ -5,12 +5,16 @@ namespace App\Livewire\Entities\Sellers;
 use App\Models\Seller;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Js;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Search extends Component
 {
     use WithPagination;
+
+    #[Locked]
+    public $showDefault;
 
     public $search;
 
@@ -20,6 +24,11 @@ class Search extends Component
             'sellers' => $this->query(),
             'currentSeller' => Auth::user()->seller
         ]);
+    }
+
+    public function mount($default = true)
+    {
+        $this->showDefault = $default;
     }
 
     public function query(): null|object

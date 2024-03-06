@@ -41,10 +41,19 @@ class SaleController extends MovementController
         for($i = 0; $i <  $movementsCount; $i++){
             $data = [
                 'amount' => $validated['amounts'][$i],
+                'comment' => $validated['comments'][$i],
                 'movement_type_id' => $validated['movement_types'][$i],
                 'product_id' => $validated['products'][$i],
                 'invoice_id' => $invoiceId,
             ];
+            if(isset($validated['credits'])){
+                $credits = $validated['credits'];
+                $productId = $validated['products'][$i];
+                if(isset($credits[$productId])){
+                    $data['paid'] = false;
+                    $data['due_date'] = $validated['due_dates'][$productId];
+                }
+            }
             $movement = $this->registerExpense($data, $validated['warehouse']);
             $salePrice = SalePrice::find($validated['sale_prices'][$i])->price;
             $this->storeRevenue([

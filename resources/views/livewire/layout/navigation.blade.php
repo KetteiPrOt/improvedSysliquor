@@ -134,6 +134,7 @@ new class extends Component
                         // auth()->user()->can('...')
                         auth()->user()->can('cash-closing')
                         || auth()->user()->can('inventory')
+                        || auth()->user()->can('sales-report')
                     )
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <x-dropdown align="right" width="48">
@@ -151,11 +152,13 @@ new class extends Component
             
                                 <x-slot name="content">
                                     {{-- <x-dropdown-link :href="__('#')">
-                                        {{ __('Cuentas por cobrar') }}
-                                    </x-dropdown-link>
-                                    <x-dropdown-link :href="__('#')">
                                         {{ __('Cuentas por pagar') }}
                                     </x-dropdown-link> --}}
+                                    @can('sales-report')
+                                        <x-dropdown-link :href="route('sales-report.query')">
+                                            {{ __('Reporte de ventas') }}
+                                        </x-dropdown-link>
+                                    @endcan
                                     @can('cash-closing')
                                         <x-dropdown-link :href="route('cash-closing.query')">
                                             {{ __('Cierre de caja') }}
@@ -346,12 +349,14 @@ new class extends Component
                         </x-slot>
 
                         <x-slot name="content">
-                            {{-- <x-dropdown-link :href="__('#')">
-                                {{ __('Cuentas por cobrar') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link :href="__('#')">
+                            {{--<x-dropdown-link :href="__('#')">
                                 {{ __('Cuentas por pagar') }}
                             </x-dropdown-link> --}}
+                            @can('sales-report')
+                                <x-dropdown-link :href="route('sales-report.query')">
+                                    {{ __('Reporte de ventas') }}
+                                </x-dropdown-link>
+                            @endcan
                             @can('cash-closing')
                                 <x-dropdown-link :href="route('cash-closing.query')">
                                     {{ __('Cierre de caja') }}

@@ -49,13 +49,14 @@ class InventoryController extends Controller
             $query = $this->allFilters($filters, $orderBy);
             dd($query);
         }
-        $productsCollection = $query['result'];
+        $products = $query['result'];
         $validated['orderBy'] = $query['column'];
         $total_prices_summation = '$' . number_format(
-            $productsCollection->sum('total_price'), 2, ',', ' '
+            $products->sum('total_price'), 2, '.', ' '
         );
-        $products = $this->createPagination($productsCollection, $request, 25);
-        $products->withQueryString();
+        $products = $this->paginate(
+            $products, 25, $validated['page'] ?? 1, $request->url()
+        )->withQueryString();
         return view('inventory.show', [
             'products' => $products,
             'total_prices_summation' => $total_prices_summation,

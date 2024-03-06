@@ -16,6 +16,8 @@ class Permission extends SpatieModel
         'kardex',
         'cash-closing',
         'inventory',
+        'sales-report',
+        'purchases-report',
         'permissions'
     ];
 
@@ -29,6 +31,8 @@ class Permission extends SpatieModel
         'kardex',
         'cash-closing',
         'inventory',
+        'sales-report',
+        'purchases-report',
         // Only role Administrator can manage permissions
         // 'permissions'
     ];
@@ -43,6 +47,8 @@ class Permission extends SpatieModel
         'kardex' => 'Kardex',
         'cash-closing' => 'Cierre de Caja',
         'inventory' => 'Reporte de stock',
+        'sales-report' => 'Reporte de Ventas',
+        'purchases-report' => 'Reporte de Compras',
         'permissions' => 'Parametrizar permisos'
     ];
 
@@ -56,6 +62,8 @@ class Permission extends SpatieModel
         'kardex' => 'Kardex',
         'cash-closing' => 'Cierre de Caja',
         'inventory' => 'Reporte de stock',
+        'sales-report' => 'Reporte de Ventas',
+        'purchases-report' => 'Reporte de Compras',
         // Only role Administrator can manage permissions
         // 'permissions'
     ];

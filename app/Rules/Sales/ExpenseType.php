@@ -1,34 +1,14 @@
 <?php
 
-namespace App\Rules;
+namespace App\Rules\Sales;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Contracts\Validation\DataAwareRule;
 use App\Models\MovementCategory;
 use App\Models\MovementType;
 
-class ExpenseType implements ValidationRule, DataAwareRule
+class ExpenseType implements ValidationRule
 {
-    /**
-     * All of the data under validation.
-     *
-     * @var array<string, mixed>
-     */
-    protected $data = [];
-
-    /**
-     * Set the data under validation.
-     *
-     * @param  array<string, mixed>  $data
-     */
-    public function setData(array $data): static
-    {
-        $this->data = $data;
- 
-        return $this;
-    }
-
     /**
      * Run the validation rule.
      *

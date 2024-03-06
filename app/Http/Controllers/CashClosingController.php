@@ -52,12 +52,13 @@ class CashClosingController extends Controller
                             'DATE(invoices.created_at) >= ?', [$validated['date_from']]
                         );
         $query = $this->customizeQuery($query, $validated);
-        $revenuesCollection = $query->orderBy('id')->get();
+        $revenues = $query->orderBy('id')->get();
         $total_prices_summation = '$' . number_format(
-            $revenuesCollection->sum('total_price'), 2, ',', ''
+            $revenues->sum('total_price'), 2, '.', ''
         );
-        $revenues = $this->createPagination($revenuesCollection, $request, 25);
-        $revenues->withQueryString();
+        $revenues = $this->paginate(
+            $revenues, 15, $validated['page'] ?? 1, $request->url()
+        )->withQueryString()->withQueryString();
         if(!$request->has('page')){
             $request->merge(['page' => $revenues->lastPage()]);
             return redirect()->route('cash-closing.show', $request->input());

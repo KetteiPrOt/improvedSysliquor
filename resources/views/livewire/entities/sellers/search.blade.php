@@ -30,18 +30,20 @@
                     </x-table.tr>
                 @endforeach
             @else
-                <x-table.tr>
-                    <x-table.td>
-                        <input
-                            type="radio" class="input-seller mr-4"
-                            name="seller" value="{{$currentSeller->id}}"
-                            checked id="seller{{$currentSeller->id}}"
-                        >
-                        <label for="seller{{$currentSeller->id}}">
-                            {{$currentSeller->person->name}}
-                        </label>
-                    </x-table.td>
-                </x-table.tr>
+                @if($showDefault)
+                    <x-table.tr>
+                        <x-table.td>
+                            <input
+                                type="radio" class="input-seller mr-4"
+                                name="seller" value="{{$currentSeller->id}}"
+                                checked id="seller{{$currentSeller->id}}"
+                            >
+                            <label for="seller{{$currentSeller->id}}">
+                                {{$currentSeller->person->name}}
+                            </label>
+                        </x-table.td>
+                    </x-table.tr>
+                @endif
             @endif
         </x-slot:tbody>
     </x-table>

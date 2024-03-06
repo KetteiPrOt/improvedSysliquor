@@ -47,46 +47,13 @@
                         </div>
 
                         <!-- Clients -->
-                        <x-input-label :value="__('Cliente')" />
-                        <x-select-input name="client" class="block">
-                            <option 
-                                value=""
-                                @selected(is_null(old('client')))
-                            >Consumidor Final</option>
-                            @foreach($clients as $client)
-                                <option 
-                                    value="{{$client->id}}"
-                                    @selected(old('client') == $client->id)
-                                >{{$client->person->name}}</option>
-                            @endforeach
-                        </x-select-input>
-                        <x-input-error :messages="$errors->get('client')" />
+                        <livewire:entities.clients.searcher />
                         
                         <!-- Select Products -->
                         <livewire:sales.select-products
                             :warehouse="$warehouse"
                             :success="$success"
                         />
-
-                        <x-input-error :messages="$errors->get('products')" />
-                        @foreach($errors->get('products.*') as $error)
-                            <x-input-error :messages="$error" />
-                        @endforeach
-
-                        <x-input-error :messages="$errors->get('amounts')" />
-                        @foreach($errors->get('amounts.*') as $error)
-                            <x-input-error :messages="$error" />
-                        @endforeach
-
-                        <x-input-error :messages="$errors->get('sale_prices')" />
-                        @foreach($errors->get('sale_prices.*') as $error)
-                            <x-input-error :messages="$error" />
-                        @endforeach
-
-                        <x-input-error :messages="$errors->get('movement_types')" />
-                        @foreach($errors->get('movement_types.*') as $error)
-                            <x-input-error :messages="$error" />
-                        @endforeach
 
                         <!-- Save button -->
                         <x-primary-button>

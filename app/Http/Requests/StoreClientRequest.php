@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\NotFinalConsumer;
 
 class StoreClientRequest extends FormRequest
 {
@@ -22,7 +21,7 @@ class StoreClientRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:75', 'unique:App\Models\Person,name', new NotFinalConsumer],
+            'name' => ['required', 'string', 'max:75', 'unique:App\Models\Person,name'],
             'phone_number' => ['nullable', 'string', 'size:10'],
             'email'=> ['nullable', 'string', 'max:320'],
             'identification_card' => ['nullable', 'string', 'size:10', 'unique:App\Models\Client,identification_card'],

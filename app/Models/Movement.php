@@ -15,7 +15,10 @@ class Movement extends Model
         'total_price',
         'movement_type_id',
         'product_id',
-        'invoice_id'
+        'invoice_id',
+        'paid',
+        'comment',
+        'due_date'
     ];
 
     public $timestamps = false;

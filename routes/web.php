@@ -11,6 +11,7 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\KardexController;
 use App\Http\Controllers\PresentationController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SalesReportController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserPermissionsController;
@@ -150,6 +151,13 @@ Route::middleware(['auth', 'permission:permissions'])->controller(RoleController
     Route::get('/roles/{role}/editar', 'edit')->name('roles.edit');
     Route::put('/roles/{role}', 'update')->name('roles.update');
     Route::delete('/roles/{role}', 'destroy')->name('roles.destroy');
+});
+
+/* -- Sales Report -- */
+Route::middleware(['auth', 'permission:sales-report'])->controller(SalesReportController::class)->group(function () {
+    Route::get('/reporte-de-ventas/consultar', 'query')->name('sales-report.query');
+    Route::get('/reporte-de-ventas/ver', 'show')->name('sales-report.show');
+    Route::post('/reporte-de-ventas/ver/{movement}/confirmar-venta', 'confirm')->name('sales-report.confirm');
 });
 
 require __DIR__.'/auth.php';

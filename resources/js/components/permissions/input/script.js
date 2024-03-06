@@ -22,6 +22,8 @@ const permissions = [
     'kardex',
     'cash-closing',
     'inventory',
+    'sales-report',
+    'purchases-report',
     'permissions'
 ];
 

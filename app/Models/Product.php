@@ -45,11 +45,11 @@ class Product extends Model
                 ")->where('products.id', $this->id)->value('name');
     }
 
-    public static function searchByTag($search, $pagination = 25){
+    public static function searchByTag($search, $pagination = 25, $pageName = null){
         $search = str_replace(
             "ñ", "Ñ", strtoupper($search)
         );
-        return 
+        $query =
             Product::join('types', 'products.type_id', '=', 'types.id')
                 ->join('presentations', 'products.presentation_id', '=', 'presentations.id')
                 ->select('products.*')
@@ -59,7 +59,11 @@ class Product extends Model
                         `products`.`name`,
                         CONCAT(`presentations`.`content`, 'ml')
                     ) LIKE ?
-                ", ["%$search%"])
-                ->paginate($pagination);
+                ", ["%$search%"]);
+        if($pageName){
+            return $query->paginate($pagination, pageName: $pageName);
+        } else {
+            return $query->paginate($pagination);
+        }
     }
 }
