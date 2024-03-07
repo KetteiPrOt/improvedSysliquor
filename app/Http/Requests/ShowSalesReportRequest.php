@@ -83,7 +83,7 @@ class ShowSalesReportRequest extends FormRequest
         $this->mergeIfMissing(['column' => 'id']);
         $valid = match($this->get('column')) {
             'id' => true,
-            'date' => true,
+            'unformated_date' => true,
             'client_name' => true,
             'product_name' => true,
             'amount' => true,

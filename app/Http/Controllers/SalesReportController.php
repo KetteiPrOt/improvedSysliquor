@@ -8,7 +8,6 @@ use App\Models\Product;
 use App\Models\Seller;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class SalesReportController extends Controller
 {
@@ -41,8 +40,9 @@ class SalesReportController extends Controller
                 ->join('sellers', 'sellers.user_id', '=', 'users.id')
                 ->selectRaw("
                     movements.id,
+                    invoices.date AS `unformated_date`,
                     DATE_FORMAT(
-                        DATE(invoices.created_at),
+                        DATE(invoices.date),
                         '%d/%m/%Y'
                     ) AS `date`,
                     persons.`name` AS `client_name`,

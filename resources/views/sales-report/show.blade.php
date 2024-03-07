@@ -84,7 +84,7 @@
                                 </x-table.th>
                                 <x-table.th>
                                     <x-table.order-link
-                                        name="date"
+                                        name="unformated_date"
                                         :column="$filters['column']"
                                         :order="$filters['order']"
                                     >
