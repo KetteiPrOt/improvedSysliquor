@@ -16,8 +16,8 @@ class ShowSalesReportRequest extends FormRequest
     {
         $currentDate = date('Y-m-d');
         return [
-            'date_from' => ['required', 'date', 'before_or_equal:date_to'],
-            'date_to' => ['required', 'date', "before_or_equal:$currentDate"],
+            'date_from' => ['required', 'date', 'date_format:Y-m-d', 'before_or_equal:date_to'],
+            'date_to' => ['required', 'date', 'date_format:Y-m-d', "before_or_equal:$currentDate"],
             'seller' => ['integer', 'exists:sellers,id'],
             'warehouse' => ['integer', 'exists:warehouses,id'],
             'product' => ['integer', 'exists:products,id'],

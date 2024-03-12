@@ -165,7 +165,7 @@
                                     </x-input-label>
                                     @php
                                         $nextMonthTime = 
-                                            strtotime(date('Y-m-d')) + (60 * 60 * 24 * 25);
+                                            strtotime('now') + (60 * 60 * 24 * 25);
                                     @endphp
                                     <x-date-input
                                         id="due-date-{{$product->id}}-input"
@@ -176,7 +176,7 @@
                                         No puede ser mayor al {{
                                             date(
                                                 'd/m/Y', 
-                                                strtotime(date('Y-m-d')) + (60 * 60 * 24 * 30)
+                                                strtotime('now') + (60 * 60 * 24 * 30)
                                             )
                                         }} (30 días).
                                     </p>

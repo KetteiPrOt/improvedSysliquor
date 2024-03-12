@@ -26,6 +26,7 @@ class StorePurchaseRequest extends FormRequest
      */
     public function rules(): array
     {
+        $currentDate = date('Y-m-d');
         return [
             'provider' => ['bail', 'nullable', 'integer', 'exists:providers,id'],
             'date' => ['bail', 'required', 'string', 'date_format:Y-m-d', new PastDate],
@@ -46,6 +47,12 @@ class StorePurchaseRequest extends FormRequest
             'invoice_number.1' => ['bail', 'nullable', 'integer', 'min:1', 'max:999'],
             'invoice_number.2' => ['bail', 'nullable', 'integer', 'min:1', 'max:999999999'],
             'warehouse' => 'required|int|exists:warehouses,id',
+            'credit_purchase' => 'sometimes|accepted',
+            'comment' => 'nullable|string|max:750',
+            'payment_due_date' => [
+                'required_with:credit_purchase', 'exclude_without:credit_purchase',
+                'date', 'date_format:Y-m-d', "after:$currentDate"
+            ]
         ];
     }
 
@@ -71,6 +78,8 @@ class StorePurchaseRequest extends FormRequest
             'unitary_prices.*' => 'Precio Unitarios #:position',
             'movement_types' => 'Tipos de Movimiento',
             'movement_types.*' => 'Tipo de Movimiento #:position',
+            'credit_purchase' => 'Compra a crédito',
+            'comment' => 'Comentario'
         ];
     }
 

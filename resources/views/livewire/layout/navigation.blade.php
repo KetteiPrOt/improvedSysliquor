@@ -151,9 +151,11 @@ new class extends Component
                                 </x-slot>
             
                                 <x-slot name="content">
-                                    {{-- <x-dropdown-link :href="__('#')">
-                                        {{ __('Cuentas por pagar') }}
-                                    </x-dropdown-link> --}}
+                                    @can('purchases-report')
+                                        <x-dropdown-link :href="route('purchases-report.query')">
+                                            {{ __('Reporte de compras') }}
+                                        </x-dropdown-link>
+                                    @endcan
                                     @can('sales-report')
                                         <x-dropdown-link :href="route('sales-report.query')">
                                             {{ __('Reporte de ventas') }}
@@ -349,9 +351,11 @@ new class extends Component
                         </x-slot>
 
                         <x-slot name="content">
-                            {{--<x-dropdown-link :href="__('#')">
-                                {{ __('Cuentas por pagar') }}
-                            </x-dropdown-link> --}}
+                            @can('purchases-report')
+                                <x-dropdown-link :href="route('purchases-report.query')">
+                                    {{ __('Reporte de compras') }}
+                                </x-dropdown-link>
+                            @endcan
                             @can('sales-report')
                                 <x-dropdown-link :href="route('sales-report.query')">
                                     {{ __('Reporte de ventas') }}

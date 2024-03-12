@@ -13,6 +13,7 @@
                     <!-- Create form -->
                     <form action="{{route('purchases.store')}}" method="POST">
                         @csrf
+
                         <!-- Warehouse -->
                         <x-input-label :value="__('Bodega')" />
                         <x-number-input
@@ -88,6 +89,54 @@
                         @foreach($errors->get('movement_types.*') as $error)
                             <x-input-error :messages="$error" />
                         @endforeach
+
+                        {{-- Comment --}}
+                        <x-input-label>
+                            Comentario
+                        </x-input-label>
+                        <x-textarea-input
+                            name="comment"
+                            maxlength="750"
+                        />
+                        <x-input-error
+                            :messages="$errors->get('comment')"
+                        />
+                        {{-- Credit Purchase --}}
+                        <div
+                            class="mb-2"
+                            x-data="{ checked: false }"
+                        >
+                            <input
+                                x-on:change="checked = ! checked"
+                                name="credit_purchase"
+                                id="creditPurchaseInput"
+                                class="rounded"
+                                type="checkbox"
+                            />
+                            <label
+                                for="creditPurchaseInput"
+                            >Compra a crédito</label>
+                            <x-input-error
+                                :messages="$errors->get('credit_purchase')"
+                            />
+
+                            <div x-show="checked" class="my-2">
+                                {{-- Payment due date --}}
+                                <x-input-label>
+                                    Fecha de vencimiento
+                                </x-input-label>
+                                <x-date-input
+                                    name="payment_due_date"
+                                    value="{{date(
+                                        'Y-m-d', 
+                                        strtotime('now') + (60 * 60 * 24 * 30)
+                                    )}}"
+                                />
+                                <x-input-error
+                                    :messages="$errors->get('payment_due_date')"
+                                />
+                            </div>
+                        </div>
 
                         <!-- Save button -->
                         <x-primary-button>

@@ -10,6 +10,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\KardexController;
 use App\Http\Controllers\PresentationController;
+use App\Http\Controllers\PurchasesReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SalesReportController;
 use App\Http\Controllers\SellerController;
@@ -121,6 +122,8 @@ Route::middleware(['auth', 'permission:purchases'])->controller(PurchaseControll
     Route::post('/compras/guardar-bodega', 'saveWarehouse')->name('purchases.saveWarehouse');
     Route::get('/compras/crear', 'create')->name('purchases.create');
     Route::post('/compras', 'store')->name('purchases.store');
+    Route::get('/compras/{invoice}', 'show')->name('purchases.show');
+    Route::put('/compras/{invoice}/confirmar-pago', 'confirmPay')->name('purchases.confirm-pay');
 });
 
 /* --- Cash Closing --- */
@@ -158,6 +161,12 @@ Route::middleware(['auth', 'permission:sales-report'])->controller(SalesReportCo
     Route::get('/reporte-de-ventas/consultar', 'query')->name('sales-report.query');
     Route::get('/reporte-de-ventas/ver', 'show')->name('sales-report.show');
     Route::post('/reporte-de-ventas/ver/{movement}/confirmar-venta', 'confirm')->name('sales-report.confirm');
+});
+
+/* -- Purchases Report -- */
+Route::middleware(['auth', 'permission:purchases-report'])->controller(PurchasesReportController::class)->group(function() {
+    Route::get('/reporte-de-compras/consultar', 'query')->name('purchases-report.query');
+    Route::get('/reporte-de-compras/ver', 'show')->name('purchases-report.show');
 });
 
 require __DIR__.'/auth.php';

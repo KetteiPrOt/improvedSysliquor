@@ -65,18 +65,21 @@ class PurchaseController extends MovementController
 
     private function storeInvoice(array $data, string|null $number): int
     {
-        if(isset($data['provider'])){
-            $personId = Provider::find($data['provider'])->person->id;
-        } else {
-            $personId = null;
-        }
+        $personId = 
+            isset($data['provider'])
+                ? Provider::with('person')->where('id', $data['provider'])->person->id
+                : null;
         $invoice = Invoice::create([
             'number' => $number,
             'date' => $data['date'],
             'user_id' => Auth::user()->id,
             'person_id' => $personId,
             'movement_category_id' => MovementCategory::income()->id,
-            'warehouse_id' => $data['warehouse']
+            'warehouse_id' => $data['warehouse'],
+            'paid' => isset($data['credit_purchase']) ? false : true,
+            'comment' => $data['comment'] ?? null,
+            'payment_due_date' => $data['payment_due_date'] ?? null,
+            'paid_date' => isset($data['credit_purchase']) ? null : $data['date']
         ]);
         return $invoice->id;
     }
@@ -175,5 +178,30 @@ class PurchaseController extends MovementController
                 'movement_id' => $movement->id
             ]);
         }
+    }
+
+    public function show(Invoice $invoice)
+    {
+        $incomeId = MovementCategory::income()->id;
+        if($invoice->movement_category_id == $incomeId){
+            return view('kardex.purchases.show', [
+                'invoice' => $invoice
+            ]);
+        } else {
+            return back();
+        }
+    }
+
+    public function confirmPay(Invoice $invoice)
+    {
+        $incomeId = MovementCategory::income()->id;
+        if(
+            $invoice->movement_category_id == $incomeId
+            && !$invoice->paid
+        ){
+            $invoice->paid = true;
+            $invoice->save();
+        }
+        return redirect()->route('purchases.show', $invoice->id);
     }
 }

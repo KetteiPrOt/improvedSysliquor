@@ -28,7 +28,7 @@ class StoreSaleRequest extends FormRequest
         $currentDate = date('Y-m-d');
         $maxcreditDate = date(
             'Y-m-d', 
-            strtotime($currentDate) + (60 * 60 * 24 * 30)
+            strtotime('now') + (60 * 60 * 24 * 30)
         );
         $client = $this->get('client');
         $clientRules = is_null($client) ? 'exclude' : ['bail', 'required', 'integer', 'exists:clients,id'];
@@ -48,7 +48,7 @@ class StoreSaleRequest extends FormRequest
             'credits' => ['bail', 'array', new ArrayProductKeys],
             'credits.*' => ['bail', 'accepted'],
             'due_dates' => ['bail', 'array', new ArrayProductKeys],
-            'due_dates.*' => ['bail', 'date', "after:$currentDate", "before_or_equal:$maxcreditDate"]
+            'due_dates.*' => ['bail', 'date', 'date_format:Y-m-d', "after:$currentDate", "before_or_equal:$maxcreditDate"]
         ];
     }
 

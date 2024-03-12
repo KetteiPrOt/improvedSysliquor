@@ -11,17 +11,17 @@
                 <div class="max-w-xl sm:mx-auto">
 
                     <form action="{{route('sales-report.show')}}">
-                        @csrf
-
                         <x-input-label>
                             Desde
                         </x-input-label>
                         <x-date-input
                             name="date_from"
                             value="{{
-                                date(
-                                    'Y-m-d', 
-                                    strtotime(date('Y-m-d')) - (60 * 60 * 24 * 7)
+                                old('date_from',
+                                    date(
+                                        'Y-m-d', 
+                                        strtotime('now') - (60 * 60 * 24 * 7)
+                                    )
                                 )
                             }}"
                             max="{{date('Y-m-d')}}"
