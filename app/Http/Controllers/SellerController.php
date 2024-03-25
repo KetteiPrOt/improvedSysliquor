@@ -23,4 +23,9 @@ class SellerController extends Controller
             'search' => $search
         ]);
     }
+
+    public function create()
+    {
+        return redirect()->route('register');
+    }
 }

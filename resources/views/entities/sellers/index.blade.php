@@ -29,12 +29,11 @@
                             </div>
                         </div>
                         
-                        {{-- <div class="order-1 flex flex-col items-center sm:order-2">
-                            <!-- New client button -->
+                        <div class="order-1 flex flex-col items-center sm:order-2">
                             <x-secondary-link-button href="{{route('sellers.create')}}" class="order-1 mb-3 sm:mb-0 sm:order-3">
-                                Agregar Cliente
+                                Agregar Vendedor
                             </x-secondary-link-button>
-                        </div> --}}
+                        </div>
                     </form>
 
                     <!-- Table -->

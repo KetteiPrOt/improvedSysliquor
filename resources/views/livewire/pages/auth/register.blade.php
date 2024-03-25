@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use App\Models\Person;
+use App\Models\Seller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
@@ -31,9 +33,15 @@ new #[Layout('layouts.guest')] class extends Component
 
         event(new Registered($user = User::create($validated)));
 
-        Auth::login($user);
+        $person = Person::create(['name' => $validated['name']]);
 
-        $this->redirect(RouteServiceProvider::HOME, navigate: true);
+        $seller = Seller::create([
+            'person_id' => $person->id,
+            'user_id' => $user->id,
+            'warehouse_id' => 1
+        ]);
+
+        $this->redirect(route('sellers.index'), navigate: true);
     }
 }; ?>
 

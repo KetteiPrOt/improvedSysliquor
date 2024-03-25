@@ -94,6 +94,7 @@ Route::middleware(['auth', 'permission:providers'])->controller(ProviderControll
 /* --- CRUD Sellers --- */
 Route::middleware(['auth', 'permission:sellers'])->controller(SellerController::class)->group(function () {
     Route::get('/vendedores', 'index')->name('sellers.index');
+    Route::get('/vendedores/crear', 'create')->name('sellers.create');
 });
 
 /* --- Kardex --- */

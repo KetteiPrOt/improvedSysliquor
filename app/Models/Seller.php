@@ -11,6 +11,8 @@ class Seller extends Model
 
     public $timestamps = false;
 
+    protected $fillable = ['person_id', 'user_id', 'warehouse_id'];
+
     public function person(){
         return $this->belongsTo(Person::class);
     }
